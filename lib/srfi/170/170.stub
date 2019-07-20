@@ -4,8 +4,20 @@
  (windows
   (c-system-include "sys/types.h"))
  (else
+
+  (c-system-include "sys/types.h")
+  (c-system-include "sys/stat.h")
+
   (c-system-include "time.h")
-  (c-system-include "sys/time.h")))
+  (c-system-include "sys/time.h")
+
+  ))
+
+;;; 3.5  Process state
+
+(define-c unsigned-int (%umask umask) (unsigned-int))
+
+;;; 3.10  Time
 
 (define-c-struct timespec
   predicate: timespec?
