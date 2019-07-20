@@ -61,7 +61,7 @@ COMPILED_LIBS = $(CHIBI_COMPILED_LIBS) $(CHIBI_IO_COMPILED_LIBS) \
 	lib/srfi/27/rand$(SO) lib/srfi/151/bit$(SO) \
 	lib/srfi/39/param$(SO) lib/srfi/69/hash$(SO) lib/srfi/95/qsort$(SO) \
 	lib/srfi/98/env$(SO) lib/srfi/144/math$(SO) lib/srfi/160/uvprims$(SO) \
-	lib/srfi/170/time$(SO) \
+	lib/srfi/170/170$(SO) \
 	lib/scheme/time$(SO)
 
 ifndef EXCLUDE_POSIX_LIBS
@@ -394,7 +394,7 @@ install-base: all
 	$(INSTALL_EXE) -m0755 lib/srfi/144/math$(SO) $(DESTDIR)$(BINMODDIR)/srfi/144
 	$(INSTALL_EXE) -m0755 lib/srfi/151/bit$(SO) $(DESTDIR)$(BINMODDIR)/srfi/151
 	$(INSTALL_EXE) -m0755 lib/srfi/160/uvprims$(SO) $(DESTDIR)$(BINMODDIR)/srfi/160
-	$(INSTALL_EXE) -m0755 lib/srfi/170/time(SO) $(DESTDIR)$(BINMODDIR)/srfi/170
+	$(INSTALL_EXE) -m0755 lib/srfi/170/170(SO) $(DESTDIR)$(BINMODDIR)/srfi/170
 	$(MKDIR) $(DESTDIR)$(INCDIR)
 	$(INSTALL) -m0644 $(INCLUDES) $(DESTDIR)$(INCDIR)/
 	$(MKDIR) $(DESTDIR)$(LIBDIR)
