@@ -6,6 +6,27 @@
 
    ;; 3.1  Errors
 
+   errno/2big errno/acces errno/addrinuse errno/addrnotavail
+   errno/afnosupport errno/again errno/already errno/badf
+   errno/badmsg errno/busy errno/canceled errno/child
+   errno/connaborted errno/connrefused errno/connreset
+   errno/deadlk errno/destaddrreq errno/dom errno/dquot
+   errno/exist errno/fault errno/fbig errno/hostunreach
+   errno/idrm errno/ilseq errno/inprogress errno/intr
+   errno/inval errno/io errno/isconn errno/isdir errno/loop
+   errno/mfile errno/mlink errno/msgsize errno/multihop
+   errno/nametoolong errno/netdown errno/netreset
+   errno/netunreach errno/nfile errno/nobufs errno/nodata
+   errno/nodev errno/noent errno/noexec errno/nolck errno/nolink
+   errno/nomem errno/nomsg errno/noprotoopt errno/nospc
+   errno/nosr errno/nostr errno/nosys errno/notconn errno/notdir
+   errno/notempty errno/notrecoverable errno/notsock errno/notsup
+   errno/notty errno/nxio errno/opnotsupp errno/overflow
+   errno/ownerdead errno/perm errno/pipe errno/proto
+   errno/protonosupport errno/prototype errno/range errno/rofs
+   errno/spipe errno/srch errno/stale errno/time errno/timedout
+   errno/txtbsy errno/wouldblock errno/xdev
+
    syscall-error?
    syscall-error:errno syscall-error:message
    syscall-error:procedure syscall-error:data
