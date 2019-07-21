@@ -65,25 +65,20 @@
 (define-c-const int (errno/mfile "EMFILE"))
 (define-c-const int (errno/mlink "EMLINK"))
 (define-c-const int (errno/msgsize "EMSGSIZE"))
-(define-c-const int (errno/multihop "EMULTIHOP"))
 (define-c-const int (errno/nametoolong "ENAMETOOLONG"))
 (define-c-const int (errno/netdown "ENETDOWN"))
 (define-c-const int (errno/netreset "ENETRESET"))
 (define-c-const int (errno/netunreach "ENETUNREACH"))
 (define-c-const int (errno/nfile "ENFILE"))
 (define-c-const int (errno/nobufs "ENOBUFS"))
-(define-c-const int (errno/nodata "ENODATA"))
 (define-c-const int (errno/nodev "ENODEV"))
 (define-c-const int (errno/noent "ENOENT"))
 (define-c-const int (errno/noexec "ENOEXEC"))
 (define-c-const int (errno/nolck "ENOLCK"))
-(define-c-const int (errno/nolink "ENOLINK"))
 (define-c-const int (errno/nomem "ENOMEM"))
 (define-c-const int (errno/nomsg "ENOMSG"))
 (define-c-const int (errno/noprotoopt "ENOPROTOOPT"))
 (define-c-const int (errno/nospc "ENOSPC"))
-(define-c-const int (errno/nosr "ENOSR"))
-(define-c-const int (errno/nostr "ENOSTR"))
 (define-c-const int (errno/nosys "ENOSYS"))
 (define-c-const int (errno/notconn "ENOTCONN"))
 (define-c-const int (errno/notdir "ENOTDIR"))
@@ -106,12 +101,20 @@
 (define-c-const int (errno/spipe "ESPIPE"))
 (define-c-const int (errno/srch "ESRCH"))
 (define-c-const int (errno/stale "ESTALE"))
-(define-c-const int (errno/time "ETIME"))
 (define-c-const int (errno/timedout "ETIMEDOUT"))
 (define-c-const int (errno/txtbsy "ETXTBSY"))
 (define-c-const int (errno/wouldblock "EWOULDBLOCK"))
 (define-c-const int (errno/xdev "EXDEV"))
 
+(cond-expand
+ ((not bsd) ;; stand in for OpenBSD
+  (define-c-const int (errno/multihop "EMULTIHOP"))
+  (define-c-const int (errno/nolink "ENOLINK"))
+  ;; STREAMS
+  (define-c-const int (errno/nodata "ENODATA"))
+  (define-c-const int (errno/nosr "ENOSR"))
+  (define-c-const int (errno/nostr "ENOSTR"))
+  (define-c-const int (errno/time "ETIME"))))
 
 ;;; 3.2  I/O
 
