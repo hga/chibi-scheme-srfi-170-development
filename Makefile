@@ -61,7 +61,7 @@ COMPILED_LIBS = $(CHIBI_COMPILED_LIBS) $(CHIBI_IO_COMPILED_LIBS) \
 	lib/srfi/27/rand$(SO) lib/srfi/151/bit$(SO) \
 	lib/srfi/39/param$(SO) lib/srfi/69/hash$(SO) lib/srfi/95/qsort$(SO) \
 	lib/srfi/98/env$(SO) lib/srfi/144/math$(SO) lib/srfi/160/uvprims$(SO) \
-	lib/srfi/170/170$(SO) \
+	lib/srfi/170/170$(SO) lib/srfi/170/aux$(SO) \
 	lib/scheme/time$(SO)
 
 ifndef EXCLUDE_POSIX_LIBS
