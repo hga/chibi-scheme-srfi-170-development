@@ -6,6 +6,11 @@
 
    ;; 3.1  Errors
 
+   syscall-error?
+   syscall-error:errno syscall-error:message
+   syscall-error:procedure syscall-error:data
+   errno-error
+
    ;; 3.2  I/O
 
    ;; 3.3  File system
@@ -42,6 +47,8 @@
    )
   (cond-expand
    (chibi
+    (import (scheme base))
     (import (chibi))
-    (include-shared "170/170")))
+    (import (only (chibi ast) errno integer->error-string)) ;; ~~~~  until aux.c is up to snuff
+    (include-shared "170/170"))) ;; ~~~~ add aux when it's up to snuff
   (include "170/170.scm"))
