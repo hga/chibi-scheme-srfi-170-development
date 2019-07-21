@@ -57,16 +57,16 @@
 
 (cond-expand
   ((not windows)
-   (define-c errno (create-directory "mkdir") (string (default #o777 int)))) ; ~~~~ #o775 would be a lot better
+   (define-c errno (create-directory "mkdir") (string (default #o775 int))))
   (else
-   (define-c errno (create-directory "mkdir_shim") (string (default #o777 int))))) ; ~~~~ #o775 would be a lot better
+   (define-c errno (create-directory "mkdir_shim") (string (default #o775 int)))))
 
 ;;> Creates a fifo with the given mode.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
 
 (cond-expand
   ((not windows)
-   (define-c errno (make-fifo "mkfifo") (string (default #o664 int))))) ; ~~~~ #o664 would be a lot better
+   (define-c errno (make-fifo "mkfifo") (string (default #o664 int)))))
 
 ;;> Creates a hard link to the first arg from the second.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
@@ -80,8 +80,12 @@
 
 (cond-expand
   ((not windows)
-   (define-c errno (%create-symbolic-link "symlink") (string string))))
+   (define-c errno (%create-symlink "symlink") (string string))))
 
+;;> Renames the first arg to the second.
+;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
+
+(define-c errno (%rename-file "rename") (string string))
 
 ;;> Deletes the directory named \var{string} from the filesystem.
 ;;> Does not attempt to delete recursively.
@@ -166,11 +170,6 @@
   ((not windows)
    (define-c int readlink (string string int))))
 |#
-
-;;> Renames the first arg to the second.
-;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
-
-(define-c errno (%rename-file "rename") (string string)) ; ~~~~ not in SRFI (yet)
 
 
 ;;; 3.4  Processes
