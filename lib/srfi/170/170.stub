@@ -137,6 +137,8 @@
 
 ;;; 3.3  File system
 
+(define-c errno (%delete-file "unlink") (string))
+
 ;;> Creates a new directory with the given mode.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
 
@@ -255,7 +257,6 @@
   ((not windows)
    (define-c int readlink (string string int))))
 |#
-
 
 ;;; 3.4  Processes
 
