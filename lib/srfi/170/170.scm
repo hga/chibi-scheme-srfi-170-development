@@ -24,9 +24,25 @@
 
 ;;; 3.3  File system
 
+;; Unlike scsh version, will raise an exception if there is a object
+;; but it can't delete it.  If no object, no exception
+
+(define (delete-filesystem-object fname)
+  (if (not (file-exists? fname))
+      (if (not (%delete-file fname))
+	  ;; if we couldn't unlink, is it a directory?
+	  (let ((e (errno)))
+	    (if (not (eq? e errno/isdir))
+		(errno-error e delete-filesystem-object fname)
+		(if (not (%delete-directory fname))
+		    (errno-error (errno) delete-filesystem-object fname)))))))
+
+
 (define (delete-directory fname)
   (if (eq? #f (%delete-directory fname))
       (errno-error (errno) delete-directory fname)))
+
+;;; ----------------
 
 ;;> The fundamental directory iterator.  Applies \var{kons} to
 ;;> each filename in directory \var{dir} and the result of the
