@@ -24,6 +24,10 @@
 
 ;;; 3.3  File system
 
+(define (delete-directory fname)
+  (if (eq? #f (%delete-directory fname))
+      (errno-error (errno) delete-directory fname)))
+
 ;;> The fundamental directory iterator.  Applies \var{kons} to
 ;;> each filename in directory \var{dir} and the result of the
 ;;> previous application, beginning with \var{knil}.  With

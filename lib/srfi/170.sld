@@ -34,6 +34,8 @@
 
    ;; 3.3  File system
 
+   delete-directory
+
    ;; 3.4  Processes
 
    ;; 3.4.1  Process objects

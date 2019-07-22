@@ -176,7 +176,7 @@
 ;;> Does not attempt to delete recursively.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
 
-(define-c errno (delete-directory "rmdir") (string))
+(define-c errno (%delete-directory "rmdir") (string))
 
 ;;> Sets the file permissions as in chmod.
 
