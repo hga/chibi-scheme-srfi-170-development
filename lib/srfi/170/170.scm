@@ -28,7 +28,7 @@
 ;; but it can't delete it.  If no object, no exception
 
 (define (delete-filesystem-object fname)
-  (if (not (file-exists? fname))
+  (if (file-exists? fname)
       (if (not (%delete-file fname))
 	  ;; if we couldn't unlink, is it a directory?
 	  (let ((e (errno)))
