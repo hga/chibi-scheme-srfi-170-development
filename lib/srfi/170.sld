@@ -4,6 +4,10 @@
 
 ;;; TMP
 
+   errno integer->error-string
+
+   %delete-directory %delete-file
+
    ;; 3.1  Errors
 
    errno/2big errno/acces errno/addrinuse errno/addrnotavail
@@ -29,6 +33,13 @@
    syscall-error:procedure syscall-error:data
    errno-error
    
+
+   ;; Useful, but not part of SRFI API:
+
+   ;; will not raise exception unless there is an object
+   ;; but it can't delete it
+   delete-filesystem-object
+
 
    ;; 3.2  I/O
 
@@ -77,8 +88,10 @@
 
   (cond-expand
    (chibi
-    (import (scheme base))
-    (import (chibi))
-    (import (only (chibi ast) errno integer->error-string)) ;; ~~~~  until aux.c is up to snuff
+    (import (scheme base)
+	    (chibi)
+	    (only (chibi filesystem) file-exists?) ;; in R7RS-small
+	    (only (chibi ast) errno integer->error-string) ;; ~~~~  until aux.c is up to snuff
+	    )
     (include-shared "170/170"))) ;; ~~~~ add aux when it's up to snuff
   (include "170/170.scm"))
