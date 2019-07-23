@@ -56,7 +56,8 @@
    file-info:atime file-info:mtime file-info:ctime
 
    file-info-directory? file-info-fifo?  file-info-regular?
-   file-info-socket?  file-info-special?  file-info-symlink?
+   file-info-socket?  file-info-block-special?
+   file-info-character-special?  file-info-symlink?
 
 
    ;; 3.4  Processes
