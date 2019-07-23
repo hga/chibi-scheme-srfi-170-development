@@ -42,6 +42,30 @@
   (if (eq? #f (%delete-directory fname))
       (errno-error (errno) delete-directory fname)))
 
+; file-info
+
+(define (file-info-directory? file-info-record)
+  (if (eq? 0 (bitwise-and file-type-mask/ifdir (file-info:mode file-info-record))) #f #t))
+
+(define (file-info-fifo? file-info-record)
+  (if (eq? 0 (bitwise-and file-type-mask/ififo (file-info:mode file-info-record))) #f #t))
+
+(define (file-info-regular? file-info-record)
+  (if (eq? 0 (bitwise-and file-type-mask/ifreg (file-info:mode file-info-record))) #f #t))
+
+(define (file-info-socket? file-info-record)
+  (if (eq? 0 (bitwise-and file-type-mask/ifsock (file-info:mode file-info-record))) #f #t))
+
+(define (file-info-block-special? file-info-record)
+  (if (eq? 0 (bitwise-and file-type-mask/ifblk (file-info:mode file-info-record))) #f #t))
+
+(define (file-info-character-special? file-info-record)
+  (if (eq? 0 (bitwise-and file-type-mask/ifchr (file-info:mode file-info-record))) #f #t))
+
+(define (file-info-symlink? file-info-record)
+  (if (eq? 0 (bitwise-and file-type-mask/iflnk (file-info:mode file-info-record))) #f #t))
+
+
 ;;; ----------------
 
 ;;> The fundamental directory iterator.  Applies \var{kons} to

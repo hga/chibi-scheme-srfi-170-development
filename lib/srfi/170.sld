@@ -10,6 +10,7 @@
 
    %stat %lstat
 
+
    ;; 3.1  Errors
 
    errno/2big errno/acces errno/addrinuse errno/addrnotavail
@@ -53,6 +54,9 @@
    file-info:device file-info:inode file-info:mode file-info:nlinks
    file-info:uid file-info:gid file-info:rdev file-info:size
    file-info:atime file-info:mtime file-info:ctime
+
+   file-info-directory? file-info-fifo?  file-info-regular?
+   file-info-socket?  file-info-special?  file-info-symlink?
 
 
    ;; 3.4  Processes
@@ -108,6 +112,7 @@
 	    (chibi)
 ;;	    (only (chibi filesystem) file-exists?) ;; in R7RS-small
 	    (only (chibi ast) errno integer->error-string) ;; ~~~~  until aux.c is up to snuff
+	    (srfi 151) ;; bitwise operators
 	    )
     (include-shared "170/170"))) ;; ~~~~ add aux when it's up to snuff
   (include "170/170.scm"))
