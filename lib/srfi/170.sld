@@ -8,6 +8,8 @@
 
    %delete-directory %delete-file
 
+   %stat %lstat
+
    ;; 3.1  Errors
 
    errno/2big errno/acces errno/addrinuse errno/addrnotavail
@@ -47,6 +49,12 @@
 
    delete-directory
 
+   file-info file-info?
+   file-info:device file-info:inode file-info:mode file-info:nlinks
+   file-info:uid file-info:gid file-info:rdev file-info:size
+   file-info:atime file-info:mtime file-info:ctime
+
+
    ;; 3.4  Processes
 
    ;; 3.4.1  Process objects
@@ -80,17 +88,25 @@
   
   (cond-expand ((not bsd)
     (export
+
      ;; 3.1  Errors
 
      errno/multihop errno/nolink
      ;; STREAMS
      errno/nodata errno/nostr errno/nosr errno/time)))
 
+  (cond-expand ((not windows)
+    (export
+
+     ;; 3.3  File system
+
+     file-info:blksize file-info:blocks)))
+
   (cond-expand
    (chibi
     (import (scheme base)
 	    (chibi)
-	    (only (chibi filesystem) file-exists?) ;; in R7RS-small
+;;	    (only (chibi filesystem) file-exists?) ;; in R7RS-small
 	    (only (chibi ast) errno integer->error-string) ;; ~~~~  until aux.c is up to snuff
 	    )
     (include-shared "170/170"))) ;; ~~~~ add aux when it's up to snuff

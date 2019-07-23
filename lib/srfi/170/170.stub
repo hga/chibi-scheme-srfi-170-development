@@ -214,43 +214,42 @@
   (windows
    (c-include-verbatim "filesystem_win32_shim.c")
    (define-c-struct stat
-    predicate: stat?
-    (dev_t      st_dev      stat-dev)
-    (ino_t      st_ino      stat-ino)
-    (mode_t     st_mode     stat-mode)
-    (nlink_t    st_nlink    stat-nlinks)
-    (uid_t      st_uid      stat-uid)
-    (gid_t      st_gid      stat-gid)
-    (dev_t      st_rdev     stat-rdev)
-    (off_t      st_size     stat-size)
-    ;(blksize_t  st_blksize  stat-blksize)
-    ;(blkcnt_t   st_blocks   stat-blocks)
-    (time_t     st_atime    stat-atime)
-    (time_t     st_mtime    stat-mtime)
-    (time_t     st_ctime    stat-ctime)))
+    predicate: file-info?
+    (dev_t      st_dev      file-info:device)
+    (ino_t      st_ino      file-info:inode)
+    (mode_t     st_mode     file-info:mode)
+    (nlink_t    st_nlink    file-info:nlinks)
+    (uid_t      st_uid      file-info:uid)
+    (gid_t      st_gid      file-info:gid)
+    (dev_t      st_rdev     file-info:rdev)
+    (off_t      st_size     file-info:size)
+    ;(blksize_t  st_blksize  file-info:blksize)
+    ;(blkcnt_t   st_blocks   file-info:blocks)
+    (time_t     st_atime    file-info:atime)
+    (time_t     st_mtime    file-info:mtime)
+    (time_t     st_ctime    file-info:ctime)))
   (else
    (define-c-struct stat
-    predicate: stat?
-    (dev_t      st_dev      stat-dev)
-    (ino_t      st_ino      stat-ino)
-    (mode_t     st_mode     stat-mode)
-    (nlink_t    st_nlink    stat-nlinks)
-    (uid_t      st_uid      stat-uid)
-    (gid_t      st_gid      stat-gid)
-    (dev_t      st_rdev     stat-rdev)
-    (off_t      st_size     stat-size)
-    (blksize_t  st_blksize  stat-blksize)
-    (blkcnt_t   st_blocks   stat-blocks)
-    (time_t     st_atime    stat-atime)
-    (time_t     st_mtime    stat-mtime)
-    (time_t     st_ctime    stat-ctime))
+    predicate: file-info?
+    (dev_t      st_dev      file-info:device)
+    (ino_t      st_ino      file-info:inode)
+    (mode_t     st_mode     file-info:mode)
+    (nlink_t    st_nlink    file-info:nlinks)
+    (uid_t      st_uid      file-info:uid)
+    (gid_t      st_gid      file-info:gid)
+    (dev_t      st_rdev     file-info:rdev)
+    (off_t      st_size     file-info:size)
+    (blksize_t  st_blksize  file-info:blksize)
+    (blkcnt_t   st_blocks   file-info:blocks)
+    (time_t     st_atime    file-info:atime)
+    (time_t     st_mtime    file-info:mtime)
+    (time_t     st_ctime    file-info:ctime))
    ))
 
-(define-c errno stat (string (result stat)))
-(define-c errno fstat (int (result stat)))
+(define-c errno (%stat "stat") (string (result stat)))
 (cond-expand
   ((not windows)
-   (define-c errno (file-link-status "lstat") (string (result stat)))))
+   (define-c errno (%lstat "lstat") (string (result stat)))))
 
 #|
 (cond-expand
