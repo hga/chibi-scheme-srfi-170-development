@@ -24,8 +24,8 @@
 
 ;;; 3.3  File system
 
-;; Unlike scsh version, will raise an exception if there is a object
-;; but it can't delete it.  If no object, no exception
+;; Helper function; unlike scsh version, will raise an exception if
+;; there is a object it can't delete.  If no object, no exception.
 
 (define (delete-filesystem-object fname)
   (let ((finfo (%lstat fname)))
@@ -41,7 +41,19 @@
   (if (eq? #f (%delete-directory fname))
       (errno-error (errno) delete-directory fname)))
 
-; file-info
+(define (file-info fname/port . o)
+  (let-optionals o ((chase? #t))
+    (let ((finfo (if chase?
+		     (%stat fname/port)
+		     (%lstat fname/port))))
+      (if (not finfo)
+	  (errno-error (errno) file-info fname/port)) ;; non-local exit
+#|
+      (set-file-info:atime! finfo (cons file-info:atime 0))
+      (set-file-info:mtime! finfo (cons file-info:mtime 0))
+      (set-file-info:ctime! finfo (cons file-info:ctime 0))
+|#
+      finfo)))
 
 (define (file-info-directory? file-info-record)
   (if (eq? 0 (bitwise-and file-type-mask/ifdir (file-info:mode file-info-record))) #f #t))

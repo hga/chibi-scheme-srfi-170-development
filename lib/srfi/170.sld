@@ -37,13 +37,6 @@
    errno-error
    
 
-   ;; Useful, but not part of SRFI API:
-
-   ;; will not raise exception unless there is an object
-   ;; but it can't delete it
-   delete-filesystem-object
-
-
    ;; 3.2  I/O
 
    ;; 3.3  File system
@@ -58,6 +51,12 @@
    file-info-directory? file-info-fifo?  file-info-regular?
    file-info-socket?  file-info-block-special?
    file-info-character-special?  file-info-symlink?
+
+   ;; Useful, but not part of SRFI API:
+
+   ;; delete-filesystem-object will not raise an exception unless
+   ;; there is an object it can't delete.  No object, no problem.
+   delete-filesystem-object
 
 
    ;; 3.4  Processes
@@ -114,6 +113,7 @@
 ;;	    (only (chibi filesystem) file-exists?) ;; in R7RS-small
 	    (only (chibi ast) errno integer->error-string) ;; ~~~~  until aux.c is up to snuff
 	    (srfi 151) ;; bitwise operators
+	    (chibi optional) ;; Snow package for optional args
 	    )
     (include-shared "170/170"))) ;; ~~~~ add aux when it's up to snuff
   (include "170/170.scm"))

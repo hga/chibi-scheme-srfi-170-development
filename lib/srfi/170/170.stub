@@ -225,9 +225,9 @@
     (off_t      st_size     file-info:size)
     ;(blksize_t  st_blksize  file-info:blksize)
     ;(blkcnt_t   st_blocks   file-info:blocks)
-    (time_t     st_atime    file-info:atime)
-    (time_t     st_mtime    file-info:mtime)
-    (time_t     st_ctime    file-info:ctime)))
+    (time_t     st_atime    file-info:atime set-file-info:atime!)
+    (time_t     st_mtime    file-info:mtime set-file-info:mtime!)
+    (time_t     st_ctime    file-info:ctime set-file-info:ctime!)))
   (else
    (define-c-struct stat
     predicate: file-info?
@@ -241,9 +241,9 @@
     (off_t      st_size     file-info:size)
     (blksize_t  st_blksize  file-info:blksize)
     (blkcnt_t   st_blocks   file-info:blocks)
-    (time_t     st_atime    file-info:atime)
-    (time_t     st_mtime    file-info:mtime)
-    (time_t     st_ctime    file-info:ctime))
+    (time_t     st_atime    file-info:atime set-file-info:atime!)
+    (time_t     st_mtime    file-info:mtime set-file-info:mtime!)
+    (time_t     st_ctime    file-info:ctime set-file-info:ctime!))
    ))
 
 (define-c errno (%stat "stat") (string (result stat)))
