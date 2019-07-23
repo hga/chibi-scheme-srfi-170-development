@@ -28,14 +28,13 @@
 ;; but it can't delete it.  If no object, no exception
 
 (define (delete-filesystem-object fname)
-  (if (file-exists? fname)
-      (if (not (%delete-file fname))
-	  ;; if we couldn't unlink, is it a directory?
-	  (let ((e (errno)))
-	    (if (not (eq? e errno/isdir))
-		(errno-error e delete-filesystem-object fname)
-		(if (not (%delete-directory fname))
-		    (errno-error (errno) delete-filesystem-object fname)))))))
+  (let ((finfo (%lstat fname)))
+    (if finfo
+	(if (file-info-directory? finfo)
+	    (if (not (%delete-directory fname))
+		(errno-error (errno) delete-filesystem-object fname))
+	    (if (not (%delete-file fname))
+		(errno-error (errno) delete-filesystem-object fname))))))
 
 
 (define (delete-directory fname)
