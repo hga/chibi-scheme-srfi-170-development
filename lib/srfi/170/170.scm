@@ -41,19 +41,65 @@
   (if (eq? #f (%delete-directory fname))
       (errno-error (errno) delete-directory fname)))
 
+(cond-expand
+  (windows
+   (define-record-type File-Info
+     (make-file-info device inode mode nlinks uid gid rdev
+		     size atime mtime ctime)
+     file-info?
+     (device file-info:device)
+     (inode file-info:inode)
+     (mode file-info:mode)
+     (nlinks file-info:nlinks)
+     (uid file-info:uid)
+     (gid file-info:gid)
+     (rdev file-info:rdev)
+     (size file-info:size)
+;;   (blksize file-info:blksize)
+;;   (blocks file-info:blocks)
+     (atime file-info:atime)
+     (mtime file-info:mtime)
+     (ctime file-info:ctime)))
+  (else
+   (define-record-type File-Info
+     (make-file-info device inode mode nlinks uid gid rdev
+		     size blksize blocks atime mtime ctime)
+     file-info?
+     (device file-info:device)
+     (inode file-info:inode)
+     (mode file-info:mode)
+     (nlinks file-info:nlinks)
+     (uid file-info:uid)
+     (gid file-info:gid)
+     (rdev file-info:rdev)
+     (size file-info:size)
+     (blksize file-info:blksize)
+     (blocks file-info:blocks)
+     (atime file-info:atime)
+     (mtime file-info:mtime)
+     (ctime file-info:ctime))))
+
 (define (file-info fname/port . o)
   (let-optionals o ((chase? #t))
-    (let ((finfo (if chase?
+    (let ((file-stat (if chase?
 		     (%stat fname/port)
 		     (%lstat fname/port))))
-      (if (not finfo)
+      (if (not file-stat)
 	  (errno-error (errno) file-info fname/port)) ;; non-local exit
-#|
-      (set-file-info:atime! finfo (cons file-info:atime 0))
-      (set-file-info:mtime! finfo (cons file-info:mtime 0))
-      (set-file-info:ctime! finfo (cons file-info:ctime 0))
-|#
-      finfo)))
+      (make-file-info
+       (stat:dev file-stat)
+       (stat:ino file-stat)
+       (stat:mode file-stat)
+       (stat:nlinks file-stat)
+       (stat:uid file-stat)
+       (stat:gid file-stat)
+       (stat:rdev file-stat)
+       (stat:size file-stat)
+       (stat:blksize file-stat)
+       (stat:blocks file-stat)
+       (cons (stat:atime file-stat) 0)
+       (cons (stat:mtime file-stat) 0)
+       (cons (stat:ctime file-stat) 0)))))
 
 (define (file-info-directory? file-info-record)
   (if (eq? 0 (bitwise-and file-type-mask/ifdir (file-info:mode file-info-record))) #f #t))
