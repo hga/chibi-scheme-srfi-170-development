@@ -318,12 +318,20 @@
 
 ;;> Returns the current working directory of the process as a string.
 
-(define-c non-null-string (current-directory getcwd)
+(define-c non-null-string (working-directory getcwd)
   ((result (array char (auto-expand arg1))) (value 256 int)))
 
 ;;> Change the current working directory of the process.
 
-(define-c errno (change-directory chdir) (string))
+(define-c errno (set-working-directory chdir) (string))
+
+;;> Returns the current process id.
+
+(define-c pid_t (pid getpid) ())
+
+;;> Returns the parent process id.
+
+(define-c pid_t (parent-pid getppid) ())
 
 
 ;;; 3.6  User and group database access

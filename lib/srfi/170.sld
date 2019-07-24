@@ -56,6 +56,7 @@
 
    ;; delete-filesystem-object will not raise an exception unless
    ;; there is an object it can't delete.  No object, no problem.
+
    delete-filesystem-object
 
 
@@ -68,7 +69,10 @@
    ;; 3.4.3  Analysing process status codes
 
    ;; 3.5  Process state
+
    umask set-umask
+   working-directory set-working-directory
+   pid parent-pid
 
    ;; 3.6  User and group database access
 
@@ -79,6 +83,7 @@
    ;; 3.9  Signal system
 
    ;; 3.10  Time
+
    clock-gettime
    clck-id/realtime clck-id/monotonic
    make-timespec timespec-seconds timespec-nanoseconds
