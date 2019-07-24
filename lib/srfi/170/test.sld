@@ -17,7 +17,7 @@
 
         (test-group "Early, umask"
 
-           (test "set-umask" #o2 (set-umask #o2))
+           (test-assert "set-umask" (set-umask #o2))
            (test "mask" #o2 (umask))
            ) ; end umask
 
