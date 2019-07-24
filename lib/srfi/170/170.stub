@@ -137,14 +137,14 @@
 
 ;;; 3.3  File system
 
-(define-c errno (%delete-file "unlink") (string))
+(define-c errno (%delete-file unlink) (string))
 
 ;;> Creates a new directory with the given mode.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
 
 (cond-expand
   ((not windows)
-   (define-c errno (create-directory "mkdir") (string (default #o775 int))))
+   (define-c errno (create-directory mkdir) (string (default #o775 mode_t))))
   (else
    (define-c errno (create-directory "mkdir_shim") (string (default #o775 int)))))
 
@@ -153,36 +153,36 @@
 
 (cond-expand
   ((not windows)
-   (define-c errno (make-fifo "mkfifo") (string (default #o664 int)))))
+   (define-c errno (make-fifo mkfifo) (string (default #o664 mode_t)))))
 
 ;;> Creates a hard link to the first arg from the second.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
 
 (cond-expand
   ((not windows)
-   (define-c errno (%create-hard-link "link") (string string))))
+   (define-c errno (%create-hard-link link) (string string))))
 
 ;;> Creates a symbolic link to the first arg from the second.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
 
 (cond-expand
   ((not windows)
-   (define-c errno (%create-symlink "symlink") (string string))))
+   (define-c errno (%create-symlink symlink) (string string))))
 
 ;;> Renames the first arg to the second.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
 
-(define-c errno (%rename-file "rename") (string string))
+(define-c errno (%rename-file rename) (string string))
 
 ;;> Deletes the directory named \var{string} from the filesystem.
 ;;> Does not attempt to delete recursively.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
 
-(define-c errno (%delete-directory "rmdir") (string))
+(define-c errno (%delete-directory rmdir) (string))
 
 ;;> Sets the file permissions as in chmod.
 
-(define-c int chmod (string int))
+(define-c int chmod (string mode_t))
 
 ;; ~~~~ (set-file-owner fname/port uid)     →     undefined         (procedure) 
 ;; ~~~~ (set-file-group fname/port gid)     →     undefined         (procedure) 
@@ -193,8 +193,7 @@
 
 (cond-expand
   ((not windows)
-   (define-c int (file-truncate "ftruncate")
-    (port-or-fileno off_t))))
+   (define-c int (file-truncate ftruncate) (int off_t))))
 
 ;;> Code for walking directories
 
@@ -247,11 +246,11 @@
     (time_t     st_ctime    stat:ctime))
    ))
 
-(define-c errno (%stat "stat") (string (result stat)))
-(define-c errno (%fstat "fstat") (int (result stat)))
+(define-c errno (%stat stat) (string (result stat)))
+(define-c errno (%fstat fstat) (int (result stat)))
 (cond-expand
   ((not windows)
-   (define-c errno (%lstat "lstat") (string (result stat)))))
+   (define-c errno (%lstat lstat) (string (result stat)))))
 
 #| ~~~~
 (define-c boolean S_ISREG (mode_t))
@@ -313,16 +312,18 @@
 
 ;;; 3.5  Process state
 
-(define-c unsigned-int (%umask umask) (unsigned-int))
+;;> Sets the current umask, returning the previous one.
+
+(define-c mode_t (%umask umask) (mode_t))
 
 ;;> Returns the current working directory of the process as a string.
 
-(define-c non-null-string (current-directory "getcwd")
+(define-c non-null-string (current-directory getcwd)
   ((result (array char (auto-expand arg1))) (value 256 int)))
 
 ;;> Change the current working directory of the process.
 
-(define-c errno (change-directory "chdir") (string))
+(define-c errno (change-directory chdir) (string))
 
 
 ;;; 3.6  User and group database access
@@ -350,8 +351,7 @@
 (define-c-const int (clck-id/realtime "CLOCK_REALTIME"))
 (define-c-const int (clck-id/monotonic "CLOCK_MONOTONIC"))
 
-(define-c errno clock-gettime
-  (int (result timespec)))
+(define-c errno clock-gettime (int (result timespec)))
 
 
 ;;; 3.11  Environment variables
