@@ -1,5 +1,3 @@
-Re-substitute typedefs for guessed arguments and return types in define-c uses.
-
 file-info doesn't handle ports, need (port-fdes port)
 
 Get tools/chibi-ffi to recognize clockid_t
