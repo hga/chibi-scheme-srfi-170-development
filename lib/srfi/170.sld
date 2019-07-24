@@ -31,10 +31,10 @@
    errno/spipe errno/srch errno/stale errno/timedout errno/txtbsy
    errno/wouldblock errno/xdev
 
+   errno-error
    syscall-error?
    syscall-error:errno syscall-error:message
    syscall-error:procedure syscall-error:data
-   errno-error
    
 
    ;; 3.2  I/O
