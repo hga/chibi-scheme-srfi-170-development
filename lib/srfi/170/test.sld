@@ -17,14 +17,16 @@
 
         (test-group "Early, umask"
 
-           (test-assert "set-umask" (set-umask #o2))
-           (test "mask" #o2 (umask))
-           ) ; end umask
+          (test-assert "set-umask" (set-umask #o2))
+	  (test "mask" #o2 (umask))
+	  ) ; end umask
 
-      ;; 3.1  Errors
+	(test-group "3.1  Errors"
 
-;;;      (define (errno-error errno procedure . data)
-
+         (test-assert errno/2big) ;; make sure the first of the set exists
+         (test-error "errno-error" (errno-error 1 umask))
+	 ;; ~~~~ maybe test record predicate and getters???
+         ) ; end errors
 
       ;; 3.2  I/O
 
