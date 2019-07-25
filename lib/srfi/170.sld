@@ -46,6 +46,8 @@
 
    ;; 3.3  File system
 
+   create-directory
+
    delete-directory
 
    file-info file-info?

@@ -144,9 +144,9 @@
 
 (cond-expand
   ((not windows)
-   (define-c errno (create-directory mkdir) (string (default #o775 mode_t))))
+   (define-c errno (%create-directory mkdir) (string (default #o775 mode_t))))
   (else
-   (define-c errno (create-directory "mkdir_shim") (string (default #o775 int)))))
+   (define-c errno (%create-directory "mkdir_shim") (string (default #o775 int)))))
 
 ;;> Creates a fifo with the given mode.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.

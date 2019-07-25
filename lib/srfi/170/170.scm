@@ -35,6 +35,11 @@
           (if (not (%delete-file fname))
               (errno-error (errno) delete-filesystem-object fname)))))
 
+(define (create-directory fname)
+  (if (eq? #f (%create-directory fname))
+      (errno-error (errno) create-directory fname)))
+
+
 
 (define (delete-directory fname)
   (if (eq? #f (%delete-directory fname))

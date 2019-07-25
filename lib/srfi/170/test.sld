@@ -24,43 +24,45 @@
     (define tmp-fifo "/tmp/chibi-scheme-srfi-170-test-xyzzy/fifo")
     (define tmp-dir "/tmp/chibi-scheme-srfi-170-test-xyzzy/dir")
 
+    (define (delete-temp-test-files)
+      (test-not-error (delete-filesystem-object tmp-file1))
+      (test-not-error (delete-filesystem-object tmp-file2))
+      (test-not-error (delete-filesystem-object tmp-hard-link))
+      (test-not-error (delete-filesystem-object tmp-symlink))
+      (test-not-error (delete-filesystem-object tmp-dir))
+      (test-not-error (delete-filesystem-object tmp-fifo))
+      (test-not-error (delete-filesystem-object tmp-containing-dir)))
+
     (define (run-tests)
       (test-group "srfi-170: POSIX API"
 
         ;; From 3.5 Process state, to set up for following file system
         ;; tests.
 
-        (test-group "Early, umask, delete old temporary files"
+        (test-group "Prologue: umask, delete-filesystem-object any old temporary files and directories"
 
-          (test-not-error (delete-filesystem-object tmp-file1))
-          (test-not-error (delete-filesystem-object tmp-file2))
-          (test-not-error (delete-filesystem-object tmp-hard-link))
-          (test-not-error (delete-filesystem-object tmp-symlink))
-          (test-not-error (delete-filesystem-object tmp-dir))
-          (test-not-error (delete-filesystem-object tmp-fifo))
-          (test-not-error (delete-filesystem-object tmp-containing-dir))
+          (delete-temp-test-files)
 
           (test-assert (set-umask #o2))
           (test #o2 (umask))
-
-
           ) ; end early
 
         (test-group "3.1  Errors"
 
          (test-assert errno/2big) ;; make sure the first of the set exists
          (test-error (errno-error 1 umask))
+
          ;; ~~~~ maybe test record predicate and getters???
          ) ; end errors
 
         ;; 3.2  I/O
 
-        ;; 3.3  File system
+        (test-group "3.3  File system"
 
-        ;; Helper function; unlike scsh version, will raise an exception if
-        ;; there is a object it can't delete.  If no object, no exception.
+          (test-not-error (create-directory tmp-containing-dir))
+          (test-not-error (create-directory tmp-dir))
 
-;;;      (define (delete-filesystem-object fname)
+
 
 ;;;      (define (delete-directory fname)
 
@@ -98,6 +100,8 @@
 
 ;      (define (directory-files dir)
 
+          )
+
         ;; 3.4  Processes
 
         ;; 3.4.1  Process objects
@@ -134,5 +138,8 @@
         ;; 3.11  Environment variables
 
         ;; 3.12  Terminal device control
+
+        (test-group "Epilogue: delete-filesystem-object any temporary files and directories left"
+          (delete-temp-test-files))
 
         ))))
