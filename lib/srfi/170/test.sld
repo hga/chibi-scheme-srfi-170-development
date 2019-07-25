@@ -2,25 +2,40 @@
   (export run-tests)
 
   (import (scheme base)
-;;;       (chibi)
+	  (chibi)
           (chibi test)
           (srfi 170))
 
   (begin
-    ;; ~~~~ insert prefatory definitions here
+
+    (define tmp-containing-dir "/tmp/chibi-scheme-srfi-170-test-xyzzy")
+    (define tmp-file1 "/tmp/chibi-scheme-srfi-170-test-xyzzy/file-1")
+    (define tmp-file2 "/tmp/chibi-scheme-srfi-170-test-xyzzy/file-2")
+    (define tmp-hard-link "/tmp/chibi-scheme-srfi-170-test-xyzzy/hard-link")
+    (define tmp-symlink "/tmp/chibi-scheme-srfi-170-test-xyzzy/sym-link")
+    (define tmp-fifo "/tmp/chibi-scheme-srfi-170-test-xyzzy/fifo")
+    (define tmp-dir "/tmp/chibi-scheme-srfi-170-test-xyzzy/dir")
+
     (define (run-tests)
       (test-group "srfi-170: POSIX API"
 
         ;; From 3.5 Process state, to set up for following file system
         ;; tests.
 
-        (test-group "Early, umask, pid"
+        (test-group "Early, umask, delete old temporary files"
 
           (test-assert "set-umask" (set-umask #o2))
 	  (test "mask" #o2 (umask))
-	  ) ; end umask
 
-          (test-assert "pid" (pid))
+	  (delete-filesystem-object tmp-file1)
+	  (delete-filesystem-object tmp-file2)
+	  (delete-filesystem-object tmp-hard-link)
+	  (delete-filesystem-object tmp-symlink)
+	  (delete-filesystem-object tmp-dir)
+	  (delete-filesystem-object tmp-fifo)
+	  (delete-filesystem-object tmp-containing-dir)
+
+	  ) ; end early
 
 	(test-group "3.1  Errors"
 
@@ -84,14 +99,15 @@
 
 	(test-group "3.5  Process state"
 
-	  ;; umask, set-umask, pid exercised at the very beginning to set
-	  ;; up for following file system tests.
+	  ;; umask and set-umask exercised at the very beginning to
+	  ;; set up for following file system tests.
 
+          (test-assert "pid" (pid))
 	  (test-assert "parent-pid" (parent-pid))
 
 	  (test-assert "working-directory" (string? (working-directory)))
 
-	  ;; set-working-directory exercised at the very beginning to
+	  ;; ????? ~~~~ set-working-directory exercised at the very beginning to
 	  ;; set up for following file system tests.
 
 	  ) ; end process state
