@@ -8,6 +8,11 @@
 
   (begin
 
+    (define-syntax test-not-error
+      (syntax-rules ()
+	((_ expr) (test-assert (begin expr #t)))
+	((_ name expr) (test-assert name (begin expr #t)))))
+
     (define tmp-containing-dir "/tmp/chibi-scheme-srfi-170-test-xyzzy")
     (define tmp-file1 "/tmp/chibi-scheme-srfi-170-test-xyzzy/file-1")
     (define tmp-file2 "/tmp/chibi-scheme-srfi-170-test-xyzzy/file-2")
@@ -24,23 +29,24 @@
 
         (test-group "Early, umask, delete old temporary files"
 
-          (test-assert "set-umask" (set-umask #o2))
-	  (test "mask" #o2 (umask))
+	  (test-not-error (delete-filesystem-object tmp-file1))
+	  (test-not-error (delete-filesystem-object tmp-file2))
+	  (test-not-error (delete-filesystem-object tmp-hard-link))
+	  (test-not-error (delete-filesystem-object tmp-symlink))
+	  (test-not-error (delete-filesystem-object tmp-dir))
+	  (test-not-error (delete-filesystem-object tmp-fifo))
+	  (test-not-error (delete-filesystem-object tmp-containing-dir))
 
-	  (delete-filesystem-object tmp-file1)
-	  (delete-filesystem-object tmp-file2)
-	  (delete-filesystem-object tmp-hard-link)
-	  (delete-filesystem-object tmp-symlink)
-	  (delete-filesystem-object tmp-dir)
-	  (delete-filesystem-object tmp-fifo)
-	  (delete-filesystem-object tmp-containing-dir)
+          (test-assert (set-umask #o2))
+	  (test #o2 (umask))
+
 
 	  ) ; end early
 
 	(test-group "3.1  Errors"
 
          (test-assert errno/2big) ;; make sure the first of the set exists
-         (test-error "errno-error" (errno-error 1 umask))
+         (test-error (errno-error 1 umask))
 	 ;; ~~~~ maybe test record predicate and getters???
          ) ; end errors
 
@@ -102,10 +108,10 @@
 	  ;; umask and set-umask exercised at the very beginning to
 	  ;; set up for following file system tests.
 
-          (test-assert "pid" (pid))
-	  (test-assert "parent-pid" (parent-pid))
+          (test-assert (pid))
+	  (test-assert (parent-pid))
 
-	  (test-assert "working-directory" (string? (working-directory)))
+	  (test-assert (string? (working-directory)))
 
 	  ;; ????? ~~~~ set-working-directory exercised at the very beginning to
 	  ;; set up for following file system tests.
