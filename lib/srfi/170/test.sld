@@ -8,6 +8,9 @@
 
   (begin
 
+    ;; Inverse of test-error, mutated from test-not, only errors if an
+    ;; exception is raised
+
     (define-syntax test-not-error
       (syntax-rules ()
         ((_ expr) (test-assert (begin expr #t)))
