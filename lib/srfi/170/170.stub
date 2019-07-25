@@ -345,10 +345,10 @@
 ;;; 3.10  Time
 
 (define-c-struct timespec
-  predicate: timespec?
-  constructor: (make-timespec)
-  (time_t  tv_sec       timespec-seconds)
-  (long    tv_nsec      timespec-nanoseconds))
+  predicate: %timespec?
+  constructor: (make-%timespec)
+  (time_t  tv_sec       %timespec:seconds)
+  (long    tv_nsec      %timespec:nanoseconds))
 
 ;;> Accessors for the \scheme{timespec} struct.
 ;;/
@@ -358,6 +358,8 @@
 
 (define-c-const int (clck-id/realtime "CLOCK_REALTIME"))
 (define-c-const int (clck-id/monotonic "CLOCK_MONOTONIC"))
+
+(define-c-int-type clockid_t)
 
 (define-c errno clock-gettime (int (result timespec)))
 

@@ -10,6 +10,11 @@
 
    %stat %lstat
 
+   make-%timespec
+   %timespec? %timespec:seconds %timespec:nanoseconds
+   clck-id/realtime clck-id/monotonic
+   clock-gettime
+
 
    ;; 3.1  Errors
 
@@ -83,11 +88,6 @@
    ;; 3.9  Signal system
 
    ;; 3.10  Time
-
-   clock-gettime
-   clck-id/realtime clck-id/monotonic
-   make-timespec timespec-seconds timespec-nanoseconds
-   timespec?
 
    ;; 3.11  Environment variables
 
