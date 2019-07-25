@@ -17,20 +17,20 @@
         ((_ name expr) (test-assert name (begin expr #t)))))
 
     (define tmp-containing-dir "/tmp/chibi-scheme-srfi-170-test-xyzzy")
+    (define tmp-dir "/tmp/chibi-scheme-srfi-170-test-xyzzy/dir")
+    (define tmp-fifo "/tmp/chibi-scheme-srfi-170-test-xyzzy/fifo")
     (define tmp-file1 "/tmp/chibi-scheme-srfi-170-test-xyzzy/file-1")
     (define tmp-file2 "/tmp/chibi-scheme-srfi-170-test-xyzzy/file-2")
     (define tmp-hard-link "/tmp/chibi-scheme-srfi-170-test-xyzzy/hard-link")
     (define tmp-symlink "/tmp/chibi-scheme-srfi-170-test-xyzzy/sym-link")
-    (define tmp-fifo "/tmp/chibi-scheme-srfi-170-test-xyzzy/fifo")
-    (define tmp-dir "/tmp/chibi-scheme-srfi-170-test-xyzzy/dir")
 
     (define (delete-temp-test-files)
+      (test-not-error (delete-filesystem-object tmp-dir))
+      (test-not-error (delete-filesystem-object tmp-fifo))
       (test-not-error (delete-filesystem-object tmp-file1))
       (test-not-error (delete-filesystem-object tmp-file2))
       (test-not-error (delete-filesystem-object tmp-hard-link))
       (test-not-error (delete-filesystem-object tmp-symlink))
-      (test-not-error (delete-filesystem-object tmp-dir))
-      (test-not-error (delete-filesystem-object tmp-fifo))
       (test-not-error (delete-filesystem-object tmp-containing-dir)))
 
     (define (run-tests)
@@ -59,10 +59,12 @@
 
         (test-group "3.3  File system"
 
+          ;; ~~~~ test permission bits and override for the following
+
           (test-not-error (create-directory tmp-containing-dir))
           (test-not-error (create-directory tmp-dir))
 
-
+          (test-not-error (create-directory tmp-fifo))
 
 ;;;      (define (delete-directory fname)
 

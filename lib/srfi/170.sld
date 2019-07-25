@@ -46,7 +46,7 @@
 
    ;; 3.3  File system
 
-   create-directory
+   create-directory create-fifo
 
    delete-directory
 

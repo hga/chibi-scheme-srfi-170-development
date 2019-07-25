@@ -35,14 +35,23 @@
           (if (not (%delete-file fname))
               (errno-error (errno) delete-filesystem-object fname)))))
 
-(define (create-directory fname)
-  (if (eq? #f (%create-directory fname))
-      (errno-error (errno) create-directory fname)))
+(define (create-directory fname . o)
+  (let-optionals o ((permission-bits #o775)
+                    (override? #f))
+    (if override? delete-filesystem-object)
+    (if (not (%create-directory fname permission-bits))
+        (errno-error (errno) create-directory fname))))
 
+(define (create-fifo fname . o)
+  (let-optionals o ((permission-bits #o664)
+                    (override? #f))
+    (if override? delete-filesystem-object)
+    (if (not (%create-fifo fname permission-bits))
+        (errno-error (errno) create-fifo fname))))
 
 
 (define (delete-directory fname)
-  (if (eq? #f (%delete-directory fname))
+  (if (not (%delete-directory fname))
       (errno-error (errno) delete-directory fname)))
 
 (cond-expand
