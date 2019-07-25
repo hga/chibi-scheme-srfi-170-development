@@ -2,7 +2,7 @@
   (export run-tests)
 
   (import (scheme base)
-	  (chibi)
+          (chibi)
           (chibi test)
           (srfi 170))
 
@@ -10,8 +10,8 @@
 
     (define-syntax test-not-error
       (syntax-rules ()
-	((_ expr) (test-assert (begin expr #t)))
-	((_ name expr) (test-assert name (begin expr #t)))))
+        ((_ expr) (test-assert (begin expr #t)))
+        ((_ name expr) (test-assert name (begin expr #t)))))
 
     (define tmp-containing-dir "/tmp/chibi-scheme-srfi-170-test-xyzzy")
     (define tmp-file1 "/tmp/chibi-scheme-srfi-170-test-xyzzy/file-1")
@@ -29,33 +29,33 @@
 
         (test-group "Early, umask, delete old temporary files"
 
-	  (test-not-error (delete-filesystem-object tmp-file1))
-	  (test-not-error (delete-filesystem-object tmp-file2))
-	  (test-not-error (delete-filesystem-object tmp-hard-link))
-	  (test-not-error (delete-filesystem-object tmp-symlink))
-	  (test-not-error (delete-filesystem-object tmp-dir))
-	  (test-not-error (delete-filesystem-object tmp-fifo))
-	  (test-not-error (delete-filesystem-object tmp-containing-dir))
+          (test-not-error (delete-filesystem-object tmp-file1))
+          (test-not-error (delete-filesystem-object tmp-file2))
+          (test-not-error (delete-filesystem-object tmp-hard-link))
+          (test-not-error (delete-filesystem-object tmp-symlink))
+          (test-not-error (delete-filesystem-object tmp-dir))
+          (test-not-error (delete-filesystem-object tmp-fifo))
+          (test-not-error (delete-filesystem-object tmp-containing-dir))
 
           (test-assert (set-umask #o2))
-	  (test #o2 (umask))
+          (test #o2 (umask))
 
 
-	  ) ; end early
+          ) ; end early
 
-	(test-group "3.1  Errors"
+        (test-group "3.1  Errors"
 
          (test-assert errno/2big) ;; make sure the first of the set exists
          (test-error (errno-error 1 umask))
-	 ;; ~~~~ maybe test record predicate and getters???
+         ;; ~~~~ maybe test record predicate and getters???
          ) ; end errors
 
-	;; 3.2  I/O
+        ;; 3.2  I/O
 
-	;; 3.3  File system
+        ;; 3.3  File system
 
-	;; Helper function; unlike scsh version, will raise an exception if
-	;; there is a object it can't delete.  If no object, no exception.
+        ;; Helper function; unlike scsh version, will raise an exception if
+        ;; there is a object it can't delete.  If no object, no exception.
 
 ;;;      (define (delete-filesystem-object fname)
 
@@ -82,54 +82,54 @@
 
         ;; ----------------
 
-	;;> The fundamental directory iterator.  Applies \var{kons} to
-	;;> each filename in directory \var{dir} and the result of the
-	;;> previous application, beginning with \var{knil}.  With
-	;;> \var{kons} as \scheme{cons} and \var{knil} as \scheme{'()},
-	;;> equivalent to \scheme{directory-files}.
+        ;;> The fundamental directory iterator.  Applies \var{kons} to
+        ;;> each filename in directory \var{dir} and the result of the
+        ;;> previous application, beginning with \var{knil}.  With
+        ;;> \var{kons} as \scheme{cons} and \var{knil} as \scheme{'()},
+        ;;> equivalent to \scheme{directory-files}.
 
 ;      (define (directory-fold dir kons knil)
 
-	;;> Returns a list of the files in \var{dir} in an unspecified
-	;;> order.
+        ;;> Returns a list of the files in \var{dir} in an unspecified
+        ;;> order.
 
 ;      (define (directory-files dir)
 
-	;; 3.4  Processes
+        ;; 3.4  Processes
 
-	;; 3.4.1  Process objects
+        ;; 3.4.1  Process objects
 
-	;; 3.4.2  Process waiting
+        ;; 3.4.2  Process waiting
 
-	;; 3.4.3  Analysing process status codes
+        ;; 3.4.3  Analysing process status codes
 
-	(test-group "3.5  Process state"
+        (test-group "3.5  Process state"
 
-	  ;; umask and set-umask exercised at the very beginning to
-	  ;; set up for following file system tests.
+          ;; umask and set-umask exercised at the very beginning to
+          ;; set up for following file system tests.
 
           (test-assert (pid))
-	  (test-assert (parent-pid))
+          (test-assert (parent-pid))
 
-	  (test-assert (string? (working-directory)))
+          (test-assert (string? (working-directory)))
 
-	  ;; ????? ~~~~ set-working-directory exercised at the very beginning to
-	  ;; set up for following file system tests.
+          ;; ????? ~~~~ set-working-directory exercised at the very beginning to
+          ;; set up for following file system tests.
 
-	  ) ; end process state
+          ) ; end process state
 
-	;; 3.6  User and group database access
+        ;; 3.6  User and group database access
 
-	;; 3.7  [Intentionally omitted]
+        ;; 3.7  [Intentionally omitted]
 
-	;; 3.8  System parameters
+        ;; 3.8  System parameters
 
-	;; 3.9  Signal system
+        ;; 3.9  Signal system
 
-	;; 3.10  Time
+        ;; 3.10  Time
 
-	;; 3.11  Environment variables
+        ;; 3.11  Environment variables
 
-	;; 3.12  Terminal device control
+        ;; 3.12  Terminal device control
 
-	))))
+        ))))

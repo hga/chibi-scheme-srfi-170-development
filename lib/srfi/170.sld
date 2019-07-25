@@ -114,11 +114,11 @@
   (cond-expand
    (chibi
     (import (scheme base)
-	    (chibi)
-;;	    (only (chibi filesystem) file-exists?) ;; in R7RS-small
-	    (only (chibi ast) errno integer->error-string) ;; ~~~~  until aux.c is up to snuff
-	    (srfi 151) ;; bitwise operators
-	    (chibi optional) ;; Snow package for optional args
-	    )
+            (chibi)
+;;          (only (chibi filesystem) file-exists?) ;; in R7RS-small
+            (only (chibi ast) errno integer->error-string) ;; ~~~~  until aux.c is up to snuff
+            (srfi 151) ;; bitwise operators
+            (chibi optional) ;; Snow package for optional args
+            )
     (include-shared "170/170"))) ;; ~~~~ add aux when it's up to snuff
   (include "170/170.scm"))

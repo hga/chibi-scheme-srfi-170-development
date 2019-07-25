@@ -30,10 +30,10 @@
 (define (delete-filesystem-object fname)
   (if (%lstat fname)
       (if (file-info-directory? (file-info fname))
-	  (if (not (%delete-directory fname))
-	      (errno-error (errno) delete-filesystem-object fname))
-	  (if (not (%delete-file fname))
-	      (errno-error (errno) delete-filesystem-object fname)))))
+          (if (not (%delete-directory fname))
+              (errno-error (errno) delete-filesystem-object fname))
+          (if (not (%delete-file fname))
+              (errno-error (errno) delete-filesystem-object fname)))))
 
 
 (define (delete-directory fname)
@@ -44,7 +44,7 @@
   (windows
    (define-record-type File-Info
      (make-file-info device inode mode nlinks uid gid rdev
-		     size atime mtime ctime)
+                     size atime mtime ctime)
      file-info?
      (device file-info:device)
      (inode file-info:inode)
@@ -62,7 +62,7 @@
   (else
    (define-record-type File-Info
      (make-file-info device inode mode nlinks uid gid rdev
-		     size blksize blocks atime mtime ctime)
+                     size blksize blocks atime mtime ctime)
      file-info?
      (device file-info:device)
      (inode file-info:inode)
@@ -81,10 +81,10 @@
 (define (file-info fname/port . o)
   (let-optionals o ((chase? #t))
     (let ((file-stat (if chase?
-		     (%stat fname/port)
-		     (%lstat fname/port))))
+                     (%stat fname/port)
+                     (%lstat fname/port))))
       (if (not file-stat)
-	  (errno-error (errno) file-info fname/port)) ;; non-local exit
+          (errno-error (errno) file-info fname/port)) ;; non-local exit
       (make-file-info
        (stat:dev file-stat)
        (stat:ino file-stat)
