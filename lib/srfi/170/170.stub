@@ -11,10 +11,12 @@
  (plan9)
  (windows
   (c-system-include "sys/types.h")
-  (c-system-include "fcntl.h")) ; may not be needed, or maybe needed for all
+  (c-system-include "fcntl.h"))
  (else
 
   (c-system-include "errno.h")
+
+  (c-system-include "fcntl.h")
 
 ;;;  (c-system-include "sys/file.h") ; Only needed for BSD low level file operations?
   (c-system-include "unistd.h")
@@ -190,6 +192,15 @@
 (define-c errno (%chown chown) (string uid_t gid_t))
 (define-c errno (%fchown chown) (string uid_t gid_t))
 (define-c errno (%lchown chown) (string uid_t gid_t))
+
+;;> Seting the file times
+
+(define-c-const int (utimens/at_fdcwd "AT_FDCWD"))
+(define-c-const int (utimens/utime_now "UTIME_NOW"))
+(define-c-const int (utimens/at_symlink_nofollow "AT_SYMLINK_NOFOLLOW"))
+
+;; ~~~~ (define-c errno (%utimensat utimensat) (int string (array (struct timespec) 2) int))
+;; ~~~~ (define-c errno (%futimens futimens) (int (array (struct timespec) 2)))
 
 
 ;; ~~~~ (set-file-timespecs fname [access-timespec mod-timespec])     →     undefined         (procedure) 

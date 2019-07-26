@@ -95,6 +95,8 @@
           (if (not (%lchown fname/port uid gid))
               (errno-error (errno) set-file-group fname/port uid gid))))))
 
+;; ~~~~ need FFI for this (define (set-file-timespecs 
+
 (cond-expand
   (windows
    (define-record-type File-Info
