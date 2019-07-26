@@ -327,12 +327,12 @@
 
 ;;> Returns the current working directory of the process as a string.
 
-(define-c non-null-string (working-directory getcwd)
-  ((result (array char (auto-expand arg1))) (value 256 int)))
+(define-c non-null-string (%getcwd getcwd)
+  ((result (array char 1024)) (value 1024 int)))
 
 ;;> Change the current working directory of the process.
 
-(define-c errno (set-working-directory chdir) (string))
+(define-c errno (%chdir chdir) (string))
 
 ;;> Returns the current process id.
 

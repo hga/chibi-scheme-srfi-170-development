@@ -24,6 +24,7 @@
     (define tmp-dir-2 "/tmp/chibi-scheme-srfi-170-test-xyzzy/dir-2")
     (define tmp-fifo "/tmp/chibi-scheme-srfi-170-test-xyzzy/fifo")
     (define tmp-file-1 "/tmp/chibi-scheme-srfi-170-test-xyzzy/file-1")
+    (define tmp-file-1-basename "file-1")
     (define tmp-file-2 "/tmp/chibi-scheme-srfi-170-test-xyzzy/file-2")
     (define tmp-hard-link "/tmp/chibi-scheme-srfi-170-test-xyzzy/hard-link")
     (define tmp-symlink "/tmp/chibi-scheme-srfi-170-test-xyzzy/sym-link")
@@ -206,10 +207,19 @@
           ;; umask and set-umask exercised at the very beginning to
           ;; set up for following file system tests.
 
+          (test-assert (string? (working-directory)))
+          (test-not-error (set-working-directory tmp-containing-dir))
+          (test tmp-containing-dir (working-directory))
+          (test-not-error (file-info tmp-file-1-basename)) ; are we there?
+
+          (cond-expand (bsd
+            (test-not-error (set-file-mode tmp-containing-dir #o000))
+            (test-error (working-directory))
+            (test-not-error (set-file-mode tmp-containing-dir #o755))))
+
           (test-assert (pid))
           (test-assert (parent-pid))
 
-          (test-assert (string? (working-directory)))
 
           ;; ????? ~~~~ set-working-directory exercised at the very beginning to
           ;; set up for following file system tests.

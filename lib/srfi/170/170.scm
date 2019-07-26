@@ -226,6 +226,17 @@
 (define (set-umask perms)
   (%umask perms))
 
+(define (working-directory)
+  (let ((dir (%getcwd)))
+    (if (not dir)
+      (errno-error (errno) working-directory)
+      dir)))
+
+(define (set-working-directory fname)
+  (if (not (%chdir fname))
+      (errno-error (errno) set-working-directory fname)))
+
+
 ;;; 3.6  User and group database access
 
 ;;; 3.7  [Intentionally omitted]
