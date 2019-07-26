@@ -202,14 +202,12 @@
 ;; ~~~~ (define-c errno (%utimensat utimensat) (int string (array (struct timespec) 2) int))
 ;; ~~~~ (define-c errno (%futimens futimens) (int (array (struct timespec) 2)))
 
-
-;; ~~~~ (set-file-timespecs fname [access-timespec mod-timespec])     →     undefined         (procedure) 
-
 ;;> Truncate the file to the given size.
 
+(define-c errno (%truncate truncate) (string off_t))
 (cond-expand
   ((not windows)
-   (define-c int (file-truncate ftruncate) (int off_t))))
+   (define-c errno (%ftruncate ftruncate) (int off_t))))
 
 ;;> Code for walking directories
 
@@ -312,11 +310,6 @@
 (define-c-const int (file-type-mask/ifchr "S_IFCHR")) ;; character special
 (define-c-const int (file-type-mask/iflnk "S_IFLNK")) ;; symbolic link
 
-#|
-(cond-expand
-  ((not windows)
-   (define-c int readlink (string string int))))
-|#
 
 ;;; 3.4  Processes
 

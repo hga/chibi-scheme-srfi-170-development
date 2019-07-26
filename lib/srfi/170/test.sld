@@ -121,8 +121,8 @@
 
           (test-not-error (delete-directory tmp-dir-1))
 
-          (test-not-error (set-file-mode tmp-file-1 #o444))
-          (test #o444 (bitwise-and (file-info:mode (file-info tmp-file-1)) #o777))
+          (test-not-error (set-file-mode tmp-file-1 #o744))
+          (test #o744 (bitwise-and (file-info:mode (file-info tmp-file-1)) #o777))
 
           (let* ((fi-starting (file-info tmp-file-1))
                  (my-starting-uid (file-info:uid fi-starting))
@@ -147,7 +147,11 @@
               (test my-starting-uid (file-info:uid fi-ending))
               (test my-starting-gid (file-info:gid fi-ending))))
 
-;;;      (define (file-info fname/port . o)
+          (test 5 (file-info:size (file-info tmp-file-1)))
+          (test-not-error (truncate-file tmp-file-1 3))
+          (test 3 (file-info:size (file-info tmp-file-1)))
+
+          ;; file-info has been thoroughly tested by now....
 
 ;;;      (define (file-info-directory? file-info-record)
 

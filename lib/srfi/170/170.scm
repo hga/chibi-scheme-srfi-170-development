@@ -95,7 +95,11 @@
           (if (not (%lchown fname/port uid gid))
               (errno-error (errno) set-file-group fname/port uid gid))))))
 
-;; ~~~~ need FFI for this (define (set-file-timespecs 
+;; ~~~~ need FFI for set-file-timespecs, see stub file
+
+(define (truncate-file fname/port len)
+  (if (not (%truncate fname/port len))
+      (errno-error (errno) truncate-file fname/port len)))
 
 (cond-expand
   (windows
