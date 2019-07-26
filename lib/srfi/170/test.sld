@@ -6,6 +6,7 @@
           (only (chibi process) exit)
           (chibi test)
           (only (chibi filesystem) file-exists?) ;; in R7RS-small
+          (srfi 151) ;; bitwise operators
           (srfi 170))
 
   (begin
@@ -22,7 +23,7 @@
     (define tmp-dir "/tmp/chibi-scheme-srfi-170-test-xyzzy/dir")
     (define tmp-fifo "/tmp/chibi-scheme-srfi-170-test-xyzzy/fifo")
     (define tmp-file1 "/tmp/chibi-scheme-srfi-170-test-xyzzy/file-1")
-    (define tmp-file2 "/tmp/chibi-scheme-srfi-170-test-xyzzy/file-2")
+;;    (define tmp-file2 "/tmp/chibi-scheme-srfi-170-test-xyzzy/file-2")
     (define tmp-hard-link "/tmp/chibi-scheme-srfi-170-test-xyzzy/hard-link")
     (define tmp-symlink "/tmp/chibi-scheme-srfi-170-test-xyzzy/sym-link")
 
@@ -30,7 +31,7 @@
       (test-not-error (delete-filesystem-object tmp-dir))
       (test-not-error (delete-filesystem-object tmp-fifo))
       (test-not-error (delete-filesystem-object tmp-file1))
-      (test-not-error (delete-filesystem-object tmp-file2))
+;;      (test-not-error (delete-filesystem-object tmp-file2))
       (test-not-error (delete-filesystem-object tmp-hard-link))
       (test-not-error (delete-filesystem-object tmp-symlink))
       (test-not-error (delete-filesystem-object tmp-containing-dir)))
@@ -70,9 +71,11 @@
           ;; ~~~~ test permission bits and override for the following
 
           (test-not-error (create-directory tmp-containing-dir))
+          (test #o775 (bitwise-and (file-info:mode (file-info tmp-containing-dir)) #o777)) ; test umask
           (test-assert (file-exists? tmp-containing-dir))
           (test-not-error (create-directory tmp-containing-dir #o755 #t))
           (test-assert (file-exists? tmp-containing-dir))
+          (test #o755 (bitwise-and (file-info:mode (file-info tmp-containing-dir)) #o777))
 
           (test-not-error (create-directory tmp-dir))
           (test-assert (file-exists? tmp-dir))
@@ -81,6 +84,7 @@
           (test-assert (file-exists? tmp-fifo))
           (test-not-error (create-fifo tmp-fifo #o644 #t))
           (test-assert (file-exists? tmp-fifo))
+          (test #o644 (bitwise-and (file-info:mode (file-info tmp-fifo)) #o777))
 
           (create-tmp-test-file tmp-file1)
 
