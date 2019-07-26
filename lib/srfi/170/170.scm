@@ -69,11 +69,31 @@
     (if (not (%rename-file oldname newname))
         (errno-error (errno) rename-file oldname newname))))
 
-
-
 (define (delete-directory fname)
   (if (not (%delete-directory fname))
       (errno-error (errno) delete-directory fname)))
+
+(define (set-file-mode fname/port permission-bits)
+  (if (not (%set-file-mode fname/port permission-bits))
+      (errno-error (errno) set-file-mode fname/port permission-bits)))
+
+(define (set-file-owner fname/port uid . o)
+  (let-optionals o ((chase? #t))
+    (let ((gid (file-info:gid (file-info fname/port))))
+      (if chase?
+          (if (not (%chown fname/port uid gid))
+              (errno-error (errno) set-file-owner fname/port uid gid))
+          (if (not (%lchown fname/port uid gid))
+              (errno-error (errno) set-file-owner fname/port uid gid))))))
+
+(define (set-file-group fname/port gid . o)
+  (let-optionals o ((chase? #t))
+    (let ((uid (file-info:uid (file-info fname/port))))
+      (if chase?
+          (if (not (%chown fname/port uid gid))
+              (errno-error (errno) set-file-group fname/port uid gid))
+          (if (not (%lchown fname/port uid gid))
+              (errno-error (errno) set-file-group fname/port uid gid))))))
 
 (cond-expand
   (windows

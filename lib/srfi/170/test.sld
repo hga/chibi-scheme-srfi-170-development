@@ -71,6 +71,7 @@
         (test-group "3.3  File system"
 
           ;; ~~~~ test (not override) for the following
+          ;; ~~~~ test when from-fname does not exist
           ;; ~~~~ test across filesystems, assuming /var is not in same as /tmp
 
           (test-not-error (create-directory tmp-containing-dir))
@@ -118,12 +119,35 @@
           (test-assert (file-exists? tmp-dir-1))
           (test-not (file-exists? tmp-dir-2))
 
+          (test-not-error (delete-directory tmp-dir-1))
 
-;;;      (define (delete-directory fname)
+          (test-not-error (set-file-mode tmp-file-1 #o444))
+          (test #o444 (bitwise-and (file-info:mode (file-info tmp-file-1)) #o777))
+
+          (let* ((fi-starting (file-info tmp-file-1))
+                 (my-starting-uid (file-info:uid fi-starting))
+                 (my-starting-gid (file-info:gid fi-starting)))
+
+            (test-not-error (set-file-owner tmp-file-1 my-starting-uid)) ; best we can do, not assuming we're root!
+            (test-not-error (set-file-group tmp-file-1 my-starting-gid)) ; maybe see what supplementary groups we have?
+
+            (let ((fi-ending (file-info tmp-file-1)))
+              (test my-starting-uid (file-info:uid fi-ending))
+              (test my-starting-gid (file-info:gid fi-ending))))
+
+          ;; test chasing
+          (let* ((fi-starting (file-info tmp-file-1 #f))
+                 (my-starting-uid (file-info:uid fi-starting))
+                 (my-starting-gid (file-info:gid fi-starting)))
+
+            (test-not-error (set-file-owner tmp-file-1 my-starting-uid #f)) ; best we can do, not assuming we're root!
+            (test-not-error (set-file-group tmp-file-1 my-starting-gid #f)) ; maybe see what supplementary groups we have?
+
+            (let ((fi-ending (file-info tmp-file-1 #f)))
+              (test my-starting-uid (file-info:uid fi-ending))
+              (test my-starting-gid (file-info:gid fi-ending))))
 
 ;;;      (define (file-info fname/port . o)
-
-;;      (test-error (file-info "dsfhsdfhi39287935lscoikj864873648364"))
 
 ;;;      (define (file-info-directory? file-info-record)
 

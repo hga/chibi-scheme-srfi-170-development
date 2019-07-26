@@ -47,8 +47,8 @@
    ;; 3.3  File system
 
    create-directory create-fifo create-hard-link create-symlink
-   rename-file
-   delete-directory
+   rename-file delete-directory
+   set-file-mode set-file-owner set-file-group
 
    file-info file-info?
    file-info:device file-info:inode file-info:mode file-info:nlinks

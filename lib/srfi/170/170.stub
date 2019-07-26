@@ -182,10 +182,15 @@
 
 ;;> Sets the file permissions as in chmod.
 
-(define-c int chmod (string mode_t))
+(define-c errno (%set-file-mode chmod) (string mode_t))
+(define-c errno (%set-fd-mode fchmod) (int mode_t))
 
-;; ~~~~ (set-file-owner fname/port uid)     →     undefined         (procedure) 
-;; ~~~~ (set-file-group fname/port gid)     →     undefined         (procedure) 
+;;> Sets the file owner and group
+
+(define-c errno (%chown chown) (string uid_t gid_t))
+(define-c errno (%fchown chown) (string uid_t gid_t))
+(define-c errno (%lchown chown) (string uid_t gid_t))
+
 
 ;; ~~~~ (set-file-timespecs fname [access-timespec mod-timespec])     →     undefined         (procedure) 
 
