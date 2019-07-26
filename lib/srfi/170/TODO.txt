@@ -1,1 +1,3 @@
 file-info doesn't handle ports, need (port-fdes port)
+
+Look for EAGAIN errnos, and create a policy if any calls error with it
