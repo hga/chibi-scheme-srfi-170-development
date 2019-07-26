@@ -159,22 +159,22 @@
             ;; ~~~~ test uid and gid
             (test-assert (pair? (file-info:atime fi)))
             (test-assert (pair? (file-info:mtime fi)))
-            (test-assert (pair? (file-info:ctime fi))))
+            (test-assert (pair? (file-info:ctime fi)))
+            (test-not (file-info-directory? fi))
+            (test-not (file-info-fifo? fi))
+            (test-assert (file-info-regular? fi))
+;;            (test-not (file-info-socket? fi)) ~~~~ fails on Linux and OpenBSD???
+            (test-not (file-info-block-special? fi))
+            (test-not (file-info-character-special? fi))
+;;            (test-not (file-info-symlink? fi)) ~~~~ fails on Linux and OpenBSD???
+            )
 
-;;;      (define (file-info-directory? file-info-record)
-
-;;;      (define (file-info-fifo? file-info-record)
-
-;;;      (define (file-info-regular? file-info-record)
-
-;;;      (define (file-info-socket? file-info-record)
-
-;;;      (define (file-info-block-special? file-info-record)
-
-;;;      (define (file-info-character-special? file-info-record)
-
-;;;      (define (file-info-symlink? file-info-record)
-
+          (test-assert (file-info-directory? (file-info tmp-containing-dir)))
+          (test-assert (file-info-fifo? (file-info tmp-fifo)))
+;;      (define (file-info-block-special? file-info-record) no fixed set of these
+;;          (test-not (file-info-block-special? (file-info "/dev/tty"))) ~~~~ fails on Linux and OpenBSD???
+          (test-assert (file-info-character-special? (file-info "/dev/tty")))
+          (test-assert (file-info-symlink? (file-info tmp-symlink)))
 
         ;; ----------------
 
