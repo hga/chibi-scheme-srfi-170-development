@@ -38,16 +38,29 @@
 (define (create-directory fname . o)
   (let-optionals o ((permission-bits #o775)
                     (override? #f))
-    (if override? delete-filesystem-object)
+    (if override? delete-filesystem-object fname)
     (if (not (%create-directory fname permission-bits))
         (errno-error (errno) create-directory fname))))
 
 (define (create-fifo fname . o)
   (let-optionals o ((permission-bits #o664)
                     (override? #f))
-    (if override? delete-filesystem-object)
+    (if override? delete-filesystem-object fname)
     (if (not (%create-fifo fname permission-bits))
         (errno-error (errno) create-fifo fname))))
+
+(define (create-hard-link oldname newname . o)
+  (let-optionals o ((override? #f))
+    (if override? delete-filesystem-object newname)
+    (if (not (%create-hard-link oldname newname))
+        (errno-error (errno) create-hard-link oldname newname))))
+
+(define (create-symlink oldname newname . o)
+  (let-optionals o ((override? #f))
+    (if override? delete-filesystem-object newname)
+    (if (not (%create-symlink oldname newname))
+        (errno-error (errno) create-symlink oldname newname))))
+
 
 
 (define (delete-directory fname)

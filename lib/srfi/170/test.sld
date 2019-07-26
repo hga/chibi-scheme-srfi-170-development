@@ -4,6 +4,7 @@
   (import (scheme base)
           (chibi)
           (chibi test)
+          (only (chibi filesystem) file-exists?) ;; in R7RS-small
           (srfi 170))
 
   (begin
@@ -24,7 +25,7 @@
     (define tmp-hard-link "/tmp/chibi-scheme-srfi-170-test-xyzzy/hard-link")
     (define tmp-symlink "/tmp/chibi-scheme-srfi-170-test-xyzzy/sym-link")
 
-    (define (delete-temp-test-files)
+    (define (delete-tmp-test-files)
       (test-not-error (delete-filesystem-object tmp-dir))
       (test-not-error (delete-filesystem-object tmp-fifo))
       (test-not-error (delete-filesystem-object tmp-file1))
@@ -41,7 +42,7 @@
 
         (test-group "Prologue: umask, delete-filesystem-object any old temporary files and directories"
 
-          (delete-temp-test-files)
+          (delete-tmp-test-files)
 
           (test-assert (set-umask #o2))
           (test #o2 (umask))
@@ -62,9 +63,22 @@
           ;; ~~~~ test permission bits and override for the following
 
           (test-not-error (create-directory tmp-containing-dir))
+          (test-assert (file-exists? tmp-containing-dir))
+
           (test-not-error (create-directory tmp-dir))
+          (test-assert (file-exists? tmp-dir))
 
           (test-not-error (create-directory tmp-fifo))
+
+          (call-with-output-file tmp-file1
+            (lambda (out) (display "xyzzy" out)))
+          (test-assert (file-exists? tmp-file1))
+
+          (test-not-error (create-hard-link tmp-file1 tmp-hard-link))
+          (test-assert (file-exists? tmp-hard-link))
+
+          (test-not-error (create-symlink tmp-file1 tmp-symlink))
+          (test-assert (file-exists? tmp-symlink))
 
 ;;;      (define (delete-directory fname)
 
@@ -141,7 +155,8 @@
 
         ;; 3.12  Terminal device control
 
-        (test-group "Epilogue: delete-filesystem-object any temporary files and directories left"
-          (delete-temp-test-files))
+;; Leave the files around for debugging test errors
+;;        (test-group "Epilogue: delete-filesystem-object any temporary files and directories left"
+;;          (delete-tmp-test-files))
 
         ))))

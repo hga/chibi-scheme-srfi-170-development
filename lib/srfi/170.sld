@@ -46,7 +46,7 @@
 
    ;; 3.3  File system
 
-   create-directory create-fifo
+   create-directory create-fifo create-hard-link create-symlink
 
    delete-directory
 
@@ -117,7 +117,7 @@
    (chibi
     (import (scheme base)
             (chibi)
-;;          (only (chibi filesystem) file-exists?) ;; in R7RS-small
+;;            (only (chibi filesystem) file-exists?) ;; in R7RS-small
             (only (chibi ast) errno integer->error-string) ;; ~~~~  until aux.c is up to snuff
             (srfi 151) ;; bitwise operators
             (chibi optional) ;; Snow package for optional args
