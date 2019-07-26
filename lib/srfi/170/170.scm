@@ -61,6 +61,14 @@
     (if (not (%create-symlink oldname newname))
         (errno-error (errno) create-symlink oldname newname))))
 
+(define (rename-file oldname newname . o)
+  (let-optionals o ((override? #f))
+    (if (not override?)
+        (if (%lstat newname)
+            (errno-error errno/exist rename-file oldname newname)))
+    (if (not (%rename-file oldname newname))
+        (errno-error (errno) rename-file oldname newname))))
+
 
 
 (define (delete-directory fname)

@@ -47,7 +47,7 @@
    ;; 3.3  File system
 
    create-directory create-fifo create-hard-link create-symlink
-
+   rename-file
    delete-directory
 
    file-info file-info?
