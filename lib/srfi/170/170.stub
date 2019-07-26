@@ -327,8 +327,10 @@
 
 ;;> Returns the current working directory of the process as a string.
 
+(define-c-const int (posix/path-max "PATH_MAX"))
+
 (define-c non-null-string (%getcwd getcwd)
-  ((result (array char 1024)) (value 1024 int)))
+  ((result (array char 4096)) (value 4096 int)))
 
 ;;> Change the current working directory of the process.
 

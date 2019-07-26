@@ -10,6 +10,8 @@
 
    %stat %lstat
 
+   posix/path-max
+
    make-%timespec
    %timespec? %timespec:seconds %timespec:nanoseconds
    clck-id/realtime clck-id/monotonic
