@@ -73,6 +73,7 @@
           ;; ~~~~ test (not override) for the following
           ;; ~~~~ test when from-fname does not exist
           ;; ~~~~ test across filesystems, assuming /var is not in same as /tmp
+          ;; ~~~~ do some time sanity checking, e.g. get time, subtract a few seconds, test....
 
           (test-not-error (create-directory tmp-containing-dir))
           (test #o775 (bitwise-and (file-info:mode (file-info tmp-containing-dir)) #o777)) ; test umask
@@ -151,7 +152,14 @@
           (test-not-error (truncate-file tmp-file-1 3))
           (test 3 (file-info:size (file-info tmp-file-1)))
 
-          ;; file-info has been thoroughly tested by now....
+          ;; test remaining file-info features
+          (let ((fi (file-info tmp-file-1 #f)))
+            (test-assert (file-info? fi))
+            (test 2 (file-info:nlinks fi))
+            ;; ~~~~ test uid and gid
+            (test-assert (pair? (file-info:atime fi)))
+            (test-assert (pair? (file-info:mtime fi)))
+            (test-assert (pair? (file-info:ctime fi))))
 
 ;;;      (define (file-info-directory? file-info-record)
 
