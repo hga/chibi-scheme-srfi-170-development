@@ -3,6 +3,7 @@
 
   (import (scheme base)
           (chibi)
+          (only (chibi process) exit)
           (chibi test)
           (only (chibi filesystem) file-exists?) ;; in R7RS-small
           (srfi 170))
@@ -34,6 +35,12 @@
       (test-not-error (delete-filesystem-object tmp-symlink))
       (test-not-error (delete-filesystem-object tmp-containing-dir)))
 
+    (define (create-tmp-test-file fname)
+      (call-with-output-file fname
+        (lambda (out) (display "xyzzy" out)))
+      (test-assert (file-exists? fname)))
+
+
     (define (run-tests)
       (test-group "srfi-170: POSIX API"
 
@@ -64,20 +71,27 @@
 
           (test-not-error (create-directory tmp-containing-dir))
           (test-assert (file-exists? tmp-containing-dir))
+          (test-not-error (create-directory tmp-containing-dir #o755 #t))
+          (test-assert (file-exists? tmp-containing-dir))
 
           (test-not-error (create-directory tmp-dir))
           (test-assert (file-exists? tmp-dir))
 
-          (test-not-error (create-directory tmp-fifo))
+          (test-not-error (create-fifo tmp-fifo))
+          (test-assert (file-exists? tmp-fifo))
+          (test-not-error (create-fifo tmp-fifo #o644 #t))
+          (test-assert (file-exists? tmp-fifo))
 
-          (call-with-output-file tmp-file1
-            (lambda (out) (display "xyzzy" out)))
-          (test-assert (file-exists? tmp-file1))
+          (create-tmp-test-file tmp-file1)
 
           (test-not-error (create-hard-link tmp-file1 tmp-hard-link))
           (test-assert (file-exists? tmp-hard-link))
+          (test-not-error (create-hard-link tmp-file1 tmp-hard-link #t))
+          (test-assert (file-exists? tmp-hard-link))
 
           (test-not-error (create-symlink tmp-file1 tmp-symlink))
+          (test-assert (file-exists? tmp-symlink))
+          (test-not-error (create-symlink tmp-file1 tmp-symlink #t))
           (test-assert (file-exists? tmp-symlink))
 
 ;;;      (define (delete-directory fname)
