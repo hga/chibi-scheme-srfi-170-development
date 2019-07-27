@@ -3,3 +3,5 @@ file-info doesn't handle ports, need (port-fdes port)
 Look for EAGAIN errnos, and create a policy if any calls error with it
 
 Manually test su-ed root on OpenBSD set-file-owner/-group
+
+A version of errno procedure that can set it
