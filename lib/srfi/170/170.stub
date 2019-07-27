@@ -344,6 +344,16 @@
 
 (define-c pid_t (parent-pid getppid) ())
 
+;;> Returns a process group id for a process, -1 on failure.
+
+(define-c pid_t (%getpgid getpgid) (pid_t))
+
+;;> Sets a process group id, if first argument is 0, for the calling
+;;> process, if the second argument is 0, "the process ID of the
+;;> indicated process shall be used"
+
+(define-c errno (%setpgid setpgid) (pid_t pid_t))
+
 
 ;;; 3.6  User and group database access
 

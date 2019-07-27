@@ -84,6 +84,7 @@
    umask set-umask
    working-directory set-working-directory
    pid parent-pid
+   process-group set-process-group
 
    ;; 3.6  User and group database access
 

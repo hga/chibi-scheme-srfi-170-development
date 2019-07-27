@@ -236,6 +236,22 @@
   (if (not (%chdir fname))
       (errno-error (errno) set-working-directory fname)))
 
+;; pid and parent-pid direct from stub, can't error
+
+(define (process-group . o)
+  (let-optionals o ((process-object/pid 0))
+    (let ((pgid (%getpgid process-object/pid)))
+      (if (equal? -1 pgid)
+          (errno-error (errno) process-group process-object/pid)
+          pgid))))
+
+(define (set-process-group . o)
+  (let-optionals o ((process-object/pid 0)
+                    (pgrp 0))
+    (if (not (%setpgid process-object/pid pgrp))
+        (errno-error (errno) set-process-group process-object/pid pgrp))))
+
+process-group set-process-group
 
 ;;; 3.6  User and group database access
 
