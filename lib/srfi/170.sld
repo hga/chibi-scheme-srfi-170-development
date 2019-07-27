@@ -90,6 +90,7 @@
    priority/process priority/process-group priority/user
    priority set-priority nice
    user-login-name user-uid user-gid user-supplementary-gids
+   set-uid set-gid
 
    ;; 3.6  User and group database access
 

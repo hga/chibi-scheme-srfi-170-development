@@ -246,6 +246,10 @@
           (test-assert (> (user-uid) -1))
           (test-assert (> (user-gid) -1))
           (test-assert (list? (user-supplementary-gids))) ;; not sure how to make it fail
+          (test-error (set-uid 0)) ;; should succeed for root
+          (test-not-error (set-uid (user-uid)))
+          (test-error (set-gid 0)) ;; should succeed for root
+          (test-not-error (set-gid (user-gid)))
 
           ) ; end process state
 

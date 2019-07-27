@@ -381,6 +381,9 @@
 ;; ~~~~~~~~ Max derived from Ubuntu Bionic Beaver
 (define-c int (%getgroups getgroups) ((value 65537 int) (result (array gid_t 65537))))
 
+(define-c errno (%setuid setuid) (uid_t))
+(define-c errno (%setgid setgid) (gid_t))
+
 
 ;;; 3.6  User and group database access
 
