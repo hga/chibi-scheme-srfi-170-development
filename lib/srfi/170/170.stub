@@ -370,6 +370,8 @@
 
 (define-c errno (%setpriority setpriority) (int id_t int))
 
+(define-c errno (%getlogin_r getlogin_r)
+  ((result (array char 128)) (value 128 int)))
 
 ;;; 3.6  User and group database access
 

@@ -242,6 +242,8 @@
 
           ;; setting niceness positive in epilogue to not slow down rest of tests
 
+          (test #t (string? (user-login-name)))
+
           ) ; end process state
 
         ;; 3.6  User and group database access

@@ -276,6 +276,15 @@
                   process-object/pid
                   (+ (priority priority/process process-object/pid) delta))))
 
+(define (user-login-name)
+  (let ((name (%getlogin_r)))
+    (if (not name)
+        (errno-error (errno) user-login-name))
+    name))
+
+;(define (user-uid
+;(define (user-gid
+;(define (user-supplementary-gids
 
 
 ;;; 3.6  User and group database access
