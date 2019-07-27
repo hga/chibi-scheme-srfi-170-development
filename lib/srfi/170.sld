@@ -121,6 +121,7 @@
   (cond-expand
    (chibi
     (import (scheme base)
+            (scheme case-lambda)
             (chibi)
 ;;            (only (chibi filesystem) file-exists?) ;; in R7RS-small
             (only (chibi ast) errno integer->error-string) ;; ~~~~  until aux.c is up to snuff

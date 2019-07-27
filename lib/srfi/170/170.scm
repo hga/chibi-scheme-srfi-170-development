@@ -245,13 +245,15 @@
           (errno-error (errno) process-group process-object/pid)
           pgid))))
 
-(define (set-process-group . o)
-  (let-optionals o ((process-object/pid 0)
-                    (pgrp 0))
+(define set-process-group
+  (case-lambda
+   ((pgrp)
+    (if (not (%setpgid 0 pgrp))
+        (errno-error (errno) set-process-group pgrp)))
+   ((process-object/pid pgrp)
     (if (not (%setpgid process-object/pid pgrp))
-        (errno-error (errno) set-process-group process-object/pid pgrp))))
+        (errno-error (errno) set-process-group process-object/pid pgrp)))))
 
-process-group set-process-group
 
 ;;; 3.6  User and group database access
 
