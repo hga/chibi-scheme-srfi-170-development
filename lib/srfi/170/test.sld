@@ -233,9 +233,7 @@
           (test-not-error (set-process-group (process-group))) ;; ~~~~ can we do better?
           (test-not-error (set-process-group 0 (process-group))) ;; ~~~~ can we do better?
 
-          (if (equal? 0 (user-uid))
-              (test-not-error (priority priority/user 1))
-              (test-error (priority priority/user 1)))
+          (test-error (priority priority/user 1))
 
           ;; assume we're starting out with niceness of 0
           (test 0 (priority priority/process (pid)))
