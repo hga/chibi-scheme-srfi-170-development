@@ -217,7 +217,9 @@
 
           (cond-expand (bsd
             (test-not-error (set-file-mode tmp-containing-dir #o000))
-            (test-error (working-directory)) ;; should work if you're root
+            (if (equal? 0 (user-uid))
+                (test-not-error (working-directory))
+                (test-error (working-directory)))
             (test-not-error (set-file-mode tmp-containing-dir #o755))))
 
           (test-assert (pid))
@@ -231,13 +233,22 @@
           (test-not-error (set-process-group (process-group))) ;; ~~~~ can we do better?
           (test-not-error (set-process-group 0 (process-group))) ;; ~~~~ can we do better?
 
-          ;; this might succeed if you are root
-          (test-error (priority priority/user 1))
+          (if (equal? 0 (user-uid))
+              (test-not-error (priority priority/user 1))
+              (test-error (priority priority/user 1)))
+
           ;; assume we're starting out with niceness of 0
           (test 0 (priority priority/process (pid)))
-          (test-error (set-priority priority/process (pid) -2)) ;; should work if you're root
           (test-not-error (set-priority priority/process (pid) 0))
-          (test-error (nice (pid) -1)) ;; should work if you're root
+
+          (if (equal? 0 (user-uid))
+              (begin
+                (test-not-error (set-priority priority/process (pid) -2))
+                (test-not-error (nice (pid) -1)))
+              (begin
+                (test-error (set-priority priority/process (pid) -2))
+                (test-error (nice (pid) -1))))
+
           (test-not-error (nice (pid) 0))
 
           ;; setting niceness positive in epilogue to not slow down rest of tests
@@ -246,13 +257,42 @@
           (test-assert (> (user-uid) -1))
           (test-assert (> (user-gid) -1))
           (test-assert (list? (user-supplementary-gids))) ;; not sure how to make it fail
-          (test-error (set-uid 0)) ;; should succeed for root
+
+          ;; ~~~~~~~~ seriously need better testing for all these set functions
+          (if (equal? 0 (user-uid))
+              (begin
+                (test-not-error (set-uid 0))
+                (test-not-error (set-gid 0)))
+              (begin
+                (test-error (set-uid 0))
+                (test-error (set-gid 0))))
+
           (test-not-error (set-uid (user-uid)))
-          (test-error (set-gid 0)) ;; should succeed for root
           (test-not-error (set-gid (user-gid)))
 
           (test-assert (> (user-effective-uid) -1))
           (test-assert (> (user-effective-gid) -1))
+          (if (equal? 0 (user-uid))
+              (begin
+                (test-not-error (set-user-effective-uid 0))
+                (test-not-error (set-user-effective-gid 0)))
+              (begin
+                (test-error (set-user-effective-uid 0))
+                (test-error (set-user-effective-gid 0))))
+          (test-not-error (set-user-effective-uid (user-uid)))
+          (test-not-error (set-user-effective-gid (user-gid)))
+          (test-not-error (set-user-effective-uid (user-effective-uid)))
+          (test-not-error (set-user-effective-gid (user-effective-gid)))
+          (test-not-error (set-user-real-and-effective-uid -1 -1))
+          (test-not-error (set-user-real-and-effective-uid (user-uid) -1))
+          (test-not-error (set-user-real-and-effective-uid -1 (user-uid)))
+          (test-not-error (set-user-real-and-effective-uid (user-uid) (user-uid)))
+          (test-not-error (set-user-real-and-effective-gid -1 -1))
+          (test-not-error (set-user-real-and-effective-gid (user-gid) -1))
+          (test-not-error (set-user-real-and-effective-gid -1 (user-gid)))
+          (test-not-error (set-user-real-and-effective-gid (user-gid) (user-gid)))
+
+
 
           ) ; end process state
 

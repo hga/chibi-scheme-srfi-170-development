@@ -387,6 +387,14 @@
 (define-c uid_t (user-effective-uid geteuid) ())
 (define-c gid_t (user-effective-gid getegid) ())
 
+(define-c errno (%seteuid seteuid) (uid_t))
+(define-c errno (%setegid setegid) (gid_t))
+
+(define-c errno (%setreuid setreuid) (uid_t uid_t))
+(define-c errno (%setregid setregid) (gid_t gid_t))
+
+
+
 ;;; 3.6  User and group database access
 
 ;;; 3.7  [Intentionally omitted]

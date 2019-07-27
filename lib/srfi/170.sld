@@ -92,7 +92,8 @@
    user-login-name user-uid user-gid user-supplementary-gids
    set-uid set-gid
    user-effective-uid user-effective-gid
-;;   set-user-effective-uid set-user-effective-gid
+   set-user-effective-uid set-user-effective-gid
+   set-user-real-and-effective-uid set-user-real-and-effective-gid
 
    ;; 3.6  User and group database access
 
