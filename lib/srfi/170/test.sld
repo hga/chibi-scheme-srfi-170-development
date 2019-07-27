@@ -217,7 +217,7 @@
 
           (cond-expand (bsd
             (test-not-error (set-file-mode tmp-containing-dir #o000))
-            (test-error (working-directory))
+            (test-error (working-directory)) ;; should work if you're root
             (test-not-error (set-file-mode tmp-containing-dir #o755))))
 
           (test-assert (pid))
@@ -235,7 +235,7 @@
           (test-error (priority priority/user 1))
           ;; assume we're starting out with niceness of 0
           (test 0 (priority priority/process (pid)))
-          (test-error (set-priority priority/process (pid) -2))
+          (test-error (set-priority priority/process (pid) -2)) ;; should work if you're root
           (test-not-error (set-priority priority/process (pid) 0))
           (test-error (nice (pid) -1)) ;; should work if you're root
           (test-not-error (nice (pid) 0))
