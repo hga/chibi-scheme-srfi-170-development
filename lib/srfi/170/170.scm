@@ -269,6 +269,14 @@
   (if (not (%setpriority which who niceness))
       (errno-error (errno) set-priority which who niceness)))
 
+(define (nice . o)
+  (let-optionals o ((process-object/pid (pid))
+                    (delta 1))
+    (set-priority priority/process
+                  process-object/pid
+                  (+ (priority priority/process process-object/pid) delta))))
+
+
 
 ;;; 3.6  User and group database access
 

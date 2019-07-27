@@ -86,7 +86,7 @@
    pid parent-pid
    process-group set-process-group
    priority/process priority/process-group priority/user
-   priority set-priority
+   priority set-priority nice
 
    ;; 3.6  User and group database access
 

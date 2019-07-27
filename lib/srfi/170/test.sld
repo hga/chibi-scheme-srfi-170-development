@@ -235,8 +235,11 @@
           (test-error (priority priority/user 1))
           ;; assume we're starting out with niceness of 0
           (test 0 (priority priority/process (pid)))
-
           (test-error (set-priority priority/process (pid) -2))
+          (test-not-error (set-priority priority/process (pid) 0))
+          (test-error (nice (pid) -1)) ;; should work if you're root
+          (test-not-error (nice (pid) 0))
+
           ;; setting niceness positive in epilogue to not slow down rest of tests
 
           ) ; end process state
@@ -259,6 +262,13 @@
           ;; in epilogue so most testing is not slowed down
           (test-assert (set-priority priority/process (pid) 1))
           (test 1 (priority priority/process (pid)))
+
+          (test-not-error (nice))
+          (test 2 (priority priority/process (pid)))
+          (test-not-error (nice (pid)))
+          (test 3 (priority priority/process (pid)))
+          (test-not-error (nice (pid) 1))
+          (test 4 (priority priority/process (pid)))
 
           ) ; end epilogue
 
