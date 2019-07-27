@@ -282,7 +282,13 @@
         (errno-error (errno) user-login-name))
     name))
 
-;(define (user-supplementary-gids
+(define (user-supplementary-gids)
+  (let* ((ret (%getgroups))
+         (i (car ret)))
+    (if (equal? -1 i)
+        (errno-error (errno) user-supplementary-gids)) ;; non-local exit
+    (take (cadr ret) i))) ;; immutable list
+
 
 
 ;;; 3.6  User and group database access

@@ -376,6 +376,12 @@
 (define-c uid_t (user-uid getuid) ())
 (define-c gid_t (user-gid getgid) ())
 
+(define-c-const int (groups/max "NGROUPS_MAX"))
+
+;; ~~~~~~~~ Max derived from Ubuntu Bionic Beaver
+(define-c int (%getgroups getgroups) ((value 65537 int) (result (array gid_t 65537))))
+
+
 ;;; 3.6  User and group database access
 
 ;;; 3.7  [Intentionally omitted]

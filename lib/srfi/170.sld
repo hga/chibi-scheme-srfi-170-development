@@ -12,6 +12,8 @@
 
    posix/path-max
 
+   groups/max %getgroups
+
    make-%timespec
    %timespec? %timespec:seconds %timespec:nanoseconds
    clck-id/realtime clck-id/monotonic
@@ -87,7 +89,7 @@
    process-group set-process-group
    priority/process priority/process-group priority/user
    priority set-priority nice
-   user-login-name user-uid user-gid ; user-supplementary-gids
+   user-login-name user-uid user-gid user-supplementary-gids
 
    ;; 3.6  User and group database access
 
@@ -128,6 +130,7 @@
             (chibi)
 ;;            (only (chibi filesystem) file-exists?) ;; in R7RS-small
             (only (chibi ast) errno integer->error-string) ;; ~~~~  until aux.c is up to snuff
+            (only (srfi 1) take)
             (srfi 151) ;; bitwise operators
             (chibi optional) ;; Snow package for optional args
             )
