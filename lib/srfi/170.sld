@@ -91,6 +91,8 @@
    priority set-priority nice
    user-login-name user-uid user-gid user-supplementary-gids
    set-uid set-gid
+   user-effective-uid user-effective-gid
+;;   set-user-effective-uid set-user-effective-gid
 
    ;; 3.6  User and group database access
 

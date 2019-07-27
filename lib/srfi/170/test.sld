@@ -251,6 +251,9 @@
           (test-error (set-gid 0)) ;; should succeed for root
           (test-not-error (set-gid (user-gid)))
 
+          (test-assert (> (user-effective-uid) -1))
+          (test-assert (> (user-effective-gid) -1))
+
           ) ; end process state
 
         ;; 3.6  User and group database access
