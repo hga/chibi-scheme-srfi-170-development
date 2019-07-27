@@ -373,6 +373,9 @@
 (define-c errno (%getlogin_r getlogin_r)
   ((result (array char 128)) (value 128 int)))
 
+(define-c uid_t (user-uid getuid) ())
+(define-c gid_t (user-gid getgid) ())
+
 ;;; 3.6  User and group database access
 
 ;;; 3.7  [Intentionally omitted]

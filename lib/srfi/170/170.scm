@@ -282,8 +282,6 @@
         (errno-error (errno) user-login-name))
     name))
 
-;(define (user-uid
-;(define (user-gid
 ;(define (user-supplementary-gids
 
 

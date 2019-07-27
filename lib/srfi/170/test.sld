@@ -242,7 +242,9 @@
 
           ;; setting niceness positive in epilogue to not slow down rest of tests
 
-          (test #t (string? (user-login-name)))
+          (test-assert (string? (user-login-name)))
+          (test-assert (> (user-uid) -1))
+          (test-assert (> (user-gid) -1))
 
           ) ; end process state
 
@@ -260,7 +262,7 @@
 
         ;; 3.12  Terminal device control
 
-        (test-group "Epilogue: set-priority 1"
+        (test-group "Epilogue: set-priority to 2, 3, 4"
           ;; in epilogue so most testing is not slowed down
           (test-assert (set-priority priority/process (pid) 1))
           (test 1 (priority priority/process (pid)))
