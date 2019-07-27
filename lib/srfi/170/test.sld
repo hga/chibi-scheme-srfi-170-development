@@ -223,9 +223,14 @@
           (test-assert (pid))
           (test-assert (parent-pid))
 
+          (test-not-error (process-group))
+          (cond-expand
+           (linux (test 1 (process-group 1))) ;; may not work on non-Ubuntu Linuxes
+           (bsd (test-error (process-group 1)))) ;; fails on OpenBSD AMD64 6.5 
+          (test-error (process-group -1)) ;; as unsigned, *might* succeed
+          (test-not-error (set-process-group)) ;; ~~~~ can we do better?
 
-          ;; ????? ~~~~ set-working-directory exercised at the very beginning to
-          ;; set up for following file system tests.
+
 
           ) ; end process state
 
