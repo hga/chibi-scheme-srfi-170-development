@@ -254,6 +254,21 @@
     (if (not (%setpgid process-object/pid pgrp))
         (errno-error (errno) set-process-group process-object/pid pgrp)))))
 
+(define (priority which who)
+  ;; ~~~~~~~~ as a proxy for setting errno to zero, set it to a known
+  ;; value with an operation that will fail reliably
+  (%create-directory "/" #o755)
+  (let ((niceness (%getpriority which who)))
+    (if (equal? -1 niceness)
+        (let ((e (errno))) ;; using the above errno proxy
+          (if (or (equal? e errno/srch) (equal? e errno/inval))
+              (errno-error (errno) priority which who)))) ;; non-local exit
+    niceness))
+
+(define (set-priority which who niceness)
+  (if (not (%setpriority which who niceness))
+      (errno-error (errno) set-priority which who niceness)))
+
 
 ;;; 3.6  User and group database access
 

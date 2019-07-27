@@ -85,6 +85,8 @@
    working-directory set-working-directory
    pid parent-pid
    process-group set-process-group
+   priority/process priority/process-group priority/user
+   priority set-priority
 
    ;; 3.6  User and group database access
 

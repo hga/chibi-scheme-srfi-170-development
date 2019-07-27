@@ -231,7 +231,13 @@
           (test-not-error (set-process-group (process-group))) ;; ~~~~ can we do better?
           (test-not-error (set-process-group 0 (process-group))) ;; ~~~~ can we do better?
 
+          ;; this might succeed if you are root
+          (test-error (priority priority/user 1))
+          ;; assume we're starting out with niceness of 0
+          (test 0 (priority priority/process (pid)))
 
+          (test-error (set-priority priority/process (pid) -2))
+          ;; setting niceness positive in epilogue to not slow down rest of tests
 
           ) ; end process state
 
@@ -249,8 +255,11 @@
 
         ;; 3.12  Terminal device control
 
-;; Leave the files around for debugging test errors
-;;        (test-group "Epilogue: delete-filesystem-object any temporary files and directories left"
-;;          (delete-tmp-test-files))
+        (test-group "Epilogue: set-priority 1"
+          ;; in epilogue so most testing is not slowed down
+          (test-assert (set-priority priority/process (pid) 1))
+          (test 1 (priority priority/process (pid)))
+
+          ) ; end epilogue
 
         ))))

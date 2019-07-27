@@ -25,6 +25,8 @@
   (c-system-include "sys/types.h")
   (c-system-include "sys/stat.h")
 
+  (c-system-include "sys/resource.h")
+
   (c-system-include "time.h")
   (c-system-include "sys/time.h")
 
@@ -353,6 +355,20 @@
 ;;> indicated process shall be used"
 
 (define-c errno (%setpgid setpgid) (pid_t pid_t))
+
+;;> Get and set process priority; details of use are complicted, refer
+;;> to POSIX definition such as:
+;;> http://pubs.opengroup.org/onlinepubs/9699919799/functions/getpriority.html
+
+(define-c-const int (priority/process "PRIO_PROCESS"))
+(define-c-const int (priority/process-group "PRIO_PGRP"))
+(define-c-const int (priority/user "PRIO_USER"))
+
+(define-c-int-type id_t)
+
+(define-c int (%getpriority getpriority) (int id_t))
+
+(define-c errno (%setpriority setpriority) (int id_t int))
 
 
 ;;; 3.6  User and group database access
