@@ -328,18 +328,17 @@
 (cond-expand
  (bsd
   (define (user-info user)
-    (let ((ret (if (string? user)
-                   (%getpwnam_r user (make-string 1024))
-                   (%getpwuid_r user (make-string 1024)))))
-      (if (not ret)
+    (let ((ui (car (if (string? user)
+                       (%getpwnam_r user (make-string 1024))
+                       (%getpwuid_r user (make-string 1024))))))
+      (if (not (passwd:name ui))
           (errno-error (errno) user-info user) ;; non-local exit
-          (let ((ui (car ret)))
-            (make-user-info
-             (passwd:name ui)
-             (passwd:uid ui)
-             (passwd:gid ui)
-             (passwd:dir ui)
-             (passwd:shell ui)))))))
+          (make-user-info
+           (passwd:name ui)
+           (passwd:uid ui)
+           (passwd:gid ui)
+           (passwd:dir ui)
+           (passwd:shell ui))))))
  (else
   ;; Bionic Beaver does not report error
   (define (user-info user)
