@@ -157,9 +157,9 @@
        (stat:size file-stat)
        (stat:blksize file-stat)
        (stat:blocks file-stat)
-       (cons (%timespec:seconds (stat:atime file-stat)) (%timespec:nanoseconds (stat:atime file-stat)))
-       (cons (%timespec:seconds (stat:mtime file-stat)) (%timespec:nanoseconds (stat:mtime file-stat)))
-       (cons (%timespec:seconds (stat:ctime file-stat)) (%timespec:nanoseconds (stat:ctime file-stat)))))))
+       (cons (timespec:seconds (stat:atime file-stat)) (timespec:nanoseconds (stat:atime file-stat)))
+       (cons (timespec:seconds (stat:mtime file-stat)) (timespec:nanoseconds (stat:mtime file-stat)))
+       (cons (timespec:seconds (stat:ctime file-stat)) (timespec:nanoseconds (stat:ctime file-stat)))))))
 
 (define (file-info-directory? file-info-record)
   (if (eq? 0 (bitwise-and file-type-mask/ifdir (file-info:mode file-info-record))) #f #t))
@@ -404,7 +404,17 @@
 
 ;;; 3.10  Time
 
-  ;; Be sure to raise exception if wrong clock!
+(define (posix-time)
+  (let ((t (%clock-gettime clck-id/realtime)))
+    (if (not t)
+        (errno-error (errno) posix-time)
+        (cons (timespec:seconds t) (timespec:nanoseconds t)))))
+
+(define (monotonic-time)
+  (let ((t (%clock-gettime clck-id/monotonic)))
+    (if (not t)
+        (errno-error (errno) monotonic-time)
+        (cons (timespec:seconds t) (timespec:nanoseconds t)))))
 
 
 

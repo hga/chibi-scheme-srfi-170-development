@@ -209,10 +209,9 @@
 (define-c-const int (utimens/at_symlink_nofollow "AT_SYMLINK_NOFOLLOW"))
 
 (define-c-struct timespec
-  predicate: %timespec?
-  constructor: (make-%timespec)
-  (time_t  tv_sec       %timespec:seconds)
-  (long    tv_nsec      %timespec:nanoseconds))
+  ;; constructor: (make-timespec)
+  (time_t  tv_sec   timespec:seconds)
+  (long    tv_nsec  timespec:nanoseconds))
 
 ;; ~~~~ should be (define-c errno (%utimensat utimensat) (int string (array (struct timespec) 2) int))
 ;;(define-c errno (%utimensat utimensat) (int string (array long 4) int))
@@ -533,7 +532,7 @@
 
 (define-c-int-type clockid_t)
 
-(define-c errno clock-gettime (int (result timespec)))
+(define-c errno (%clock-gettime clock_gettime) (clockid_t (result timespec)))
 
 
 ;;; 3.11  Environment variables

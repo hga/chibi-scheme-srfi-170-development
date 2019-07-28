@@ -317,6 +317,7 @@
 
 
         (test-group "3.9  Signal system"
+
           ;; ~~~~ add more tests once we can spawn processes
           (test-not-error (signal-process 0 0))
           (test-not-error (signal-process -1 0))
@@ -330,7 +331,21 @@
           )
 
 
-        ;; 3.10  Time
+        (test-group "3.10  Time"
+
+          (test-not-error (posix-time))
+          (test-not-error (monotonic-time))
+          (let ((t1 (posix-time))
+                (t2 (monotonic-time)))
+            (test-assert (and (> (car t1)  0)
+                              (> (cdr t1)  0)
+                              (> (car t2)  0)
+                              (> (cdr t2)  0))))
+
+
+
+          )
+
 
         ;; 3.11  Environment variables
 
