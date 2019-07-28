@@ -12,6 +12,8 @@
 
    posix/path-max
 
+   %utimensat
+
    groups/max %getgroups
 
    passwd:name passwd:uid %getpwuid_r %getpwnam_r
@@ -56,6 +58,8 @@
    rename-file
    delete-directory
    set-file-mode set-file-owner set-file-group
+   utimens/at_fdcwd utimens/utime_now utimens/at_symlink_nofollow
+   ;; set-file-timespecs
    truncate-file
 
    file-info file-info?
