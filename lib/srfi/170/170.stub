@@ -506,7 +506,9 @@
 (define-c-const int (signal/ttou "SIGTTOU"))
 (define-c-const int (signal/usr1 "SIGUSR1"))
 (define-c-const int (signal/usr2 "SIGUSR2"))
-(define-c-const int (signal/poll "SIGPOLL"))
+(cond-expand
+ ((not bsd)
+  (define-c-const int (signal/poll "SIGPOLL"))))
 (define-c-const int (signal/prof "SIGPROF"))
 (define-c-const int (signal/sys "SIGSYS"))
 (define-c-const int (signal/trap "SIGTRAP"))
