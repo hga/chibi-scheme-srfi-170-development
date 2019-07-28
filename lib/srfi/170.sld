@@ -12,11 +12,13 @@
 
    posix/path-max
 
-   %utimensat
+   ;; %utimensat
 
    groups/max %getgroups
 
    passwd:name passwd:uid %getpwuid_r %getpwnam_r
+
+   %gethostname
 
    make-%timespec
    %timespec? %timespec:seconds %timespec:nanoseconds
@@ -101,7 +103,7 @@
    set-user-effective-uid set-user-effective-gid
    set-user-real-and-effective-uid set-user-real-and-effective-gid
 
-   ;; 3.6  User and group database access
+   ;; 3.6  User and group database access COMPLETE, UNTESTED
 
    user-info user-info?
    user-info:name user-info:uid user-info:gid user-info:home-dir user-info:shell
@@ -110,6 +112,9 @@
    ;; 3.7  [Intentionally omitted]
 
    ;; 3.8  System parameters
+
+   system-name/host-name-max
+   system-name
 
    ;; 3.9  Signal system
 

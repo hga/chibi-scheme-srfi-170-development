@@ -375,6 +375,14 @@
 
 ;;; 3.8  System parameters
 
+(define (system-name)
+  (let ((name (%gethostname)))
+    (if (not name)
+        (errno-error (errno) system-name))
+    name))
+
+
+
 ;;; 3.9  Signal system
 
 ;;; 3.10  Time

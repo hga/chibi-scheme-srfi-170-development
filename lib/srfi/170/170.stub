@@ -211,8 +211,8 @@
   (long    tv_nsec      %timespec:nanoseconds))
 
 ;; ~~~~ should be (define-c errno (%utimensat utimensat) (int string (array (struct timespec) 2) int))
-(define-c errno (%utimensat utimensat) (int string (array long 4) int))
-(define-c errno (%futimens futimens) (int (array long 4)))
+;;(define-c errno (%utimensat utimensat) (int string (array long 4) int))
+;;(define-c errno (%futimens futimens) (int (array long 4)))
 
 ;;> Truncate the file to the given size.
 
@@ -462,7 +462,9 @@
 
 ;;> Returns the standard hostname of the current processor.
 
-(define-c errno (system-name gethostname)
+(define-c-const int (system-name/host-name-max "HOST_NAME_MAX"))
+
+(define-c errno (%gethostname gethostname)
   ((result (array char (auto-expand arg1))) (value 256 int)))
 
 

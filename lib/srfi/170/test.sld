@@ -296,9 +296,14 @@
 ;;        (case-expand
 ;;         ( linux??
 
+
         ;; 3.7  [Intentionally omitted]
 
-        ;; 3.8  System parameters
+        (test-group "3.8  System parameters"
+
+          (test-assert (string? (system-name)))
+        )
+
 
         ;; 3.9  Signal system
 
