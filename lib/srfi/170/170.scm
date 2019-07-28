@@ -316,15 +316,60 @@
 
 ;;; 3.6  User and group database access
 
-(define (user-information user)
-  (car (if (string? user)
-           (%getpwnam_r user (make-string 1024))
-           (%getpwuid_r user (make-string 1024)))))
+(define-record-type User-Info
+  (make-user-info name uid gid home-dir shell)
+  user-info?
+  (name user-info:name)
+  (uid user-info:uid)
+  (gid user-info:gid)
+  (home-dir user-info:home-dir)
+  (shell user-info:shell))
 
-(define (group-information group)
-  (car (if (string? group)
-           (%getgrnam_r group (make-string 1024))
-           (%getgrgid_r group (make-string 1024)))))
+(cond-expand
+ (bsd
+  (define (user-info user)
+    (let ((ret (if (string? user)
+                   (%getpwnam_r user (make-string 1024))
+                   (%getpwuid_r user (make-string 1024)))))
+      (if (not ret)
+          (errno-error (errno) user-info user) ;; non-local exit
+          (let ((ui (car ret)))
+            (make-user-info
+             (passwd:name ui)
+             (passwd:uid ui)
+             (passwd:gid ui)
+             (passwd:home-dir ui)
+             (passwd:shell) ui))))))
+ (else
+  ;; Bionic Beaver does not report error
+  (define (user-info user)
+    (let ((ui (car (if (string? user)
+                       (%getpwnam_r user (make-string 1024))
+                       (%getpwuid_r user (make-string 1024))))))
+      (make-user-info
+       (passwd:name ui)
+       (passwd:uid ui)
+       (passwd:gid ui)
+       (passwd:dir ui)
+       (passwd:shell ui))))))
+
+(cond-expand
+ ((not bsd)
+  (define-record-type Group-Info
+    (make-group-info name gid)
+    group-info?
+    (name group-info:name)
+    (gid group-info:gid))
+
+  ;; Bionic Beaver does not report error, OpenBSD 6.5 always returns #f
+  (define (group-info group)
+    (let ((gi (car (if (string? group)
+                       (%getgrnam_r group (make-string 1024))
+                       (%getgrgid_r group (make-string 1024))))))
+      (make-group-info
+       (group:name gi)
+       (group:gid gi))))
+  ))
 
 
 ;;; 3.7  [Intentionally omitted]

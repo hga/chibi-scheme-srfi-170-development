@@ -100,11 +100,8 @@
 
    ;; 3.6  User and group database access
 
-   user-information user-info?
+   user-info user-info?
    user-info:name user-info:uid user-info:gid user-info:home-dir user-info:shell
-
-   group-information group-info?
-   group-info:name group-info:gid ;; group-info:members
 
 
    ;; 3.7  [Intentionally omitted]
@@ -128,7 +125,14 @@
 
      errno/multihop errno/nolink
      ;; STREAMS
-     errno/nodata errno/nostr errno/nosr errno/time)))
+     errno/nodata errno/nostr errno/nosr errno/time
+
+
+     ;; 3.6  User and group database access
+
+     group-info group-info?
+     group-info:name group-info:gid ;; group-info:members
+    )))
 
   (cond-expand ((not windows)
     (export
