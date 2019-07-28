@@ -21,6 +21,8 @@
    %gethostname
    %uname
 
+
+
    make-%timespec
    %timespec? %timespec:seconds %timespec:nanoseconds
    clck-id/realtime clck-id/monotonic
@@ -118,9 +120,18 @@
    system-name
    uname uname?
    uname:os-name uname:node-name uname:release-name uname:version uname:machine
-
+   ;; current-timezone
+   ;; current-locale
 
    ;; 3.9  Signal system
+
+   signal/abrt signal/abrt signal/alrm signal/bus signal/chld signal/cont
+   signal/fpe signal/hup signal/ill signal/int signal/kill signal/pipe
+   signal/quit signal/segv signal/stop signal/term signal/tstp signal/ttin
+   signal/ttou signal/usr1 signal/usr2 signal/poll signal/prof signal/sys
+   signal/trap signal/urg signal/vtalrm signal/xcpu signal/xfsz
+   signal-process signal-process-group
+
 
    ;; 3.10  Time
 

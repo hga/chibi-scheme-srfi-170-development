@@ -393,6 +393,15 @@
 
 ;;; 3.9  Signal system
 
+(define (signal-process proc sig)
+  (if (not (%kill proc sig))
+      ((errno-error (errno) signal-process proc sig))))
+
+(define (signal-process-group prgrp sig)
+  (if (not (%killpg prgrp sig))
+      ((errno-error (errno) signal-process-group prgrp sig))))
+
+
 ;;; 3.10  Time
 
   ;; Be sure to raise exception if wrong clock!

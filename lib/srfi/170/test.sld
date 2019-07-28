@@ -310,10 +310,25 @@
             (test-assert (string? (uname:release-name un)))
             (test-assert (string? (uname:version un)))
             (test-assert (string? (uname:machine un))))
-        )
 
 
-        ;; 3.9  Signal system
+
+          )
+
+
+        (test-group "3.9  Signal system"
+          ;; ~~~~ add more tests once we can spawn processes
+          (test-not-error (signal-process 0 0))
+          (test-not-error (signal-process -1 0))
+          (if (not (equal? 0 (user-uid)))
+              (test-error (signal-process 1 0)))
+
+          (test-not-error (signal-process-group (process-group) 0))
+          ;; very unlikely process 2 both exists and normal user can touch it
+          (if (not (equal? 0 (user-uid)))
+              (test-error (signal-process-group 2 0)))
+          )
+
 
         ;; 3.10  Time
 

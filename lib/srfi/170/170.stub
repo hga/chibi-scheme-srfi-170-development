@@ -32,6 +32,8 @@
 
   (c-system-include "sys/utsname.h")
 
+  (c-system-include "signal.h")
+
   (c-system-include "time.h")
   (c-system-include "sys/time.h")
 
@@ -482,6 +484,39 @@
 
 
 ;;; 3.9  Signal system
+
+(define-c-const int (signal/abrt "SIGABRT"))
+(define-c-const int (signal/abrt "SIGABRT"))
+(define-c-const int (signal/alrm "SIGALRM"))
+(define-c-const int (signal/bus "SIGBUS"))
+(define-c-const int (signal/chld "SIGCHLD"))
+(define-c-const int (signal/cont "SIGCONT"))
+(define-c-const int (signal/fpe "SIGFPE"))
+(define-c-const int (signal/hup "SIGHUP"))
+(define-c-const int (signal/ill "SIGILL"))
+(define-c-const int (signal/int "SIGINT"))
+(define-c-const int (signal/kill "SIGKILL"))
+(define-c-const int (signal/pipe "SIGPIPE"))
+(define-c-const int (signal/quit "SIGQUIT"))
+(define-c-const int (signal/segv "SIGSEGV"))
+(define-c-const int (signal/stop "SIGSTOP"))
+(define-c-const int (signal/term "SIGTERM"))
+(define-c-const int (signal/tstp "SIGTSTP"))
+(define-c-const int (signal/ttin "SIGTTIN"))
+(define-c-const int (signal/ttou "SIGTTOU"))
+(define-c-const int (signal/usr1 "SIGUSR1"))
+(define-c-const int (signal/usr2 "SIGUSR2"))
+(define-c-const int (signal/poll "SIGPOLL"))
+(define-c-const int (signal/prof "SIGPROF"))
+(define-c-const int (signal/sys "SIGSYS"))
+(define-c-const int (signal/trap "SIGTRAP"))
+(define-c-const int (signal/urg "SIGURG"))
+(define-c-const int (signal/vtalrm "SIGVTALRM"))
+(define-c-const int (signal/xcpu "SIGXCPU"))
+(define-c-const int (signal/xfsz "SIGXFSZ"))
+
+(define-c errno (%kill kill) (pid_t int))
+(define-c errno (%killpg killpg) (pid_t int))
 
 ;;; 3.10  Time
 
