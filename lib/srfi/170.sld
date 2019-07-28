@@ -15,7 +15,6 @@
    groups/max %getgroups
 
    passwd:name passwd:uid %getpwuid_r %getpwnam_r
-   group:name group:gid %getgrgid_r %getgrnam_r
 
    make-%timespec
    %timespec? %timespec:seconds %timespec:nanoseconds
@@ -120,6 +119,11 @@
   
   (cond-expand ((not bsd)
     (export
+
+;;; TMP
+
+     group:name group:gid %getgrgid_r %getgrnam_r
+
 
      ;; 3.1  Errors
 

@@ -338,7 +338,7 @@
              (passwd:name ui)
              (passwd:uid ui)
              (passwd:gid ui)
-             (passwd:home-dir ui)
+             (passwd:dir ui)
              (passwd:shell) ui))))))
  (else
   ;; Bionic Beaver does not report error
