@@ -128,7 +128,7 @@
    signal/abrt signal/abrt signal/alrm signal/bus signal/chld signal/cont
    signal/fpe signal/hup signal/ill signal/int signal/kill signal/pipe
    signal/quit signal/segv signal/stop signal/term signal/tstp signal/ttin
-   signal/ttou signal/usr1 signal/usr2 signal/poll signal/prof signal/sys
+   signal/ttou signal/usr1 signal/usr2 signal/prof signal/sys
    signal/trap signal/urg signal/vtalrm signal/xcpu signal/xfsz
    signal-process signal-process-group
 
@@ -160,6 +160,11 @@
 
      group-info group-info?
      group-info:name group-info:gid ;; group-info:members
+
+     ;; 3.9  Signal system
+     signal/poll
+
+
     )))
 
   (cond-expand ((not windows)
