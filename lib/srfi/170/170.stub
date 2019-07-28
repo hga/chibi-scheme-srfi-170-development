@@ -204,6 +204,12 @@
 (define-c-const int (utimens/utime_now "UTIME_NOW"))
 (define-c-const int (utimens/at_symlink_nofollow "AT_SYMLINK_NOFOLLOW"))
 
+(define-c-struct timespec
+  predicate: %timespec?
+  constructor: (make-%timespec)
+  (time_t  tv_sec       %timespec:seconds)
+  (long    tv_nsec      %timespec:nanoseconds))
+
 ;; ~~~~ (define-c errno (%utimensat utimensat) (int string (array (struct timespec) 2) int))
 ;; ~~~~ (define-c errno (%futimens futimens) (int (array (struct timespec) 2)))
 
@@ -260,9 +266,9 @@
     (off_t      st_size     stat:size)
     (blksize_t  st_blksize  stat:blksize)
     (blkcnt_t   st_blocks   stat:blocks)
-    (time_t     st_atime    stat:atime)
-    (time_t     st_mtime    stat:mtime)
-    (time_t     st_ctime    stat:ctime))
+    ((struct timespec) st_atime    stat:atime)
+    ((struct timespec) st_mtime    stat:mtime)
+    ((struct timespec) st_ctime    stat:ctime))
    ))
 
 (define-c errno (%stat stat) (string (result stat)))
@@ -463,12 +469,6 @@
 ;;; 3.9  Signal system
 
 ;;; 3.10  Time
-
-(define-c-struct timespec
-  predicate: %timespec?
-  constructor: (make-%timespec)
-  (time_t  tv_sec       %timespec:seconds)
-  (long    tv_nsec      %timespec:nanoseconds))
 
 ;;> Accessors for the \scheme{timespec} struct.
 ;;/

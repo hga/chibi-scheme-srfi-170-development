@@ -289,12 +289,12 @@
           (test-not-error (set-user-real-and-effective-gid (user-gid) -1))
           (test-not-error (set-user-real-and-effective-gid -1 (user-gid)))
           (test-not-error (set-user-real-and-effective-gid (user-gid) (user-gid)))
-
-
-
           ) ; end process state
 
         ;; 3.6  User and group database access
+
+;;        (case-expand
+;;         ( linux??
 
         ;; 3.7  [Intentionally omitted]
 

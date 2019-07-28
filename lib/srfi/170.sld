@@ -8,7 +8,7 @@
 
    %delete-directory %delete-file
 
-   %stat %lstat
+   %stat %lstat stat:atime stat:mtime stat:ctime
 
    posix/path-max
 
