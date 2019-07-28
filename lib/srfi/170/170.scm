@@ -381,6 +381,14 @@
         (errno-error (errno) system-name))
     name))
 
+(define (uname)
+  (let* ((r (%uname))
+         (ret (car r))
+         (un (cadr r)))
+    (if (> ret -1)
+        un
+        (errno-error (errno) uname))))
+
 
 
 ;;; 3.9  Signal system

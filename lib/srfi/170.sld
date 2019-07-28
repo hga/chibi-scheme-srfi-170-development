@@ -19,6 +19,7 @@
    passwd:name passwd:uid %getpwuid_r %getpwnam_r
 
    %gethostname
+   %uname
 
    make-%timespec
    %timespec? %timespec:seconds %timespec:nanoseconds
@@ -115,6 +116,9 @@
 
    system-name/host-name-max
    system-name
+   uname uname?
+   uname:os-name uname:node-name uname:release-name uname:version uname:machine
+
 
    ;; 3.9  Signal system
 

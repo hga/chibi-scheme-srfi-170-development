@@ -30,6 +30,8 @@
   (c-system-include "pwd.h")
   (c-system-include "grp.h")
 
+  (c-system-include "sys/utsname.h")
+
   (c-system-include "time.h")
   (c-system-include "sys/time.h")
 
@@ -466,6 +468,16 @@
 
 (define-c errno (%gethostname gethostname)
   ((result (array char (auto-expand arg1))) (value 256 int)))
+
+(define-c-struct utsname
+  predicate: uname?
+  (string sysname uname:os-name)
+  (string nodename uname:node-name)
+  (string release uname:release-name)
+  (string version uname:version)
+  (string machine uname:machine))
+
+(define-c int (%uname uname) ((result utsname)))
 
 
 

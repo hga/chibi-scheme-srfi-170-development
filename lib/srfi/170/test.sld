@@ -302,6 +302,14 @@
         (test-group "3.8  System parameters"
 
           (test-assert (string? (system-name)))
+
+          (test-not-error (uname))
+          (let ((un (uname)))
+            (test-assert (string? (uname:os-name un)))
+            (test-assert (string? (uname:node-name un)))
+            (test-assert (string? (uname:release-name un)))
+            (test-assert (string? (uname:version un)))
+            (test-assert (string? (uname:machine un))))
         )
 
 
