@@ -314,8 +314,18 @@
       (errno-error (errno) set-user-real-and-effective-gid rgid egid)))
 
 
-
 ;;; 3.6  User and group database access
+
+(define (user-information user)
+  (car (if (string? user)
+           (%getpwnam_r user (make-string 1024))
+           (%getpwuid_r user (make-string 1024)))))
+
+(define (group-information group)
+  (car (if (string? group)
+           (%getgrnam_r group (make-string 1024))
+           (%getgrgid_r group (make-string 1024)))))
+
 
 ;;; 3.7  [Intentionally omitted]
 

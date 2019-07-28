@@ -14,13 +14,16 @@
 
    groups/max %getgroups
 
+   passwd:name passwd:uid %getpwuid_r %getpwnam_r
+   group:name group:gid %getgrgid_r %getgrnam_r
+
    make-%timespec
    %timespec? %timespec:seconds %timespec:nanoseconds
    clck-id/realtime clck-id/monotonic
    clock-gettime
 
 
-   ;; 3.1  Errors
+   ;; 3.1  Errors COMPLETE
 
    errno/2big errno/acces errno/addrinuse errno/addrnotavail
    errno/afnosupport errno/again errno/already errno/badf errno/badmsg
@@ -81,7 +84,7 @@
 
    ;; 3.4.3  Analysing process status codes
 
-   ;; 3.5  Process state
+   ;; 3.5  Process state COMPLETE
 
    umask set-umask
    working-directory set-working-directory
@@ -96,6 +99,13 @@
    set-user-real-and-effective-uid set-user-real-and-effective-gid
 
    ;; 3.6  User and group database access
+
+   user-information user-info?
+   user-info:name user-info:uid user-info:gid user-info:home-dir user-info:shell
+
+   group-information group-info?
+   group-info:name group-info:gid ;; group-info:members
+
 
    ;; 3.7  [Intentionally omitted]
 

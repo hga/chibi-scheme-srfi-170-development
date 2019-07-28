@@ -27,6 +27,9 @@
 
   (c-system-include "sys/resource.h")
 
+  (c-system-include "pwd.h")
+  (c-system-include "grp.h")
+
   (c-system-include "time.h")
   (c-system-include "sys/time.h")
 
@@ -394,12 +397,66 @@
 (define-c errno (%setregid setregid) (gid_t gid_t))
 
 
-
 ;;; 3.6  User and group database access
+
+;;> \section{\scheme{(user-information name-or-id)}}
+
+;;> Returns the password entry for the given user.  \var{name-or-id}
+;;> should be a string indicating the user name, or an integer
+;;> for the user id.
+
+(define-c-struct passwd
+  predicate: passwd?
+  (string  pw_name     passwd:name)
+  (string  pw_passwd   passwd:passwd)
+  (uid_t   pw_uid      passwd:uid)
+  (gid_t   pw_gid      passwd:gid)
+  (string  pw_gecos    passwd:gecos)
+  (string  pw_dir      passwd:dir)
+  (string  pw_shell    passwd:shell))
+
+(define-c errno (%getpwuid_r getpwuid_r)
+  (uid_t (result passwd)
+         (link string)
+         (value (string-size arg2) int)
+         (result pointer passwd)))
+
+(define-c errno (%getpwnam_r getpwnam_r)
+  (string (result passwd)
+          (link string)
+          (value (string-size arg2) int)
+          (result pointer passwd)))
+
+(define-c-struct group
+  (string  gr_name     group:name)
+  (string  gr_passwd   group:passwd)
+  (gid_t   gr_gid      group:gid)
+  ;;((array string)  gr_mem      group-members)
+  )
+
+(define-c errno (%getgrgid_r getgrgid_r)
+  (gid_t (result group)
+         (link string)
+         (value (string-size arg2) int)
+         (result pointer group)))
+
+(define-c errno (%getgrnam_r getgrnam_r)
+  (string (result group)
+          (link string)
+          (value (string-size arg2) int)
+          (result pointer group)))
+
 
 ;;; 3.7  [Intentionally omitted]
 
 ;;; 3.8  System parameters
+
+;;> Returns the standard hostname of the current processor.
+
+(define-c errno (system-name gethostname)
+  ((result (array char (auto-expand arg1))) (value 256 int)))
+
+
 
 ;;; 3.9  Signal system
 
