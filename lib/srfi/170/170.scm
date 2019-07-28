@@ -339,7 +339,7 @@
              (passwd:uid ui)
              (passwd:gid ui)
              (passwd:dir ui)
-             (passwd:shell) ui))))))
+             (passwd:shell ui)))))))
  (else
   ;; Bionic Beaver does not report error
   (define (user-info user)
