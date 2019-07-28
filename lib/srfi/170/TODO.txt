@@ -7,3 +7,5 @@ Manually test su-ed root on OpenBSD set-file-owner/-group
 A version of errno procedure that can set it
 
 Create test set to run as root
+
+Maybe from system.stub: get and set session id, chroot
