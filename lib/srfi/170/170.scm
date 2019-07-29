@@ -416,6 +416,8 @@
         (errno-error (errno) monotonic-time)
         (cons (timespec:seconds t) (timespec:nanoseconds t)))))
 
+(define (timespec-difference timespec1 timespec2)
+  (cons (- (car timespec1) (car timespec2)) (- (cdr timespec1) (cdr timespec2))))
 
 
 ;;; 3.11  Environment variables

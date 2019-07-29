@@ -342,8 +342,9 @@
                               (> (car t2)  0)
                               (> (cdr t2)  0))))
 
+          (test '(2 . 3) (timespec-difference '(3 . 4) '(1 . 1)))
 
-
+          ;; timespec=? if we keep it
           )
 
 

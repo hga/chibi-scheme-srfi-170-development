@@ -135,7 +135,7 @@
    ;; 3.10  Time
 
    posix-time monotonic-time
-   ;; timespec-difference timespec=?
+   timespec-difference ;; timespec=?
 
 
    ;; 3.11  Environment variables
@@ -184,7 +184,7 @@
             (chibi)
 ;;            (only (chibi filesystem) file-exists?) ;; in R7RS-small
             (only (chibi ast) errno integer->error-string) ;; ~~~~  until aux.c is up to snuff
-            (only (srfi 1) take)
+            (only (srfi 1) take) ;; list-copy) for testing if we keep timespec=?
             (srfi 151) ;; bitwise operators
             (chibi optional) ;; Snow package for optional args
             )
