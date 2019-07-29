@@ -6,6 +6,7 @@
           (only (chibi process) exit)
           (chibi test)
           (only (chibi filesystem) file-exists?) ;; in R7RS-small
+          (only (srfi 1) list-index) ;; list-copy for testing timespecs??
           (srfi 151) ;; bitwise operators
           (srfi 170))
 
@@ -26,6 +27,8 @@
     (define tmp-file-1 "/tmp/chibi-scheme-srfi-170-test-xyzzy/file-1")
     (define tmp-file-1-basename "file-1")
     (define tmp-file-2 "/tmp/chibi-scheme-srfi-170-test-xyzzy/file-2")
+    (define tmp-dot-file "/tmp/chibi-scheme-srfi-170-test-xyzzy/.dot-file")
+    (define tmp-dot-file-basename ".dot-file")
     (define tmp-hard-link "/tmp/chibi-scheme-srfi-170-test-xyzzy/hard-link")
     (define tmp-symlink "/tmp/chibi-scheme-srfi-170-test-xyzzy/sym-link")
 
@@ -37,6 +40,7 @@
       (test-not-error (delete-filesystem-object tmp-fifo))
       (test-not-error (delete-filesystem-object tmp-file-1))
       (test-not-error (delete-filesystem-object tmp-file-2))
+      (test-not-error (delete-filesystem-object tmp-dot-file))
       (test-not-error (delete-filesystem-object tmp-hard-link))
       (test-not-error (delete-filesystem-object tmp-symlink))
       (test-not-error (delete-filesystem-object tmp-containing-dir)))
@@ -45,6 +49,9 @@
       (call-with-output-file fname
         (lambda (out) (display "xyzzy" out)))
       (test-assert (file-exists? fname)))
+
+    (define (is-string-in-list? str lst)
+      (list-index (lambda (f) (equal? str f)) lst))
 
 
     (define (run-tests)
@@ -179,20 +186,18 @@
           (test-assert (file-info-character-special? (file-info "/dev/tty")))
           (test-assert (file-info-symlink? (file-info tmp-symlink)))
 
-        ;; ----------------
-
-        ;;> The fundamental directory iterator.  Applies \var{kons} to
-        ;;> each filename in directory \var{dir} and the result of the
-        ;;> previous application, beginning with \var{knil}.  With
-        ;;> \var{kons} as \scheme{cons} and \var{knil} as \scheme{'()},
-        ;;> equivalent to \scheme{directory-files}.
-
-;      (define (directory-fold dir kons knil)
-
-        ;;> Returns a list of the files in \var{dir} in an unspecified
-        ;;> order.
+          (test-not-error (create-tmp-test-file tmp-dot-file))
 
 ;      (define (directory-files dir)
+
+          ;; test open-/read-/close-directory
+          (let ((dl (directory-fold tmp-containing-dir cons '())))
+            (test-assert (is-string-in-list? "." dl))
+            (test-assert (is-string-in-list? ".." dl))
+            (test-assert (is-string-in-list? tmp-file-1-basename dl))
+            (test-assert (is-string-in-list? tmp-dot-file-basename dl)))
+
+
 
           )
 

@@ -73,6 +73,9 @@
    file-info-socket?  file-info-block-special?
    file-info-character-special?  file-info-symlink?
 
+   directory-files
+   open-directory read-directory close-directory
+
    ;; Useful, but not part of SRFI API:
 
    ;; delete-filesystem-object will not raise an exception unless
@@ -80,6 +83,13 @@
 
    delete-filesystem-object
 
+   ;;> The fundamental directory iterator.  Applies \var{kons} to
+   ;;> each filename in directory \var{dir} and the result of the
+   ;;> previous application, beginning with \var{knil}.  With
+   ;;> \var{kons} as \scheme{cons} and \var{knil} as \scheme{'()},
+   ;;> equivalent to \scheme{directory-files}.
+
+   directory-fold
 
    ;; 3.4  Processes
 
@@ -188,7 +198,7 @@
             (chibi)
 ;;            (only (chibi filesystem) file-exists?) ;; in R7RS-small
             (only (chibi ast) errno integer->error-string) ;; ~~~~  until aux.c is up to snuff
-            (only (srfi 1) take) ;; list-copy) for testing if we keep timespec=?
+            (only (srfi 1) take)
             (only (srfi 115) regexp-split)
             (srfi 151) ;; bitwise operators
             (chibi optional) ;; Snow package for optional args
