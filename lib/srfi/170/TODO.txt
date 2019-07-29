@@ -13,4 +13,6 @@ Maybe from system.stub: get and set session id, chroot
 Finish set-file-timespecs and tests for it, then comment out due to
 compiler warnings, note the latter in SRFI.
 
-Tests for user and group database access proceedures.
+Tests for user and group database access proceedures
+
+Review and revise for [foo] [bar] vs. [foo [bar]]
