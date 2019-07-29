@@ -10,6 +10,9 @@
 
    %stat %lstat stat:atime stat:mtime stat:ctime
 
+   %opendir %readdir %closedir
+   %directory-object?
+
    posix/path-max
 
    ;; %utimensat

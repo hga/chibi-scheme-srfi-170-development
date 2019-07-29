@@ -178,13 +178,19 @@
   (directory-fold dir cons '()))
 
 (define (open-directory dir)
-  #f)
+  (let ((ret (%opendir dir)))
+    (if ret
+        ret
+        (errno-error (errno) open-directory dir))))
 
 (define (read-directory directory-object)
   #f)
 
 (define (close-directory directory-object)
-  #f)
+  (if (not (%directory-object? directory-object))
+      (errno-error errno/inval close-directory directory-object)
+      ;; does not do any error stuff, see 170.stub
+      (%closedir directory-object)))
 
 
 

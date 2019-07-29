@@ -229,8 +229,13 @@
 (define-c-struct dirent
  (string d_name dirent-name))
 
+;; ~~~~ the finalizer is very fragile and incomplete, handing it the
+;; fixnum 1 segfaults on Bionic Beaver, on which it fails to return
+;; anything, nor sets errno when handed an already closed DIR.
+
 (define-c-type DIR
- finalizer: (%closedir closedir))
+ finalizer: (%closedir closedir)
+ predicate: %directory-object?)
 
 (define-c (free DIR) (%opendir opendir) (string))
 (define-c dirent (%readdir readdir) ((link (pointer DIR))))
