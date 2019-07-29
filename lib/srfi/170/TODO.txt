@@ -16,3 +16,5 @@ compiler warnings, note the latter in SRFI.
 Tests for user and group database access proceedures
 
 Review and revise for [foo] [bar] vs. [foo [bar]]
+
+Make note about the best security practices being a moving target
