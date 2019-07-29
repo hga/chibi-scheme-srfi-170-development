@@ -2,7 +2,7 @@
 (define-library (srfi 170)
   (export
 
-;;; TMP
+;;; TMP ----------------
 
    errno integer->error-string
 
@@ -76,20 +76,6 @@
    directory-files
    open-directory read-directory close-directory
 
-   ;; Useful, but not part of SRFI API:
-
-   ;; delete-filesystem-object will not raise an exception unless
-   ;; there is an object it can't delete.  No object, no problem.
-
-   delete-filesystem-object
-
-   ;;> The fundamental directory iterator.  Applies \var{kons} to
-   ;;> each filename in directory \var{dir} and the result of the
-   ;;> previous application, beginning with \var{knil}.  With
-   ;;> \var{kons} as \scheme{cons} and \var{knil} as \scheme{'()},
-   ;;> equivalent to \scheme{directory-files}.
-
-   directory-fold
 
    ;; 3.4  Processes
 
@@ -129,6 +115,7 @@
    uname:os-name uname:node-name uname:release-name uname:version uname:machine
    ;; current-timezone
    ;; current-locale
+
 
    ;; 3.9  Signal system
 
@@ -204,4 +191,5 @@
             (chibi optional) ;; Snow package for optional args
             )
     (include-shared "170/170"))) ;; ~~~~ add aux when it's up to snuff
+  (include "170/common.scm")
   (include "170/170.scm"))

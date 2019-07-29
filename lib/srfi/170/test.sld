@@ -10,6 +10,8 @@
           (srfi 151) ;; bitwise operators
           (srfi 170))
 
+  (include "common.scm")
+
   (begin
 
     ;; Inverse of test-error, mutated from test-not, only errors if an
@@ -190,13 +192,14 @@
 
 ;      (define (directory-files dir)
 
+#|
           ;; test open-/read-/close-directory
           (let ((dl (directory-fold tmp-containing-dir cons '())))
             (test-assert (is-string-in-list? "." dl))
             (test-assert (is-string-in-list? ".." dl))
             (test-assert (is-string-in-list? tmp-file-1-basename dl))
             (test-assert (is-string-in-list? tmp-dot-file-basename dl)))
-
+|#
 
 
           )

@@ -226,13 +226,14 @@
 
 ;;> Code for walking directories
 
-(define-c-type DIR
- finalizer: (close-directory closedir))
 (define-c-struct dirent
  (string d_name dirent-name))
 
-(define-c (free DIR) (open-directory opendir) (string))
-(define-c dirent (read-directory readdir) ((link (pointer DIR))))
+(define-c-type DIR
+ finalizer: (%closedir closedir))
+
+(define-c (free DIR) (%opendir opendir) (string))
+(define-c dirent (%readdir readdir) ((link (pointer DIR))))
 
 (cond-expand
   (windows
