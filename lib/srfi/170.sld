@@ -140,6 +140,9 @@
 
    ;; 3.11  Environment variables
 
+   exec-path-list
+
+
    ;; 3.12  Terminal device control
 
    )
@@ -181,10 +184,12 @@
    (chibi
     (import (scheme base)
             (scheme case-lambda)
+            (only (scheme process-context) get-environment-variable)
             (chibi)
 ;;            (only (chibi filesystem) file-exists?) ;; in R7RS-small
             (only (chibi ast) errno integer->error-string) ;; ~~~~  until aux.c is up to snuff
             (only (srfi 1) take) ;; list-copy) for testing if we keep timespec=?
+            (only (srfi 115) regexp-split)
             (srfi 151) ;; bitwise operators
             (chibi optional) ;; Snow package for optional args
             )
