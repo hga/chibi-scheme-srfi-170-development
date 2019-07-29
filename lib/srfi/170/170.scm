@@ -192,14 +192,14 @@
 ;;> equivalent to \scheme{directory-files}.
 
 (define (directory-fold dir kons knil)
-  (let ((dir (opendir dir)))
+  (let ((dir (open-directory dir)))
     (if (not dir)
         knil
         (let lp ((res knil))
-          (let ((file (readdir dir)))
+          (let ((file (read-directory dir)))
             (if file
                 (lp (kons (dirent-name file) res))
-                (begin (closedir dir) res)))))))
+                (begin (close-directory dir) res)))))))
 
 ;;> Returns a list of the files in \var{dir} in an unspecified
 ;;> order.
