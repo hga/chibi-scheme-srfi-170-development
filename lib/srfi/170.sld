@@ -4,7 +4,7 @@
 
 ;;; TMP ----------------
 
-   errno integer->error-string
+   errno set-errno integer->error-string
 
    %delete-directory %delete-file
 
@@ -186,12 +186,14 @@
             (only (scheme process-context) get-environment-variable)
             (chibi)
 ;;            (only (chibi filesystem) file-exists?) ;; in R7RS-small
-            (only (chibi ast) errno integer->error-string) ;; ~~~~  until aux.c is up to snuff
             (only (srfi 1) take)
             (only (srfi 115) regexp-split)
             (srfi 151) ;; bitwise operators
             (chibi optional) ;; Snow package for optional args
             )
-    (include-shared "170/170"))) ;; ~~~~ add aux when it's up to snuff
+    (include-shared "170/170")
+    (include-shared "170/aux")))
   (include "170/common.scm")
-  (include "170/170.scm"))
+  (include "170/170.scm")
+;;  (include "aux.scm")
+  )

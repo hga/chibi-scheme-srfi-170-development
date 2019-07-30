@@ -11,6 +11,7 @@
           (srfi 170))
 
   (include "common.scm")
+  (include "aux.so")
 
   (begin
 
@@ -64,6 +65,15 @@
         ;; tests.
 
         (test-group "Prologue: umask, delete-filesystem-object any old temporary files and directories"
+
+          (test 0 (errno))
+          (test 0 (set-errno errno/2big))
+          (set-errno errno/2big)
+          (test errno/2big (errno))
+          (test-assert (string? (integer->error-string)))
+          (test-assert (string? (integer->error-string errno/2big)))
+          (set-errno errno/2big)
+          (test-assert (equal? (integer->error-string) (integer->error-string errno/2big)))
 
           (delete-tmp-test-files)
 

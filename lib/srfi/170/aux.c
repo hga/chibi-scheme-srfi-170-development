@@ -22,6 +22,19 @@ sexp sexp_errno (sexp ctx, sexp self, sexp_sint_t n) {
 #endif
 }
 
+sexp sexp_set_errno (sexp ctx, sexp self, sexp_sint_t n, sexp x) {
+#ifdef PLAN9
+  return SEXP_FALSE;
+#else
+  int old_errno = errno;
+
+  sexp_assert_type(ctx, sexp_fixnump, SEXP_FIXNUM, x);
+  errno = sexp_unbox_fixnum(x);
+
+  return sexp_make_fixnum(old_errno);
+#endif
+}
+
 sexp sexp_error_string (sexp ctx, sexp self, sexp_sint_t n, sexp x) {
 #ifdef PLAN9
   return SEXP_FALSE;
@@ -40,18 +53,15 @@ sexp sexp_error_string (sexp ctx, sexp self, sexp_sint_t n, sexp x) {
 
 sexp sexp_init_library (sexp ctx, sexp self, sexp_sint_t n, sexp env, const char* version, const sexp_abi_identifier_t abi) {
 
-  sexp_gc_var2(sym, str); // ~~~~ ?? why 2 vs. 3 or whatever
-
   if (!(sexp_version_compatible(ctx, version, sexp_version)
         && sexp_abi_compatible(ctx, abi, SEXP_ABI_IDENTIFIER)))
     return SEXP_ABI_ERROR;
 
   sexp_define_foreign(ctx, env, "errno", 0, sexp_errno);
+  sexp_define_foreign(ctx, env, "set-errno", 1, sexp_set_errno);
   sexp_define_foreign_opt(ctx, env, "integer->error-string", 1, sexp_error_string, SEXP_FALSE);
 
-  // ~~~~ after instead of before above defines?
-  sexp_gc_preserve2(ctx, sym, str);
-  sexp_env_define(ctx, env, sym, str); // ??
-  sexp_gc_release2(ctx); // ~~~~ ?? why 2 vs. 3 or whatever
+  // ~~~~ examine sexp_register_simple_type to create double timespect struct???
+
   return SEXP_VOID;
 }
