@@ -10,9 +10,8 @@ Find all EINTR possibilities and retry per policy
 
 Manually test su-ed root on OpenBSD set-file-owner/-group
 
-Finish set-file-timespecs and tests for it, if not fixed stub or
-direct interface then comment out due to compiler warnings, note the
-latter in SRFI.
+Do utimensat and futimens in C for set-file-timespecs and tests for
+the latter, then replace fragile closedir and if needed open/readdir
 
 Tests for user and group database access proceedures
 
