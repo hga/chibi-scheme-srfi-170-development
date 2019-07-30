@@ -1,20 +1,19 @@
+Maybe from system.stub: get and set session id, chroot
+
+Review and revise for [foo] [bar] vs. [foo [bar]]
+
 file-info doesn't handle ports, need (port-fdes port)
 
 Look for EAGAIN errnos, and create a policy if any calls error with it
 
+Find all EINTR possibilities and retry per policy
+
 Manually test su-ed root on OpenBSD set-file-owner/-group
 
-A version of errno procedure that can set it
-
-Create test set to run as root
-
-Maybe from system.stub: get and set session id, chroot
-
-Finish set-file-timespecs and tests for it, then comment out due to
-compiler warnings, note the latter in SRFI.
+Finish set-file-timespecs and tests for it, if not fixed stub or
+direct interface then comment out due to compiler warnings, note the
+latter in SRFI.
 
 Tests for user and group database access proceedures
-
-Review and revise for [foo] [bar] vs. [foo [bar]]
 
 Make note about the best security practices being a moving target
