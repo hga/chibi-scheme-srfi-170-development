@@ -536,6 +536,6 @@
 (define-c errno (%clock-gettime clock_gettime) (clockid_t (result timespec)))
 
 
-;;; 3.11  Environment variables
+;;; 3.11  [Intentionally omitted]
 
 ;;; 3.12  Terminal device control

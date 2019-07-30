@@ -138,9 +138,7 @@
    timespec-difference ;; timespec=?
 
 
-   ;; 3.11  Environment variables
-
-   exec-path-list
+   ;; 3.11  [Intentionally omitted]
 
 
    ;; 3.12  Terminal device control
@@ -168,6 +166,7 @@
      group-info:name group-info:gid ;; group-info:members
 
      ;; 3.9  Signal system
+
      signal/poll
 
 

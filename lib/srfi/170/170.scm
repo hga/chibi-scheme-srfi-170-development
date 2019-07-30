@@ -406,14 +406,7 @@
   (cons (- (car timespec1) (car timespec2)) (- (cdr timespec1) (cdr timespec2))))
 
 
-;;; 3.11  Environment variables
-
-(cond-expand
- (windows
-  (define exec-path-list (regexp-split ";" (get-environment-variable "PATH"))))
- (else
-  (define exec-path-list (regexp-split ":" (get-environment-variable "PATH")))))
-
+;;; 3.11  [Intentionally omitted]
 
 
 ;;; 3.12  Terminal device control

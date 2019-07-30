@@ -363,10 +363,7 @@
           )
 
 
-        (test-group "3.11  Environment variables"
-
-          (test-assert (list? exec-path-list))
-          (test-assert (string? (car exec-path-list))))
+        ;; 3.11  [Intentionally omitted]
 
 
         ;; 3.12  Terminal device control
