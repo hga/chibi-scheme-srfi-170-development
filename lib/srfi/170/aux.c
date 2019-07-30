@@ -14,6 +14,8 @@
 #include <errno.h>
 #endif
 
+// errno takes no arguments and returns the current errno
+
 sexp sexp_errno (sexp ctx, sexp self, sexp_sint_t n) {
 #ifdef PLAN9
   return SEXP_FALSE;
@@ -21,6 +23,8 @@ sexp sexp_errno (sexp ctx, sexp self, sexp_sint_t n) {
   return sexp_make_fixnum(errno);
 #endif
 }
+
+// set-errno takes a new errno and returns the old errno
 
 sexp sexp_set_errno (sexp ctx, sexp self, sexp_sint_t n, sexp x) {
 #ifdef PLAN9
@@ -34,6 +38,9 @@ sexp sexp_set_errno (sexp ctx, sexp self, sexp_sint_t n, sexp x) {
   return sexp_make_fixnum(old_errno);
 #endif
 }
+
+// integer->error-string takes an optional errno, and returns the
+// strerror string for it or the current errno
 
 sexp sexp_error_string (sexp ctx, sexp self, sexp_sint_t n, sexp x) {
 #ifdef PLAN9
