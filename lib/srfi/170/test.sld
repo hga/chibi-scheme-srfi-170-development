@@ -67,7 +67,7 @@
         (test-group "Prologue: umask, delete-filesystem-object any old temporary files and directories"
 
           (test 0 (errno))
-          (test 0 (set-errno errno/2big))
+          (test-not-error (set-errno errno/2big))
           (set-errno errno/2big)
           (test errno/2big (errno))
           (test-assert (string? (integer->error-string)))

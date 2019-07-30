@@ -10,8 +10,9 @@ Find all EINTR possibilities and retry per policy
 
 Manually test su-ed root on OpenBSD set-file-owner/-group
 
-Do utimensat and futimens in C for set-file-timespecs and tests for
-the latter, then replace fragile closedir and if needed open/readdir.
+Do futimens in C? for set-file-timespecs, tests for set-file-timespecs
+
+Replace fragile closedir and if needed open/readdir.
 
 Fix user-information and group-information, no errors reported on
 Bionic Beaver, instead returning the user or group with the higest ID,

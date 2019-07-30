@@ -206,6 +206,7 @@
 
 (define-c-const int (utimens/at_fdcwd "AT_FDCWD"))
 (define-c-const int (utimens/utime_now "UTIME_NOW"))
+(define-c-const int (utimens/utime_omit "UTIME_OMIT"))
 (define-c-const int (utimens/at_symlink_nofollow "AT_SYMLINK_NOFOLLOW"))
 
 (define-c-struct timespec

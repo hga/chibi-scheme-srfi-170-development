@@ -15,7 +15,7 @@
 
    posix/path-max
 
-   ;; %utimensat
+   %utimensat
 
    groups/max %getgroups
 
@@ -63,7 +63,7 @@
    rename-file
    delete-directory
    set-file-mode set-file-owner set-file-group
-   utimens/at_fdcwd utimens/utime_now utimens/at_symlink_nofollow
+   utimens/utime_now utimens/utime_omit
    ;; set-file-timespecs
    truncate-file
 
