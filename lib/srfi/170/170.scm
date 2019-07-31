@@ -171,25 +171,49 @@
 (define (file-info-symlink? file-info-record)
   (if (eq? 0 (bitwise-and file-type-mask/iflnk (file-info:mode file-info-record))) #f #t))
 
+(define-record-type Directory-Object
+  (make-directory-object the-DIR is-open? dot-files?)
+  directory-object?
+  (the-DIR directory-object-get-DIR)
+  (is-open? directory-object-is-open? set-directory-object-is-open)
+  (dot-files? directory-object-dot-files?))
+
 ;;> Returns a list of the files in \var{dir} in an unspecified
 ;;> order.
 
 (define (directory-files dir)
-  (directory-fold dir cons '()))
+;;  (directory-fold dir cons '()))
+#f)
 
-(define (open-directory dir)
-  (let ((ret (%opendir dir)))
-    (if ret
-        ret
-        (errno-error (errno) open-directory dir))))
+(define (open-directory dir . o)
+  (let-optionals o ((dot-files? #f))
+    (let ((ret (%opendir dir)))
+      (if ret
+          (make-directory-object ret #t dot-files?)
+          (errno-error (errno) open-directory dir)))))
+
+;; ~~~~ add dot-files? check
 
 (define (read-directory directory-object)
-  #f)
+  (if (not (directory-object? directory-object))
+      (errno-error errno/inval read-directory directory-object)) ;; non-local exit
+  (if (not (directory-object-is-open? directory-object))
+      (errno-error errno/badf read-directory directory-object)) ;; non-local exit
+  (set-errno 0)
+  (let* ((di (%readdir (directory-object-get-DIR directory-object)))
+         (e (errno)))
+    (if (not (equal? 0 e))
+        (errno-error e read-directory directory-object)) ;; non-local exit
+    (if (not di)
+        (eof-object)
+        (dirent-name di))))
 
 (define (close-directory directory-object)
-  (if (not (%directory-object? directory-object))
+  (if (not (directory-object? directory-object))
       (errno-error errno/inval close-directory directory-object)
       ;; does not do any error stuff, see 170.stub
+      ;; test if already closed
+      ;; test for DIR?
       (%closedir directory-object)))
 
 

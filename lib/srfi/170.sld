@@ -11,7 +11,10 @@
    %stat %lstat stat:atime stat:mtime stat:ctime
 
    %opendir %readdir %closedir
-   %directory-object?
+   DIR? dirent-name make-directory-object directory-object?
+   directory-object-get-DIR directory-object-is-open? set-directory-object-is-open directory-object-dot-files?
+
+
 
    posix/path-max
 
