@@ -210,11 +210,12 @@
 
 (define (close-directory directory-object)
   (if (not (directory-object? directory-object))
-      (errno-error errno/inval close-directory directory-object)
+      (errno-error errno/inval close-directory directory-object)) ;; non-local exit
+  (if (not (directory-object-is-open? directory-object))
+      (errno-error errno/badf read-directory directory-object) ;; non-local exit
+      (set-directory-object-is-open directory-object #f)
       ;; does not do any error stuff, see 170.stub
-      ;; test if already closed
-      ;; test for DIR?
-      (%closedir directory-object)))
+      (%closedir (directory-object-get-DIR directory-object))))
 
 
 
