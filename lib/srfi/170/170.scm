@@ -192,22 +192,22 @@
           (make-directory-object ret #t dot-files?)
           (errno-error (errno) open-directory dir)))))
 
-(define (read-directory-raise-error do)
+(define (read-directory-raise-error dirobj)
   (set-errno 0)
-  (let* ((de (%readdir (directory-object-get-DIR do)))
+  (let* ((de (%readdir (directory-object-get-DIR dirobj)))
          (e (errno)))
     (if (equal? 0 e)
         de
-        (errno-error e read-directory do))))
+        (errno-error e read-directory dirobj))))
 
-(define (read-directory do)
-  (if (not (directory-object? do))
-      (errno-error errno/inval read-directory do)) ;; non-local exit
-  (if (not (directory-object-is-open? do))
-      (errno-error errno/badf read-directory do)) ;; non-local exit
-  (let ((dot-files? (directory-object-dot-files? do)))
+(define (read-directory dirobj)
+  (if (not (directory-object? dirobj))
+      (errno-error errno/inval read-directory dirobj)) ;; non-local exit
+  (if (not (directory-object-is-open? dirobj))
+      (errno-error errno/badf read-directory dirobj)) ;; non-local exit
+  (let ((dot-files? (directory-object-dot-files? dirobj)))
     (let loop ()
-      (let ((de (read-directory-raise-error do)))
+      (let ((de (read-directory-raise-error dirobj)))
         (if (not de)
             (eof-object)
             (let ((name (dirent-name de)))
@@ -224,7 +224,7 @@
   (if (not (directory-object-is-open? directory-object))
       (errno-error errno/badf read-directory directory-object) ;; non-local exit
       (set-directory-object-is-open directory-object #f)
-      ;; does not do any error stuff, see 170.stub
+      ;; does not dirobj any error stuff, see 170.stub
       (%closedir (directory-object-get-DIR directory-object))))
 
 
