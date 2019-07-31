@@ -12,8 +12,6 @@ Manually test su-ed root on OpenBSD set-file-owner/-group
 
 Do futimens in C? for set-file-timespecs, tests for set-file-timespecs
 
-Replace fragile closedir and if needed open/readdir.
-
 Fix user-information and group-information, no errors reported on
 Bionic Beaver, instead returning the user or group with the higest ID,
 OpenBSD's group-information stub just plain broken.
@@ -21,3 +19,6 @@ OpenBSD's group-information stub just plain broken.
 Tests for user and group database access proceedures
 
 Make note about the best security practices being a moving target
+
+Fix querying of file-info st_mode so block vs. character
+etc. distinctions are not lost.
