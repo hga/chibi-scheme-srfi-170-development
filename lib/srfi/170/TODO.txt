@@ -22,3 +22,5 @@ Make note about the best security practices being a moving target
 
 Fix querying of file-info st_mode so block vs. character
 etc. distinctions are not lost.
+
+Add current working directory default to directory-files
