@@ -181,8 +181,9 @@
 ;;> Returns a list of the files in \var{dir} in an unspecified
 ;;> order.
 
-(define (directory-files dir)
-  (directory-fold dir cons '()))
+(define (directory-files dir . o)
+  (let-optionals o ((dot-files? #f))
+    (directory-fold dir cons '() dot-files?)))
 
 (define (open-directory dir . o)
   (let-optionals o ((dot-files? #f))
@@ -191,20 +192,31 @@
           (make-directory-object ret #t dot-files?)
           (errno-error (errno) open-directory dir)))))
 
-;; ~~~~ add dot-files? check
-(define (read-directory directory-object)
-  (if (not (directory-object? directory-object))
-      (errno-error errno/inval read-directory directory-object)) ;; non-local exit
-  (if (not (directory-object-is-open? directory-object))
-      (errno-error errno/badf read-directory directory-object)) ;; non-local exit
+(define (read-directory-raise-error do)
   (set-errno 0)
-  (let* ((di (%readdir (directory-object-get-DIR directory-object)))
+  (let* ((de (%readdir (directory-object-get-DIR do)))
          (e (errno)))
-    (if (not (equal? 0 e))
-        (errno-error e read-directory directory-object)) ;; non-local exit
-    (if (not di)
-        (eof-object)
-        (dirent-name di))))
+    (if (equal? 0 e)
+        de
+        (errno-error e read-directory do))))
+
+(define (read-directory do)
+  (if (not (directory-object? do))
+      (errno-error errno/inval read-directory do)) ;; non-local exit
+  (if (not (directory-object-is-open? do))
+      (errno-error errno/badf read-directory do)) ;; non-local exit
+  (let ((dot-files? (directory-object-dot-files? do)))
+    (let loop ()
+      (let ((de (read-directory-raise-error do)))
+        (if (not de)
+            (eof-object)
+            (let ((name (dirent-name de)))
+              (if (not (and (string? name)
+                            (or (equal? "." name)
+                                (equal? ".." name)
+                                (and (not dot-files?) (equal? #\. (string-ref name 0))))))
+                  name
+                  (loop))))))))
 
 (define (close-directory directory-object)
   (if (not (directory-object? directory-object))
