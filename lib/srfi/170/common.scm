@@ -15,13 +15,12 @@
 ;;> \var{kons} as \scheme{cons} and \var{knil} as \scheme{'()},
 ;;> equivalent to \scheme{directory-files}.
 
-(define (directory-fold dir kons knil)
-  (let ((dir (open-directory dir)))
-    (if (not dir)
-        knil
-        (let lp ((res knil))
-          (let ((file (read-directory dir)))
-            (if (not (eof-object? file))
-                (lp (kons file res))
-                (begin (close-directory dir) res)))))))
+(define (directory-fold dir kons knil . o)
+  (let-optionals o ((dot-files? #f))
+    (let ((do (open-directory dir dot-files?)))
+      (let lp ((res knil))
+        (let ((file (read-directory do)))
+          (if (not (eof-object? file))
+              (lp (kons file res))
+              (begin (close-directory do) res)))))))
 

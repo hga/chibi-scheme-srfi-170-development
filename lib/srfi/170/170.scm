@@ -182,8 +182,7 @@
 ;;> order.
 
 (define (directory-files dir)
-;;  (directory-fold dir cons '()))
-#f)
+  (directory-fold dir cons '()))
 
 (define (open-directory dir . o)
   (let-optionals o ((dot-files? #f))
@@ -193,7 +192,6 @@
           (errno-error (errno) open-directory dir)))))
 
 ;; ~~~~ add dot-files? check
-
 (define (read-directory directory-object)
   (if (not (directory-object? directory-object))
       (errno-error errno/inval read-directory directory-object)) ;; non-local exit
