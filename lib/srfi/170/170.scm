@@ -181,8 +181,9 @@
 ;;> Returns a list of the files in \var{dir} in an unspecified
 ;;> order.
 
-(define (directory-files dir . o)
-  (let-optionals o ((dot-files? #f))
+(define (directory-files . o)
+  (let-optionals o ((dir (working-directory))
+                    (dot-files? #f))
     (directory-fold dir cons '() dot-files?)))
 
 (define (open-directory dir . o)
