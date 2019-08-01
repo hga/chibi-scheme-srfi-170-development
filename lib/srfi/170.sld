@@ -14,6 +14,7 @@
    DIR? dirent-name make-directory-object directory-object?
    directory-object-get-DIR directory-object-is-open? set-directory-object-is-open directory-object-dot-files?
 
+   utimens/utime_now utimens/utime_omit
 
 
    posix/path-max
@@ -66,8 +67,7 @@
    rename-file
    delete-directory
    set-file-mode set-file-owner set-file-group
-   utimens/utime_now utimens/utime_omit
-   ;; set-file-timespecs
+   set-file-timespecs timespect/now timespec/omit
    truncate-file
 
    file-info file-info?

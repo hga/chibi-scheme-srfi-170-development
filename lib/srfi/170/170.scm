@@ -84,7 +84,21 @@
           (if (not (%lchown fname/port uid gid))
               (errno-error (errno) set-file-group fname/port uid gid))))))
 
-;; ~~~~ need FFI for set-file-timespecs, see stub file
+(define timespect/now (cons -1 utimens/utime_now))
+(define timespec/omit (cons -1 utimens/utime_omit))
+
+(define (do-set-file-timespecs fname/port atime mtime chase?)
+  (if (not (%utimensat utimens/at_fdcwd fname/port atime mtime (if chase?
+                                                                   0
+                                                                   utimens/at_symlink_nofollow)))
+      (errno-error (errno) set-file-timespecs fname/port atime mtime chase?)))
+
+(define set-file-timespecs
+  (case-lambda
+   ((fname/port) (do-set-file-timespecs fname/port timespect/now timespect/now #t))
+   ((fname/port chase?) (do-set-file-timespecs fname/port timespect/now timespect/now chase?))
+   ((fname/port atime mtime) (do-set-file-timespecs fname/port atime mtime #t))
+   ((fname/port atime mtime chase?) (do-set-file-timespecs fname/port atime mtime chase?))))
 
 (define (truncate-file fname/port len)
   (if (not (%truncate fname/port len))

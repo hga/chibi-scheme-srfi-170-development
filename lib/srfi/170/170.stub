@@ -214,10 +214,6 @@
   (time_t  tv_sec   timespec:seconds)
   (long    tv_nsec  timespec:nanoseconds))
 
-;; ~~~~ should be (define-c errno (%utimensat utimensat) (int string (array (struct timespec) 2) int))
-;;(define-c errno (%utimensat utimensat) (int string (array long 4) int))
-;;(define-c errno (%futimens futimens) (int (array long 4)))
-
 ;;> Truncate the file to the given size.
 
 (define-c errno (%truncate truncate) (string off_t))
