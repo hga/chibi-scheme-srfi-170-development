@@ -64,9 +64,9 @@
 
    ;; 3.2  I/O
 
-   port-fdes
-
-   close-fdes
+   ;; fdes->textual-input-port fdes->binary-input-port
+   ;; fdes->textual-output-port fdes->binary-output-port
+   port-fdes dup->fdes close-fdes
 
    ;; 3.3  File system
 

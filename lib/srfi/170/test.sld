@@ -107,7 +107,14 @@
           (test 2 (port-fdes (current-error-port)))
           (test-not (port-fdes the-string-port))
 
-
+          (let* ((e-port (current-error-port))
+                 (the-new-fd (dup->fdes e-port)))
+            (test 3 the-new-fd)
+            (test-not-error (close-fdes the-new-fd)))
+          (let* ((e-port (current-error-port))
+                 (the-new-fd (dup->fdes e-port 10)))
+            (test 10 the-new-fd)
+            (test-not-error (close-fdes the-new-fd)))
 
           (let* ((dev-zero-fileno (open "/dev/zero" open/read)) ;; fileno type object
                  (dev-zero-fd (%fileno-to-fd dev-zero-fileno)))

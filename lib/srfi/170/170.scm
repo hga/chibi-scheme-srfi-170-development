@@ -29,6 +29,21 @@
       (errno-error errno/inval port-fdes the-port))
   (port-fileno the-port))
 
+(define (dup->fdes the-port . o)
+  (if (not (port? the-port))
+      (errno-error errno/inval dup->fdes the-port))
+  (let ((the-old-fd (port-fdes the-port)))
+    (let-optionals o ((the-new-fd #f))
+      (if the-new-fd
+          (let ((ret (%dup2 the-old-fd the-new-fd)))
+            (if (equal? -1 ret)
+                (errno-error (errno) dup->fdes the-port the-new-fd) ;; non-local exit
+                ret))
+          (let ((ret (%dup the-old-fd)))
+            (if (equal? -1 ret)
+                (errno-error (errno) dup->fdes the-port)
+                ret))))))
+
 (define (close-fdes the-fd)
   (if (or (not (fixnum? the-fd)) (< the-fd 0))
       (errno-error errno/inval close-fdes the-fd))
