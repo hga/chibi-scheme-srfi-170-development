@@ -285,7 +285,7 @@
   ((not windows)
    (define-c errno (%lstat lstat) (string (result stat)))))
 
-#| ~~~~
+#| ~~~~~~~
 (define-c boolean S_ISREG (mode_t))
 (define-c boolean S_ISDIR (mode_t))
 (define-c boolean S_ISCHR (mode_t))
