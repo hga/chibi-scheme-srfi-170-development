@@ -60,37 +60,28 @@ sexp sexp_error_string (sexp ctx, sexp self, sexp_sint_t n, sexp x) {
 
 // started from sexp.c sexp_open_input_file_descriptor
 
-sexp sexp_file_descriptor_to_port (sexp ctx, sexp self, sexp_sint_t n, sexp fileno, sexp shutdownp) {
-  sexp_gc_var2(res, str);
-  sexp_assert_type(ctx, sexp_filenop, SEXP_FILENO, fileno);
-  if (sexp_fileno_fd(fileno) < 0)
-    return sexp_file_exception(ctx, self, "invalid file descriptor", fileno);
-  sexp_gc_preserve2(ctx, res, str);
+sexp sexp_file_descriptor_to_port (sexp ctx, sexp self, sexp_sint_t n, sexp boxed_fd, sexp is_input, sexp is_binary) {
+  sexp_gc_var3(res, str, fileno);
+
+  sexp_assert_type(ctx, sexp_fixnump, SEXP_FIXNUM, boxed_fd);
+  sexp_assert_type(ctx, sexp_booleanp, SEXP_BOOLEAN, is_input);
+  sexp_assert_type(ctx, sexp_booleanp, SEXP_BOOLEAN, is_binary);
+
+  sexp_gc_preserve3(ctx, res, str, fileno);
   str = sexp_make_string(ctx, sexp_make_fixnum(SEXP_PORT_BUFFER_SIZE), SEXP_VOID);
   res = sexp_open_input_string(ctx, str);
+  fileno = sexp_make_fileno_op (ctx, self, n, boxed_fd, SEXP_TRUE); // ~~~~ last is no_closep
   if (!sexp_exceptionp(res)) {
     sexp_port_fd(res) = fileno;
-    sexp_port_offset(res) = SEXP_PORT_BUFFER_SIZE;
-    sexp_port_binaryp(res) = 1;
-    sexp_port_shutdownp(res) = sexp_truep(shutdownp);
+    sexp_port_offset(res) = sexp_truep(is_input) ? SEXP_PORT_BUFFER_SIZE : 0;
+    sexp_pointer_tag(res) = sexp_truep(is_input) ? SEXP_IPORT : SEXP_OPORT;
+    sexp_port_binaryp(res) = sexp_truep(is_binary) ? 1 : 0;
+    //~~~~     sexp_port_shutdownp(res) = sexp_truep(shutdownp);
     sexp_fileno_count(fileno)++;
   }
-  sexp_gc_release2(ctx);
+  sexp_gc_release3(ctx);
   return res;
 }
-
-// started from sexp.c sexp_close_input_file_descriptor
-
-sexp sexp_file_descriptor_to_binary_output_port (sexp ctx, sexp self, sexp_sint_t n, sexp fileno, sexp shutdownp) {
-  sexp res = sexp_open_input_file_descriptor(ctx, self, n, fileno, shutdownp);
-  if (!sexp_exceptionp(res)) {
-    sexp_pointer_tag(res) = SEXP_OPORT;
-    sexp_port_offset(res) = 0;
-  }
-  return res;
-}
-
-
 
 sexp sexp_close_fdes (sexp ctx, sexp self, sexp_sint_t n, sexp the_boxed_fd) {
 
@@ -149,7 +140,9 @@ sexp sexp_init_library (sexp ctx, sexp self, sexp_sint_t n, sexp env, const char
 
   sexp_define_foreign(ctx, env, "errno", 0, sexp_errno);
   sexp_define_foreign(ctx, env, "set-errno", 1, sexp_set_errno);
-  sexp_define_foreign_opt(ctx, env, "integer->error-string", 1, sexp_error_string, SEXP_FALSE);
+  sexp_define_foreign_opt(ctx, env, "integer->error-string", 1, sexp_error_string, SEXP_FALSE); // ~~~~ what the bleep is the false, and why _opt?
+
+  sexp_define_foreign(ctx, env, "%file_descriptor_to_port", 3, sexp_file_descriptor_to_port);
 
   sexp_define_foreign(ctx, env, "%close-fdes", 1, sexp_close_fdes);
 
