@@ -129,21 +129,26 @@
 
 ;;; 3.2  I/O
 
+;; Opens the given file and returns a file descriptor,
+;; needed for testing
+
+(define-c fileno (%open open) (string int (default #o644 int)))
+
 ;;> Duplicates the given file descriptor, returning he new value,
 ;; or -1 on failure.
 
-(define-c fileno (duplicate-file-descriptor "dup") (fileno))
+(define-c fileno (%dup dup) (fileno))
 
 ;;> Copies the first file descriptor to the second, closing
 ;;> it if needed.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
 
-(define-c errno (duplicate-file-descriptor-to "dup2") (fileno fileno))
+(define-c errno (%dup2 dup2) (fileno fileno))
 
 ;;> Closes the given file descriptor.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
 
-(define-c errno (close-file-descriptor "close") (fileno))
+(define-c errno (%close close) (fileno))
 
 
 ;;; 3.3  File system

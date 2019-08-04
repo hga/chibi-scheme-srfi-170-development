@@ -32,7 +32,7 @@
 (define (close-fdes the-fd)
   (if (or (not (fixnum? the-fd)) (< the-fd 0))
       (errno-error errno/inval close-fdes the-fd))
-  (if (not (%close-fdes the-fd))
+  (if (not (%close the-fd))
       (errno-error (errno) close-fdes the-fd)))
 
 

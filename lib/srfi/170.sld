@@ -7,7 +7,7 @@
    errno set-errno integer->error-string
 
    %file_descriptor_to_port
-   %close-fdes
+   %close
 
    %delete-directory %delete-file
 

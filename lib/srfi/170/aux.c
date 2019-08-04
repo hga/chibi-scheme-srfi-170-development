@@ -83,19 +83,6 @@ sexp sexp_file_descriptor_to_port (sexp ctx, sexp self, sexp_sint_t n, sexp boxe
   return res;
 }
 
-sexp sexp_close_fdes (sexp ctx, sexp self, sexp_sint_t n, sexp the_boxed_fd) {
-
-  if (! sexp_exact_integerp(the_boxed_fd))
-    return sexp_type_exception(ctx, self, SEXP_FIXNUM, the_boxed_fd);
-
-  if (close(sexp_sint_value(the_boxed_fd))) {
-    return SEXP_FALSE;
-  } else {
-    return SEXP_TRUE;
-  }
-}
-
-
 // 3.3  File system
 
 sexp sexp_wrap_utimensat (sexp ctx, sexp self, sexp_sint_t n, sexp the_fd, sexp the_path, sexp the_atime, sexp the_mtime, sexp the_flag) {
@@ -143,8 +130,6 @@ sexp sexp_init_library (sexp ctx, sexp self, sexp_sint_t n, sexp env, const char
   sexp_define_foreign_opt(ctx, env, "integer->error-string", 1, sexp_error_string, SEXP_FALSE); // ~~~~ what the bleep is the false, and why _opt?
 
   sexp_define_foreign(ctx, env, "%file_descriptor_to_port", 3, sexp_file_descriptor_to_port);
-
-  sexp_define_foreign(ctx, env, "%close-fdes", 1, sexp_close_fdes);
 
   sexp_define_foreign(ctx, env, "%utimensat", 5, sexp_wrap_utimensat);
 

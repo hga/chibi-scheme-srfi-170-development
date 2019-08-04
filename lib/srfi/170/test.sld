@@ -111,7 +111,9 @@
           (let* ((dev-zero-port (open-binary-input-file "/dev/zero"))
                  (dev-zero-fd (port-fdes dev-zero-port)))
             (test 3 dev-zero-fd) ;; ~~~~ may have to be conditionalized for other systems
+            ;; ~~~~ read from it if ~~~~ read from closed fd test below works
             (test-not-error (close-fdes dev-zero-fd))
+            ;; ~~~~ try reading from it again?
             (test-error (close-fdes dev-zero-fd))
             (test-not-error (close-port dev-zero-port))) ;; ~~~~ this could well fail....
 
