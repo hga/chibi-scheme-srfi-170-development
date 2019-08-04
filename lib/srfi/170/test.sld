@@ -109,7 +109,7 @@
 
           (let* ((e-port (current-error-port))
                  (the-new-fd (dup->fdes e-port)))
-            (test 3 the-new-fd)
+            (test 3 the-new-fd) ;; ~~~~ may have to be conditionalized for other systems
             (test-not-error (close-fdes the-new-fd)))
           (let* ((e-port (current-error-port))
                  (the-new-fd (dup->fdes e-port 10)))
