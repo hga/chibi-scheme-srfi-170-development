@@ -129,11 +129,6 @@
 
 ;;; 3.2  I/O
 
-;; Opens the given file and returns a file descriptor,
-;; needed for testing
-
-(define-c fileno (%open open) (string int (default #o644 int)))
-
 ;;> Duplicates the given file descriptor, returning he new value,
 ;; or -1 on failure.
 

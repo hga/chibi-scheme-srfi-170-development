@@ -6,7 +6,7 @@
           (only (chibi process) exit)
           (chibi optional) ;; Snow package for optional args
           (chibi test)
-          (only (chibi filesystem) file-exists?) ;; in R7RS-small
+          (only (chibi filesystem) file-exists? open open/read) ;; ~~~~ make-null-output-port make-null-input-port)
           (only (srfi 1) list-index) ;; list-copy for testing timespecs??
           ;; (only (srfi 128) ) ;; comparators (reduced)
           (only (srfi 132) list-sort) ;; sort libraries
@@ -108,17 +108,13 @@
           (test 1 (port-fdes (current-output-port)))
           (test 2 (port-fdes (current-error-port)))
           (test-not (port-fdes the-string-port))
-          (let* ((dev-zero-port (open-binary-input-file "/dev/zero"))
-                 (dev-zero-fd (port-fdes dev-zero-port)))
+
+
+
+          (let ((dev-zero-fd (open "/dev/zero" open/read))) ;; ~~~~ this returns sexp fileno
             (test 3 dev-zero-fd) ;; ~~~~ may have to be conditionalized for other systems
-            ;; ~~~~ read from it if ~~~~ read from closed fd test below works
             (test-not-error (close-fdes dev-zero-fd))
-            ;; ~~~~ try reading from it again?
-            (test-error (close-fdes dev-zero-fd))
-            (test-not-error (close-port dev-zero-port))) ;; ~~~~ this could well fail....
-
-
-
+            (test-error (close-fdes dev-zero-fd)))
           )
 
 
