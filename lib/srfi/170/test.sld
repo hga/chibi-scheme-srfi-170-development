@@ -6,7 +6,7 @@
           (only (chibi process) exit)
           (chibi optional) ;; Snow package for optional args
           (chibi test)
-          (only (chibi filesystem) file-exists? open open/read) ;; ~~~~ make-null-output-port make-null-input-port)
+          (only (chibi filesystem) file-exists? open open/read)
           (only (srfi 1) list-index) ;; list-copy for testing timespecs??
           ;; (only (srfi 128) ) ;; comparators (reduced)
           (only (srfi 132) list-sort) ;; sort libraries
@@ -111,7 +111,8 @@
 
 
 
-          (let ((dev-zero-fd (open "/dev/zero" open/read))) ;; ~~~~ this returns sexp fileno
+          (let* ((dev-zero-fileno (open "/dev/zero" open/read)) ;; fileno type object
+                 (dev-zero-fd (%fileno-to-fd dev-zero-fileno)))
             (test 3 dev-zero-fd) ;; ~~~~ may have to be conditionalized for other systems
             (test-not-error (close-fdes dev-zero-fd))
             (test-error (close-fdes dev-zero-fd)))
