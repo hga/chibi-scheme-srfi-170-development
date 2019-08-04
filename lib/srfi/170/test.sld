@@ -392,7 +392,14 @@
         ;; 3.11  [Intentionally omitted]
 
 
-        ;; 3.12  Terminal device control
+        (test-group "3.12  Terminal device control"
+
+          (test-assert (tty? (current-input-port)))
+          (let ((port-not-tty (open-input-file tmp-file-1)))
+            (test-not (tty? port-not-tty)))
+
+
+          )
 
         (test-group "Epilogue: set-priority to 2, 3, 4"
           ;; in epilogue so most testing is not slowed down

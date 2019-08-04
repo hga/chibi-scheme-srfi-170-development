@@ -537,3 +537,8 @@
 ;;; 3.11  [Intentionally omitted]
 
 ;;; 3.12  Terminal device control
+
+;;> Returns \scheme{#t} if the given port of file descriptor
+;;> if backed by a TTY object, and \scheme{#f} otherwise.
+
+(define-c boolean (tty? "isatty") (port-or-fileno))

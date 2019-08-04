@@ -146,6 +146,8 @@
 
    ;; 3.12  Terminal device control
 
+   tty?
+
    )
   
   (cond-expand ((not bsd)
