@@ -22,6 +22,15 @@
 
 ;;; 3.2  I/O
 
+
+
+(define (port-fdes the-port)
+  (if (not (port? the-port))
+      (errno-error errno/inval port-fdes the-port))
+  (port-fileno the-port))
+
+
+
 ;;; 3.3  File system
 
 (define (create-directory fname . o)

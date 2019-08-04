@@ -61,6 +61,8 @@
 
    ;; 3.2  I/O
 
+   port-fdes
+
    ;; 3.3  File system
 
    create-directory create-fifo create-hard-link create-symlink
@@ -190,11 +192,11 @@
             (scheme case-lambda)
             (only (scheme process-context) get-environment-variable)
             (chibi)
+            (chibi optional) ;; Snow package for optional args
 ;;            (only (chibi filesystem) file-exists?) ;; in R7RS-small
             (only (srfi 1) take)
             (only (srfi 115) regexp-split)
             (srfi 151) ;; bitwise operators
-            (chibi optional) ;; Snow package for optional args
             )
     (include-shared "170/170")
     (include-shared "170/aux")))

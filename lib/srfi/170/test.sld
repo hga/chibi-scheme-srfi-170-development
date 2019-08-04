@@ -26,6 +26,8 @@
         ((_ expr) (test-assert (begin expr #t)))
         ((_ name expr) (test-assert name (begin expr #t)))))
 
+    (define the-string-port (open-input-string "plover"))
+
     (define tmp-containing-dir "/tmp/chibi-scheme-srfi-170-test-xyzzy")
     (define tmp-dir-1 "/tmp/chibi-scheme-srfi-170-test-xyzzy/dir-1")
     (define tmp-dir-2 "/tmp/chibi-scheme-srfi-170-test-xyzzy/dir-2")
@@ -97,7 +99,20 @@
          ;; ~~~~ maybe test record predicate and getters???
          ) ; end errors
 
-        ;; 3.2  I/O
+
+        (test-group "3.2  I/O"
+
+
+
+          (test 0 (port-fdes (current-input-port)))
+          (test 1 (port-fdes (current-output-port)))
+          (test 2 (port-fdes (current-error-port)))
+          (test-not (port-fdes the-string-port))
+
+
+
+          )
+
 
         (test-group "3.3  File system"
 
@@ -402,6 +417,9 @@
           )
 
         (test-group "Epilogue: set-priority to 2, 3, 4"
+
+          (close-port the-string-port)
+
           ;; in epilogue so most testing is not slowed down
           (test-assert (set-priority priority/process (pid) 1))
           (test 1 (priority priority/process (pid)))
