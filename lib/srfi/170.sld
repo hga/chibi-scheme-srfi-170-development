@@ -6,6 +6,8 @@
 
    errno set-errno integer->error-string
 
+   %close-fdes
+
    %delete-directory %delete-file
 
    %stat %lstat stat:atime stat:mtime stat:ctime
@@ -62,6 +64,8 @@
    ;; 3.2  I/O
 
    port-fdes
+
+   close-fdes
 
    ;; 3.3  File system
 

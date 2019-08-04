@@ -91,12 +91,25 @@ sexp sexp_file_descriptor_to_binary_output_port (sexp ctx, sexp self, sexp_sint_
 }
 
 
+
+sexp sexp_close_fdes (sexp ctx, sexp self, sexp_sint_t n, sexp the_boxed_fd) {
+
+  if (! sexp_exact_integerp(the_boxed_fd))
+    return sexp_type_exception(ctx, self, SEXP_FIXNUM, the_boxed_fd);
+
+  if (close(sexp_sint_value(the_boxed_fd))) {
+    return SEXP_FALSE;
+  } else {
+    return SEXP_TRUE;
+  }
+}
+
+
 // 3.3  File system
 
 sexp sexp_wrap_utimensat (sexp ctx, sexp self, sexp_sint_t n, sexp the_fd, sexp the_path, sexp the_atime, sexp the_mtime, sexp the_flag) {
 
   struct timespec times[2];
-  sexp ret;
 
   if (! sexp_exact_integerp(the_fd))
     return sexp_type_exception(ctx, self, SEXP_FIXNUM, the_fd);
@@ -138,6 +151,9 @@ sexp sexp_init_library (sexp ctx, sexp self, sexp_sint_t n, sexp env, const char
   sexp_define_foreign(ctx, env, "errno", 0, sexp_errno);
   sexp_define_foreign(ctx, env, "set-errno", 1, sexp_set_errno);
   sexp_define_foreign_opt(ctx, env, "integer->error-string", 1, sexp_error_string, SEXP_FALSE);
+
+  sexp_define_foreign(ctx, env, "%close-fdes", 1, sexp_close_fdes);
+
   sexp_define_foreign(ctx, env, "%utimensat", 5, sexp_wrap_utimensat);
 
   // ~~~~ examine sexp_register_simple_type to create double timespect struct???

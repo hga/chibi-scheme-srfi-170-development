@@ -108,6 +108,12 @@
           (test 1 (port-fdes (current-output-port)))
           (test 2 (port-fdes (current-error-port)))
           (test-not (port-fdes the-string-port))
+          (let* ((dev-zero-port (open-binary-input-file "/dev/zero"))
+                 (dev-zero-fd (port-fdes dev-zero-port)))
+            (test 3 dev-zero-fd) ;; ~~~~ may have to be conditionalized for other systems
+            (test-not-error (close-fdes dev-zero-fd))
+            (test-error (close-fdes dev-zero-fd))
+            (test-not-error (close-port dev-zero-port))) ;; ~~~~ this could well fail....
 
 
 

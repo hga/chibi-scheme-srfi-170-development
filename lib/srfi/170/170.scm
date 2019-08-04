@@ -29,6 +29,11 @@
       (errno-error errno/inval port-fdes the-port))
   (port-fileno the-port))
 
+(define (close-fdes the-fd)
+  (if (or (not (fixnum? the-fd)) (< the-fd 0))
+      (errno-error errno/inval close-fdes the-fd))
+  (if (not (%close-fdes the-fd))
+      (errno-error (errno) close-fdes the-fd)))
 
 
 ;;; 3.3  File system
