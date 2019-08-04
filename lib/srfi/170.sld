@@ -3,7 +3,7 @@
   (export
 
 ;;; TMP ----------------
-
+#|
    errno set-errno integer->error-string
 
    %file_descriptor_to_port
@@ -34,7 +34,7 @@
    timespec:seconds timespec:nanoseconds
    clck-id/realtime clck-id/monotonic
    %clock-gettime
-
+|#
 
    ;; 3.1  Errors COMPLETE
 
@@ -198,14 +198,13 @@
             (only (scheme process-context) get-environment-variable)
             (chibi)
             (chibi optional) ;; Snow package for optional args
-;;            (only (chibi filesystem) file-exists?) ;; in R7RS-small
+            (only (chibi filesystem) file-exists? delete-file)
             (only (srfi 1) take)
-            (only (srfi 115) regexp-split)
+            ;; (only (srfi 115) regexp-split)
             (srfi 151) ;; bitwise operators
             )
     (include-shared "170/170")
     (include-shared "170/aux")))
   (include "170/common.scm")
   (include "170/170.scm")
-;;  (include "aux.scm")
   )
