@@ -56,6 +56,41 @@ sexp sexp_error_string (sexp ctx, sexp self, sexp_sint_t n, sexp x) {
 #endif
 }
 
+// 3.2  I/O
+
+// started from sexp.c sexp_open_input_file_descriptor
+
+sexp sexp_file_descriptor_to_port (sexp ctx, sexp self, sexp_sint_t n, sexp fileno, sexp shutdownp) {
+  sexp_gc_var2(res, str);
+  sexp_assert_type(ctx, sexp_filenop, SEXP_FILENO, fileno);
+  if (sexp_fileno_fd(fileno) < 0)
+    return sexp_file_exception(ctx, self, "invalid file descriptor", fileno);
+  sexp_gc_preserve2(ctx, res, str);
+  str = sexp_make_string(ctx, sexp_make_fixnum(SEXP_PORT_BUFFER_SIZE), SEXP_VOID);
+  res = sexp_open_input_string(ctx, str);
+  if (!sexp_exceptionp(res)) {
+    sexp_port_fd(res) = fileno;
+    sexp_port_offset(res) = SEXP_PORT_BUFFER_SIZE;
+    sexp_port_binaryp(res) = 1;
+    sexp_port_shutdownp(res) = sexp_truep(shutdownp);
+    sexp_fileno_count(fileno)++;
+  }
+  sexp_gc_release2(ctx);
+  return res;
+}
+
+// started from sexp.c sexp_close_input_file_descriptor
+
+sexp sexp_file_descriptor_to_binary_output_port (sexp ctx, sexp self, sexp_sint_t n, sexp fileno, sexp shutdownp) {
+  sexp res = sexp_open_input_file_descriptor(ctx, self, n, fileno, shutdownp);
+  if (!sexp_exceptionp(res)) {
+    sexp_pointer_tag(res) = SEXP_OPORT;
+    sexp_port_offset(res) = 0;
+  }
+  return res;
+}
+
+
 // 3.3  File system
 
 sexp sexp_wrap_utimensat (sexp ctx, sexp self, sexp_sint_t n, sexp the_fd, sexp the_path, sexp the_atime, sexp the_mtime, sexp the_flag) {
