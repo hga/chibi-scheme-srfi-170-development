@@ -134,11 +134,10 @@ sexp sexp_wrap_utimensat (sexp ctx, sexp self, sexp_sint_t n, sexp the_fd, sexp 
     return sexp_type_exception(ctx, self, SEXP_FIXNUM, the_flag);
 
   if (utimensat(sexp_sint_value(the_fd), sexp_string_data(the_path), times, sexp_sint_value(the_flag))) {
-  ret = SEXP_FALSE;
+  return SEXP_FALSE;
   } else {
-  ret = SEXP_TRUE;
+  return SEXP_TRUE;
   }
-  return ret;
 }
 
 
