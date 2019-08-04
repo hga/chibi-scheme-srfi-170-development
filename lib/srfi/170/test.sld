@@ -59,7 +59,7 @@
 
     (define (create-tmp-test-file fname)
       (call-with-output-file fname
-        (lambda (out) (display "xyzzy" out)))
+        (lambda (out) (display "plugh" out)))
       (test-assert (file-exists? fname)))
 
     (define (is-string-in-list? str lst)
