@@ -275,7 +275,11 @@
             (test-assert (is-string-in-list? tmp-dot-file-basename dl)))
 |#
 
-;      (define (directory-files dir)
+          (let ((tmp-filename (temp-file-prefix)))
+            (test-assert (string? tmp-filename))
+            (temp-file-prefix #t) ;; parementer object, and argument ignored
+            (test-assert (not (equal? tmp-filename (temp-file-prefix)))))
+
 
 
           )

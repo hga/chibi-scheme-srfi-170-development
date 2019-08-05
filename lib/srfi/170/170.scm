@@ -22,7 +22,9 @@
 
 ;;; 3.2  I/O
 
-;; ~~~~ seems Chibi handles bogus fds OK, input returns eof, output errors
+;; ~~~~ seems Chibi handles bogus fds OK, reading input returns eof,
+;; output raises errors
+
 (define (fdes->textual-input-port the-fd)
   (%file_descriptor_to_port the-fd #t #f))
 
@@ -314,7 +316,22 @@
       ;; does not dirobj any error stuff, see 170.stub
       (%closedir (directory-object-get-DIR directory-object))))
 
+(define the-character-set "ABCDEFGHIJKLMNOPQURTUVWXYZ0123456789")
 
+(define the-character-set-length (string-length the-character-set))
+
+(define (get-random-character) (string-ref the-character-set (random-integer the-character-set-length)))
+
+(define temp-file-prefix
+  (make-parameter 9
+                  (lambda (x) ;; ~~~~ maybe make it the size of the ending string?
+                    (let ((the-pair (assoc "TMPDIR" (get-environment-variables)))
+                          (the-suffix-string (string (get-random-character) (get-random-character) (get-random-character)
+                                                     (get-random-character) (get-random-character) (get-random-character)
+                                                     (get-random-character) (get-random-character) (get-random-character))))
+                      (if (pair? the-pair)
+                          (string-append (cdr the-pair) "/" (number->string (pid)) "." the-suffix-string)
+                          (string-append "/tmp/" (number->string (pid)) "." the-suffix-string))))))
 
 ;;; 3.4  Processes
 

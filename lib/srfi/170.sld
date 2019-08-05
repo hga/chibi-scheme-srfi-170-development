@@ -57,8 +57,7 @@
    errno/spipe errno/srch errno/stale errno/timedout errno/txtbsy
    errno/wouldblock errno/xdev
 
-   errno-error
-   syscall-error?
+   errno-error syscall-error?
    syscall-error:errno syscall-error:message
    syscall-error:procedure syscall-error:data
    
@@ -67,7 +66,9 @@
 
    fdes->textual-input-port fdes->binary-input-port
    fdes->textual-output-port fdes->binary-output-port
-   port-fdes dup->fdes close-fdes
+   port-fdes
+   dup->fdes
+   close-fdes
 
    ;; 3.3  File system
 
@@ -90,6 +91,7 @@
    directory-files
    open-directory read-directory close-directory
 
+   temp-file-prefix
 
    ;; 3.4  Processes
 
@@ -201,6 +203,8 @@
             (chibi optional) ;; Snow package for optional args
             (only (chibi filesystem) file-exists? delete-file)
             (only (srfi 1) take)
+            (only (srfi 27) random-integer)
+            (only (srfi 98) get-environment-variables)
             ;; (only (srfi 115) regexp-split)
             (srfi 151) ;; bitwise operators
             )
