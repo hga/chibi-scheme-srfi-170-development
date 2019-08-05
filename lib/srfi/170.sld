@@ -3,9 +3,10 @@
   (export
 
 ;;; TMP ----------------
-#|
+
    errno set-errno integer->error-string
 
+   %fileno-to-fd
    %file_descriptor_to_port
    %close
 
@@ -34,7 +35,7 @@
    timespec:seconds timespec:nanoseconds
    clck-id/realtime clck-id/monotonic
    %clock-gettime
-|#
+
 
    ;; 3.1  Errors COMPLETE
 
@@ -64,8 +65,8 @@
 
    ;; 3.2  I/O
 
-   ;; fdes->textual-input-port fdes->binary-input-port
-   ;; fdes->textual-output-port fdes->binary-output-port
+   fdes->textual-input-port fdes->binary-input-port
+   fdes->textual-output-port fdes->binary-output-port
    port-fdes dup->fdes close-fdes
 
    ;; 3.3  File system

@@ -22,7 +22,18 @@
 
 ;;; 3.2  I/O
 
+;; ~~~~ seems Chibi handles bogus fds OK, input returns eof, output errors
+(define (fdes->textual-input-port the-fd)
+  (%file_descriptor_to_port the-fd #t #f))
 
+(define (fdes->binary-input-port the-fd)
+  (%file_descriptor_to_port the-fd #t #t))
+
+(define (fdes->textual-output-port the-fd)
+  (%file_descriptor_to_port the-fd #f #f))
+
+(define (fdes->binary-output-port the-fd)
+  (%file_descriptor_to_port the-fd #f #t))
 
 (define (port-fdes the-port)
   (if (not (port? the-port))
