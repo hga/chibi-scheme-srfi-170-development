@@ -2,6 +2,7 @@
 (define-library (srfi 170)
   (export
 
+#|
 ;;; TMP ----------------
 
    errno set-errno integer->error-string
@@ -35,7 +36,7 @@
    timespec:seconds timespec:nanoseconds
    clck-id/realtime clck-id/monotonic
    %clock-gettime
-
+|#
 
    ;; 3.1  Errors COMPLETE
 
@@ -111,19 +112,25 @@
    working-directory set-working-directory
    pid parent-pid
    process-group set-process-group
+   priority set-priority
    priority/process priority/process-group priority/user
-   priority set-priority nice
-   user-login-name user-uid user-gid user-supplementary-gids
+   nice
+
+   user-login-name
+   user-uid user-gid
+   user-supplementary-gids
    set-uid set-gid
    user-effective-uid user-effective-gid
    set-user-effective-uid set-user-effective-gid
    set-user-real-and-effective-uid set-user-real-and-effective-gid
+
 
    ;; 3.6  User and group database access
 
    user-info user-info?
    user-info:name user-info:uid user-info:gid user-info:home-dir user-info:shell
 
+   ;; ~~~~ partly implemented below in not bsd
    ;; group-info group-info?
    ;; group-info:name user-info group-info:gid user-info group-info:members
 
@@ -132,7 +139,6 @@
 
    ;; 3.8  System parameters
 
-   system-name/host-name-max
    system-name
    uname uname?
    uname:os-name uname:node-name uname:release-name uname:version uname:machine
@@ -173,16 +179,16 @@
   
   (cond-expand ((not bsd)
     (export
-
+#|
 ;;; TMP
 
      group:name group:gid %getgrgid_r %getgrnam_r
-
+|#
 
      ;; 3.1  Errors
 
      errno/multihop errno/nolink
-     ;; STREAMS
+     ;; STREAMS:
      errno/nodata errno/nostr errno/nosr errno/time
 
 
@@ -194,8 +200,6 @@
      ;; 3.9  Signal system
 
      signal/poll
-
-
     )))
 
   (cond-expand ((not windows)
