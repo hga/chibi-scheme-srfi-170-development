@@ -350,7 +350,19 @@
               (%close (%fileno-to-fd the-fileno))
               the-filename))))))
 
-
+#|
+(define (temp-file-iterate maker . maybe-template)
+  (let ((template (:optional maybe-template (fluid *temp-file-template*))))
+    (let loop ((i 0))
+      (if (> i 1000) (error "Can't create temp-file")
+          (let ((fname (format #f template (number->string i))))
+            (receive retvals (with-errno-handler
+                               ((errno data)
+                                ((exist acces) #f))
+                               (maker fname))
+              (if (car retvals) (apply values retvals)
+                  (loop (+ i 1)))))))))
+|#
 
 ;;; 3.4  Processes
 
