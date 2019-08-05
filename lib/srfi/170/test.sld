@@ -280,9 +280,17 @@
             (temp-file-prefix #t) ;; parementer object, and argument ignored
             (test-assert (not (equal? tmp-filename (temp-file-prefix)))))
 
+          ;; ~~~~ this doesn't test skipping past an existing temp file....
+          (let ((the-filename (create-temp-file)))
+            (test-assert (file-exists? the-filename))
+            (test-not-error (delete-file the-filename))) ;; clean up after self, but bad for debugging
+          (if (not (equal? 0 (user-uid)))
+              (test-error (create-temp-file "/xyzzy-plover-plugh.")))
+
 
 
           )
+
 
         ;; 3.4  Processes
 

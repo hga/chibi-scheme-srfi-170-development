@@ -322,16 +322,35 @@
 
 (define (get-random-character) (string-ref the-character-set (random-integer the-character-set-length)))
 
+(define (suffix-string)
+  (string (get-random-character) (get-random-character) (get-random-character)
+          (get-random-character) (get-random-character) (get-random-character)
+          (get-random-character) (get-random-character) (get-random-character)))
+
 (define temp-file-prefix
   (make-parameter 9
                   (lambda (x) ;; ~~~~ maybe make it the size of the ending string?
                     (let ((the-pair (assoc "TMPDIR" (get-environment-variables)))
-                          (the-suffix-string (string (get-random-character) (get-random-character) (get-random-character)
-                                                     (get-random-character) (get-random-character) (get-random-character)
-                                                     (get-random-character) (get-random-character) (get-random-character))))
+                          (the-suffix-string (suffix-string)))
                       (if (pair? the-pair)
                           (string-append (cdr the-pair) "/" (number->string (pid)) "." the-suffix-string)
                           (string-append "/tmp/" (number->string (pid)) "." the-suffix-string))))))
+
+(define (create-temp-file . o)
+  (temp-file-prefix #t) ;; ~~~~ brute force if prefix supplied
+  (let-optionals o ((prefix (temp-file-prefix)))
+    (let loop ()
+      (let ((the-filename (string-append prefix "." (suffix-string))))
+        (if (file-exists? the-filename)
+            (loop) ;; best to blow the stack if worst come to worst
+            (let ((the-fileno (open the-filename (bitwise-ior open/write open/create) #o600)))
+              (if (not the-fileno)
+                  ;; ~~~~ adding the filename is not in the specs, but necessary for sane debugging
+                  (errno-error (errno) create-temp-file prefix the-filename)) ;; non-local exit
+              (%close (%fileno-to-fd the-fileno))
+              the-filename))))))
+
+
 
 ;;; 3.4  Processes
 
