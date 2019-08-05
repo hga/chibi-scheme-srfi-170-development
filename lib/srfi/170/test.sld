@@ -6,7 +6,9 @@
           (only (chibi process) exit)
           (chibi optional) ;; Snow package for optional args
           (chibi test)
-          (only (chibi filesystem) file-exists? open open/read delete-file)
+          (only (chibi filesystem)
+                  file-exists?  delete-file
+                  open open/read open/write open/create open/truncate)
           (only (srfi 1) list-index) ;; list-copy for testing timespecs??
           ;; (only (srfi 128) ) ;; comparators (reduced)
           (only (srfi 132) list-sort) ;; sort libraries
@@ -39,6 +41,12 @@
     (define tmp-dot-file-basename ".dot-file")
     (define tmp-hard-link "/tmp/chibi-scheme-srfi-170-test-xyzzy/hard-link")
     (define tmp-no-filesystem-object "/tmp/chibi-scheme-srfi-170-test-xyzzy/no-filesystem-object")
+
+    (define the-text-string "The quick brown fox jumps over the lazy quux")
+    (define the-text-string-length (string-length the-text-string))
+    (define the-binary-bytevector (bytevector 0 1 2 3 4 5 6 7 8 9))
+    (define the-binary-bytevector-length (bytevector-length the-binary-bytevector))
+    (define open-write-create-truncate (bitwise-ior open/write open/create open/truncate))
 
     (define starting-dir (working-directory))
 
@@ -87,6 +95,14 @@
 
           (test-assert (set-umask #o2))
           (test #o2 (umask))
+
+          ;; create containing directory so we'll have a place for 3.2  I/O
+          (test-not-error (create-directory tmp-containing-dir))
+          (test #o775 (bitwise-and (file-info:mode (file-info tmp-containing-dir)) #o777)) ; test umask
+          (test-assert (file-exists? tmp-containing-dir))
+          (test-not-error (create-directory tmp-containing-dir #o755 #t))
+          (test-assert (file-exists? tmp-containing-dir))
+          (test #o755 (bitwise-and (file-info:mode (file-info tmp-containing-dir)) #o777))
           ) ; end early
 
         (test-group "3.1  Errors"
@@ -100,7 +116,25 @@
 
         (test-group "3.2  I/O"
 
+          (let ((the-port (fdes->binary-output-port
+                           (%fileno-to-fd (open tmp-file-1 open-write-create-truncate)))))
+            (test-not-error (write-bytevector the-binary-bytevector the-port))
+            (test-not-error (close-port the-port)))
+          (let ((the-port (fdes->binary-input-port
+                           (%fileno-to-fd (open tmp-file-1 open/read)))))
+            (test-assert (equal? the-binary-bytevector (read-bytevector the-binary-bytevector-length the-port)))
+            (test-assert (eof-object? (read-char the-port)))
+            (test-not-error (close-port the-port)))
 
+          (let ((the-port (fdes->textual-output-port
+                           (%fileno-to-fd (open tmp-file-1 open-write-create-truncate)))))
+            (test-not-error (write-string the-text-string the-port))
+            (test-not-error (close-port the-port)))
+          (let ((the-port (fdes->textual-input-port
+                           (%fileno-to-fd (open tmp-file-1 open/read)))))
+            (test-assert (equal? the-text-string (read-string the-text-string-length the-port)))
+            (test-assert (eof-object? (read-char the-port)))
+            (test-not-error (close-port the-port)))
 
           (test 0 (port-fdes (current-input-port)))
           (test 1 (port-fdes (current-output-port)))
@@ -109,7 +143,6 @@
 
           (let* ((e-port (current-error-port))
                  (the-new-fd (dup->fdes e-port)))
-            (test 3 the-new-fd) ;; ~~~~ may have to be conditionalized for other systems
             (test-not-error (close-fdes the-new-fd)))
           (let* ((e-port (current-error-port))
                  (the-new-fd (dup->fdes e-port 10)))
@@ -118,7 +151,6 @@
 
           (let* ((dev-zero-fileno (open "/dev/zero" open/read)) ;; fileno type object
                  (dev-zero-fd (%fileno-to-fd dev-zero-fileno)))
-            (test 3 dev-zero-fd) ;; ~~~~ may have to be conditionalized for other systems
             (test-not-error (close-fdes dev-zero-fd))
             (test-error (close-fdes dev-zero-fd)))
           )
@@ -131,13 +163,6 @@
           ;; ~~~~ test across filesystems, assuming /var is not in same as /tmp
           ;; ~~~~ do some time sanity checking, e.g. get time, subtract a few seconds, test....
 
-          (test-not-error (create-directory tmp-containing-dir))
-          (test #o775 (bitwise-and (file-info:mode (file-info tmp-containing-dir)) #o777)) ; test umask
-          (test-assert (file-exists? tmp-containing-dir))
-          (test-not-error (create-directory tmp-containing-dir #o755 #t))
-          (test-assert (file-exists? tmp-containing-dir))
-          (test #o755 (bitwise-and (file-info:mode (file-info tmp-containing-dir)) #o777))
-
           (test-not-error (create-directory tmp-dir-1))
           (test-assert (file-exists? tmp-dir-1))
 
@@ -147,7 +172,7 @@
           (test-assert (file-exists? tmp-fifo))
           (test #o644 (bitwise-and (file-info:mode (file-info tmp-fifo)) #o777))
 
-          (test-not-error (create-tmp-test-file tmp-file-1))
+          ;; (test-not-error (create-tmp-test-file tmp-file-1)) ;; created above in I/O
 
           (test-not-error (create-hard-link tmp-file-1 tmp-hard-link))
           (test-assert (file-exists? tmp-hard-link))
@@ -199,7 +224,7 @@
               (test my-starting-uid (file-info:uid fi-ending))
               (test my-starting-gid (file-info:gid fi-ending))))
 
-          (test 5 (file-info:size (file-info tmp-file-1)))
+          (test the-text-string-length (file-info:size (file-info tmp-file-1)))
           (test-not-error (truncate-file tmp-file-1 3))
           (test 3 (file-info:size (file-info tmp-file-1)))
 
