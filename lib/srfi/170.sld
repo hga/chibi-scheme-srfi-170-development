@@ -94,6 +94,9 @@
    temp-file-prefix
    create-temp-file
 
+   ;; call-with-temporary-filename
+
+
    ;; 3.4  Processes
 
    ;; 3.4.1  Process objects
@@ -116,10 +119,13 @@
    set-user-effective-uid set-user-effective-gid
    set-user-real-and-effective-uid set-user-real-and-effective-gid
 
-   ;; 3.6  User and group database access COMPLETE, UNTESTED
+   ;; 3.6  User and group database access
 
    user-info user-info?
    user-info:name user-info:uid user-info:gid user-info:home-dir user-info:shell
+
+   ;; group-info group-info?
+   ;; group-info:name user-info group-info:gid user-info group-info:members
 
 
    ;; 3.7  [Intentionally omitted]
@@ -134,7 +140,7 @@
    ;; current-locale
 
 
-   ;; 3.9  Signal system
+   ;; 3.9  Signal system COMPLETE
 
    signal/abrt signal/abrt signal/alrm signal/bus signal/chld
    signal/cont signal/fpe signal/hup signal/ill signal/int
@@ -146,18 +152,22 @@
    signal-process signal-process-group
 
 
-   ;; 3.10  Time
+   ;; 3.10  Time COMPLETE
 
    posix-time monotonic-time
-   timespec-difference ;; timespec=?
 
 
    ;; 3.11  [Intentionally omitted]
 
-
    ;; 3.12  Terminal device control
 
    tty?
+   tty-file-name
+   ;; with-raw-mode without-echo without-interrupt-chars
+   ;; open-control-tty
+   ;; become-session-leader
+   ;; tty-process-group set-tty-process-group
+   ;; control-tty-file-name
 
    )
   

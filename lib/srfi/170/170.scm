@@ -568,3 +568,14 @@
 
 
 ;;; 3.12  Terminal device control
+
+(define (tty-file-name the-port) ;; ~~~~ add fd??
+  (if (not (port? the-port))
+      (errno-error errno/inval tty-file-name the-port)) ;; non-local exit
+  (let ((the-fd (port-fdes the-port)))
+    (if (not the-fd)
+        (errno-error errno/inval tty-file-name the-port)) ;; non-local exit
+    (let ((the-file-name (%ttyname_r the-fd)))
+      (if (not the-file-name)
+          (errno-error (errno) tty-file-name the-port)) ;; non-local exit
+      the-file-name)))

@@ -437,10 +437,6 @@
                               (> (cdr t1)  0)
                               (> (car t2)  0)
                               (> (cdr t2)  0))))
-
-          (test '(2 . 3) (timespec-difference '(3 . 4) '(1 . 1)))
-
-          ;; timespec=? if we keep it
           )
 
 
@@ -451,9 +447,17 @@
 
           (test-assert (tty? (current-input-port)))
           (let ((port-not-tty (open-input-file tmp-file-1)))
-            (test-not (tty? port-not-tty)))
+            (test-not (tty? port-not-tty))
+            (close-port port-not-tty))
 
-
+          (test-error (tty-file-name 1))
+          (test-error (tty-file-name the-string-port))
+          (let ((port-not-tty (open-input-file tmp-file-1)))
+            (test-error (tty-file-name port-not-tty))
+            (close-port port-not-tty))
+          (test-assert (string? (tty-file-name (current-input-port))))
+          (test-assert (string? (tty-file-name (current-output-port))))
+          (test-assert (string? (tty-file-name (current-error-port))))
           )
 
         (test-group "Epilogue: set-priority to 2, 3, 4"

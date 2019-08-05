@@ -542,3 +542,8 @@
 ;;> if backed by a TTY object, and \scheme{#f} otherwise.
 
 (define-c boolean (tty? "isatty") (port-or-fileno))
+
+(define-c-const int (tty/name-max "TTY_NAME_MAX"))
+
+(define-c errno (%ttyname_r ttyname_r)
+  (int (result (array char 65)) (value 65 int))) ;; should be big enough
