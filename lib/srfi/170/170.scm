@@ -611,3 +611,6 @@
       (if (not the-file-name)
           (errno-error (errno) tty-file-name the-port)) ;; non-local exit
       the-file-name)))
+
+(define (control-tty-file-name)
+  (%ctermid #f)) ;; ~~~~~~~~ not thread safe

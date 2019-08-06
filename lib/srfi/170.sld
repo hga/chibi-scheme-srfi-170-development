@@ -37,7 +37,10 @@
    %clock-gettime
 
    %tcgetattr
+
    term/l-ctermid
+   %ctermid
+
 
    ;; 3.1  Errors COMPLETE
 
@@ -176,7 +179,7 @@
    ;; open-control-tty
    ;; become-session-leader
    ;; tty-process-group set-tty-process-group
-   ;; control-tty-file-name
+   control-tty-file-name
 
    )
   

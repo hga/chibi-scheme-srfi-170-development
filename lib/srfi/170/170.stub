@@ -559,9 +559,9 @@
 
 (define-c-struct termios
   predicate: termios?
-;  (tcflag_t c_iflag termios:iflag termios:set-iflag)
-;  (tcflag_t c_oflag termios:oflag termios:set-oflag)
-;  (tcflag_t c_cflag termios:cflag termios:set-cflag)
+  (tcflag_t c_iflag termios:iflag termios:set-iflag)
+  (tcflag_t c_oflag termios:oflag termios:set-oflag)
+  (tcflag_t c_cflag termios:cflag termios:set-cflag)
   (tcflag_t c_lflag termios:lflag termios:set-lflag)
   )
 
@@ -569,6 +569,6 @@
 
 (define-c errno (%tcgetattr tcgetattr) (int (result termios)))
 
-
-
 (define-c-const int (term/l-ctermid "L_ctermid"))
+
+(define-c string (%ctermid ctermid) ((maybe-null string)))

@@ -85,6 +85,8 @@
         (test-group "Prologue: umask, delete-filesystem-object any old temporary files and directories"
 
           ;; ~~~~~~~~ need to test that PATH_MAX is no larger than 4096
+          ;; ~~~~~~~~ need to test that term/l-ctermid is no larger than 1024
+
 
           (test 0 (errno))
           (test-not-error (set-errno errno/2big))
@@ -470,6 +472,12 @@
           (test-assert (string? (tty-file-name (current-input-port))))
           (test-assert (string? (tty-file-name (current-output-port))))
           (test-assert (string? (tty-file-name (current-error-port))))
+
+
+
+          (let ((the-tty-file-name (control-tty-file-name)))
+            (test-assert (string? the-tty-file-name))
+            (test-assert (> (string-length the-tty-file-name) 0)))
           )
 
         (test-group "Epilogue: set-priority to 2, 3, 4"
