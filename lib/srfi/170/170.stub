@@ -571,10 +571,11 @@
 
 
 
-
 (define-c int (%setsid setsid) ())
 
+(define-c int (%tcgetpgrp tcgetpgrp) (int))
 
+(define-c errno (%tcsetpgrp tcsetpgrp) (int pid_t))
 
 (define-c-const int (term/l-ctermid "L_ctermid"))
 

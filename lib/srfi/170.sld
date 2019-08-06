@@ -39,7 +39,7 @@
    %tcgetattr
 
    %setsid
-
+   %tcgetpgrp %tcsetpgrp
    term/l-ctermid
    %ctermid
 
