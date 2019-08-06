@@ -316,6 +316,14 @@
       ;; does not dirobj any error stuff, see 170.stub
       (%closedir (directory-object-get-DIR directory-object))))
 
+(define (real-path the-starting-path)
+  (if (not (string? the-starting-path))
+      (errno-error errno/inval real-path the-starting-path)) ;; non-local exit
+  (let ((the-real-path (%realpath the-starting-path)))
+    (if the-real-path
+        the-real-path
+        (errno-error (errno) real-path the-starting-path))))
+
 (define the-character-set "ABCDEFGHIJKLMNOPQURTUVWXYZ0123456789")
 
 (define the-character-set-length (string-length the-character-set))

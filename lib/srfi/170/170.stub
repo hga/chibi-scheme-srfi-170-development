@@ -324,6 +324,11 @@
 (define-c-const int (file-type-mask/ifchr "S_IFCHR")) ;; character special
 (define-c-const int (file-type-mask/iflnk "S_IFLNK")) ;; symbolic link
 
+(define-c-const int (posix/path-max "PATH_MAX"))
+
+(define-c non-null-string (%realpath realpath)
+  (string (result (array char 4097))))
+
 
 ;;; 3.4  Processes
 
@@ -341,10 +346,9 @@
 
 ;;> Returns the current working directory of the process as a string.
 
-(define-c-const int (posix/path-max "PATH_MAX"))
-
+;; Also uses PATH_MAX
 (define-c non-null-string (%getcwd getcwd)
-  ((result (array char 4096)) (value 4096 int)))
+  ((result (array char 4097)) (value 4097 int)))
 
 ;;> Change the current working directory of the process.
 

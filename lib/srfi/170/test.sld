@@ -82,6 +82,8 @@
 
         (test-group "Prologue: umask, delete-filesystem-object any old temporary files and directories"
 
+          ;; ~~~~~~~~ need to test that PATH_MAX is no larger than 4096
+
           (test 0 (errno))
           (test-not-error (set-errno errno/2big))
           (set-errno errno/2big)
@@ -274,6 +276,14 @@
             (test-assert (is-string-in-list? tmp-file-1-basename dl))
             (test-assert (is-string-in-list? tmp-dot-file-basename dl)))
 |#
+
+          (test-not-error (set-working-directory tmp-containing-dir))
+          (test tmp-containing-dir (real-path "."))
+          (test tmp-file-1 (real-path tmp-file-1-basename))
+          (test tmp-file-1 (real-path (string-append "./" tmp-file-1-basename)))
+          ;; we'll trust it resolves symlinks, can't actually do anything if it doesn't....
+          (test-error (real-path tmp-no-filesystem-object))
+          (test-not-error (set-working-directory starting-dir))
 
           (let ((tmp-filename (temp-file-prefix)))
             (test-assert (string? tmp-filename))

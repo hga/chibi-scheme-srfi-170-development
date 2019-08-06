@@ -1,7 +1,7 @@
 
 (define-library (srfi 170)
   (export
-#|
+
 ;;; TMP ----------------
 
    errno set-errno integer->error-string
@@ -19,11 +19,11 @@
    directory-object-get-DIR directory-object-is-open? set-directory-object-is-open directory-object-dot-files?
 
    utimens/utime_now utimens/utime_omit
-
+   %utimensat
 
    posix/path-max
 
-   %utimensat
+   %realpath
 
    groups/max %getgroups
 
@@ -35,7 +35,8 @@
    timespec:seconds timespec:nanoseconds
    clck-id/realtime clck-id/monotonic
    %clock-gettime
-|#
+
+
 
    ;; 3.1  Errors COMPLETE
 
@@ -92,7 +93,7 @@
    directory-files
    open-directory read-directory close-directory
 
-   ;; real-path
+   real-path
 
    temp-file-prefix
    create-temp-file
