@@ -1,7 +1,6 @@
 
 (define-library (srfi 170)
   (export
-
 #|
 ;;; TMP ----------------
 
@@ -71,6 +70,7 @@
    dup->fdes
    close-fdes
 
+
    ;; 3.3  File system
 
    create-directory create-fifo create-hard-link create-symlink
@@ -92,9 +92,10 @@
    directory-files
    open-directory read-directory close-directory
 
+   ;; real-path
+
    temp-file-prefix
    create-temp-file
-
    ;; call-with-temporary-filename
 
 

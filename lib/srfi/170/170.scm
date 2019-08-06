@@ -351,6 +351,7 @@
               the-filename))))))
 
 #|
+;; Original version from scsh 0.7
 (define (temp-file-iterate maker . maybe-template)
   (let ((template (:optional maybe-template (fluid *temp-file-template*))))
     (let loop ((i 0))
@@ -362,7 +363,18 @@
                                (maker fname))
               (if (car retvals) (apply values retvals)
                   (loop (+ i 1)))))))))
+
+
+(define (temp-file-iterate maker . o)
+  (temp-file-prefix #t) ;; ~~~~ brute force if prefix supplied
+  (let-optionals o ((the-prefix (temp-file-prefix)))
+    (let loop ((i 0))
+      (if (> i 1000)
+          (errno-error errno/inval temp-file-iterate maker the-prefix) ;; non-local exit
+          (let ((fname (string-append the-prefix "." (number->string i))))
+;; rest left as an exercise for someone else ^_^
 |#
+
 
 ;;; 3.4  Processes
 
