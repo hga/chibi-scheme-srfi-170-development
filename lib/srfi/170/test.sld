@@ -474,6 +474,8 @@
           (test-assert (string? (tty-file-name (current-error-port))))
 
 
+          (test-error (become-session-leader))
+
 
           (let ((the-tty-file-name (control-tty-file-name)))
             (test-assert (string? the-tty-file-name))

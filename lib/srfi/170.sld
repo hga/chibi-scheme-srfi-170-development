@@ -38,6 +38,8 @@
 
    %tcgetattr
 
+   %setsid
+
    term/l-ctermid
    %ctermid
 
@@ -176,8 +178,8 @@
    tty?
    tty-file-name
    ;; with-raw-mode without-echo without-interrupt-chars
-   ;; open-control-tty
-   ;; become-session-leader
+   ;; open-control-tty ;; both a low level implementaion and a Stevens level thing
+   become-session-leader
    ;; tty-process-group set-tty-process-group
    control-tty-file-name
 

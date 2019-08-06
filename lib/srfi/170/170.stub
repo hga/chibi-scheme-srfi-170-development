@@ -358,11 +358,11 @@
 
 ;;> Returns the current process id.
 
-(define-c pid_t (pid getpid) ())
+(define-c pid_t (pid getpid) ()) ;; pid_t return value OK, cannot fail
 
 ;;> Returns the parent process id.
 
-(define-c pid_t (parent-pid getppid) ())
+(define-c pid_t (parent-pid getppid) ()) ;; pid_t return value OK, cannot fail
 
 ;;> Returns a process group id for a process, -1 on failure.
 
@@ -568,6 +568,13 @@
 ;; ICANON
 
 (define-c errno (%tcgetattr tcgetattr) (int (result termios)))
+
+
+
+
+(define-c int (%setsid setsid) ())
+
+
 
 (define-c-const int (term/l-ctermid "L_ctermid"))
 

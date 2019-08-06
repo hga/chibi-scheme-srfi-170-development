@@ -612,5 +612,15 @@
           (errno-error (errno) tty-file-name the-port)) ;; non-local exit
       the-file-name)))
 
+
+
+(define (become-session-leader)
+  (let ((process-group-id (%setsid)))
+    (if (equal? -1 process-group-id)
+        (errno-error (errno) become-session-leader) ;; non-local exit
+        process-group-id)))
+
+
+
 (define (control-tty-file-name)
   (%ctermid #f)) ;; ~~~~~~~~ not thread safe
