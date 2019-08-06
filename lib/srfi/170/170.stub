@@ -37,7 +37,9 @@
   (c-system-include "time.h")
   (c-system-include "sys/time.h")
 
+  (c-system-include "termios.h")
   ))
+
 
 ;;; 3.1  Errors
 
@@ -551,3 +553,22 @@
 
 (define-c errno (%ttyname_r ttyname_r)
   (int (result (array char 65)) (value 65 int))) ;; should be big enough
+
+
+(define-c-int-type tcflag_t)
+
+(define-c-struct termios
+  predicate: termios?
+;  (tcflag_t c_iflag termios:iflag termios:set-iflag)
+;  (tcflag_t c_oflag termios:oflag termios:set-oflag)
+;  (tcflag_t c_cflag termios:cflag termios:set-cflag)
+  (tcflag_t c_lflag termios:lflag termios:set-lflag)
+  )
+
+;; ICANON
+
+(define-c errno (%tcgetattr tcgetattr) (int (result termios)))
+
+
+
+(define-c-const int (term/l-ctermid "L_ctermid"))

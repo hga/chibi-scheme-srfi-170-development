@@ -36,7 +36,8 @@
    clck-id/realtime clck-id/monotonic
    %clock-gettime
 
-
+   %tcgetattr
+   term/l-ctermid
 
    ;; 3.1  Errors COMPLETE
 
@@ -72,7 +73,7 @@
    close-fdes
 
 
-   ;; 3.3  File system
+   ;; 3.3  File system COMPLETE except call-with-temporary-filename
 
    create-directory create-fifo create-hard-link create-symlink
    rename-file
