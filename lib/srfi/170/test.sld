@@ -40,7 +40,9 @@
     (define tmp-dot-file "/tmp/chibi-scheme-srfi-170-test-xyzzy/.dot-file")
     (define tmp-dot-file-basename ".dot-file")
     (define tmp-hard-link "/tmp/chibi-scheme-srfi-170-test-xyzzy/hard-link")
+
     (define tmp-no-filesystem-object "/tmp/chibi-scheme-srfi-170-test-xyzzy/no-filesystem-object")
+    (define bogus-path "/foo/bar/baz/quux")
 
     (define the-text-string "The quick brown fox jumps over the lazy quux")
     (define the-text-string-length (string-length the-text-string))
@@ -282,7 +284,7 @@
           (test tmp-file-1 (real-path tmp-file-1-basename))
           (test tmp-file-1 (real-path (string-append "./" tmp-file-1-basename)))
           ;; we'll trust it resolves symlinks, can't actually do anything if it doesn't....
-          (test-error (real-path tmp-no-filesystem-object))
+          (test-error (real-path bogus-path))
           (test-not-error (set-working-directory starting-dir))
 
           (let ((tmp-filename (temp-file-prefix)))
