@@ -218,24 +218,12 @@
               (test my-starting-uid (file-info:uid fi-ending))
               (test my-starting-gid (file-info:gid fi-ending))))
 
-          ;; test chasing
-          (let* ((fi-starting (file-info tmp-file-1 #f))
-                 (my-starting-uid (file-info:uid fi-starting))
-                 (my-starting-gid (file-info:gid fi-starting)))
-
-            (test-not-error (set-file-owner tmp-file-1 my-starting-uid #f)) ; best we can do, not assuming we're root!
-            (test-not-error (set-file-group tmp-file-1 my-starting-gid #f)) ; maybe see what supplementary groups we have?
-
-            (let ((fi-ending (file-info tmp-file-1 #f)))
-              (test my-starting-uid (file-info:uid fi-ending))
-              (test my-starting-gid (file-info:gid fi-ending))))
-
           (test the-text-string-length (file-info:size (file-info tmp-file-1)))
           (test-not-error (truncate-file tmp-file-1 3))
           (test 3 (file-info:size (file-info tmp-file-1)))
 
           ;; test remaining file-info features
-          (let ((fi (file-info tmp-file-1 #f)))
+          (let ((fi (file-info tmp-file-1)))
             (test-assert (file-info? fi))
             (test 2 (file-info:nlinks fi))
             ;; ~~~~ test uid and gid

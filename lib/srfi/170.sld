@@ -12,7 +12,7 @@
 
    %delete-directory %delete-file
 
-   %stat %lstat stat:atime stat:mtime stat:ctime
+   %stat stat:atime stat:mtime stat:ctime
 
    %opendir %readdir %closedir
    DIR? dirent-name make-directory-object directory-object?
@@ -80,7 +80,7 @@
 
    ;; 3.3  File system COMPLETE except call-with-temporary-filename
 
-   create-directory create-fifo create-hard-link create-symlink
+   create-directory create-fifo create-hard-link
    rename-file
    delete-directory
    set-file-mode set-file-owner set-file-group
@@ -94,7 +94,7 @@
 
    file-info-directory? file-info-fifo?  file-info-regular?
    file-info-socket?  file-info-block-special?
-   file-info-character-special?  file-info-symlink?
+   file-info-character-special?
 
    directory-files
    open-directory read-directory close-directory

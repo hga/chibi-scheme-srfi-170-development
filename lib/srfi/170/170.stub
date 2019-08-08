@@ -202,14 +202,12 @@
 
 (define-c errno (%chown chown) (string uid_t gid_t))
 (define-c errno (%fchown chown) (string uid_t gid_t))
-(define-c errno (%lchown chown) (string uid_t gid_t))
 
 ;;> Seting the file times
 
 (define-c-const int (utimens/at_fdcwd "AT_FDCWD"))
 (define-c-const int (utimens/utime_now "UTIME_NOW"))
 (define-c-const int (utimens/utime_omit "UTIME_OMIT"))
-(define-c-const int (utimens/at_symlink_nofollow "AT_SYMLINK_NOFOLLOW"))
 
 (define-c-struct timespec
   ;; constructor: (make-timespec)
@@ -278,9 +276,6 @@
 
 (define-c errno (%stat stat) (string (result stat)))
 (define-c errno (%fstat fstat) (int (result stat)))
-(cond-expand
-  ((not windows)
-   (define-c errno (%lstat lstat) (string (result stat)))))
 
 #| ~~~~~~~
 (define-c boolean S_ISREG (mode_t))

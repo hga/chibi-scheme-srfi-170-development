@@ -3,7 +3,7 @@
 
 (define (delete-filesystem-object fname)
   (if (file-exists? fname)
-      (if (file-info-directory? (file-info fname #f))
+      (if (file-info-directory? (file-info fname))
           (if (not (delete-directory fname))
               (errno-error (errno) delete-filesystem-object fname))
           (if (not (delete-file fname))

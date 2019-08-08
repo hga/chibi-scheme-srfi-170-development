@@ -86,16 +86,10 @@
     (if (not (%create-hard-link oldname newname))
         (errno-error (errno) create-hard-link oldname newname))))
 
-(define (create-symlink oldname newname . o)
-  (let-optionals o ((override? #f))
-    (if override? (delete-filesystem-object newname))
-    (if (not (%create-symlink oldname newname))
-        (errno-error (errno) create-symlink oldname newname))))
-
 (define (rename-file oldname newname . o)
   (let-optionals o ((override? #f))
     (if (not override?)
-        (if (%lstat newname)
+        (if (%stat newname)
             (errno-error errno/exist rename-file oldname newname)))
     (if (not (%rename-file oldname newname))
         (errno-error (errno) rename-file oldname newname))))
@@ -108,39 +102,27 @@
   (if (not (%chmod fname/port permission-bits))
       (errno-error (errno) set-file-mode fname/port permission-bits)))
 
-(define (set-file-owner fname/port uid . o)
-  (let-optionals o ((chase? #t))
-    (let ((gid (file-info:gid (file-info fname/port))))
-      (if chase?
-          (if (not (%chown fname/port uid gid))
-              (errno-error (errno) set-file-owner fname/port uid gid))
-          (if (not (%lchown fname/port uid gid))
-              (errno-error (errno) set-file-owner fname/port uid gid))))))
+(define (set-file-owner fname/port uid)
+  (let ((gid (file-info:gid (file-info fname/port))))
+    (if (not (%chown fname/port uid gid))
+        (errno-error (errno) set-file-owner fname/port uid gid))))
 
 (define (set-file-group fname/port gid . o)
-  (let-optionals o ((chase? #t))
-    (let ((uid (file-info:uid (file-info fname/port))))
-      (if chase?
-          (if (not (%chown fname/port uid gid))
-              (errno-error (errno) set-file-group fname/port uid gid))
-          (if (not (%lchown fname/port uid gid))
-              (errno-error (errno) set-file-group fname/port uid gid))))))
+  (let ((uid (file-info:uid (file-info fname/port))))
+    (if (not (%chown fname/port uid gid))
+        (errno-error (errno) set-file-group fname/port uid gid))))
 
 (define timespect/now (cons -1 utimens/utime_now))
 (define timespec/omit (cons -1 utimens/utime_omit))
 
-(define (do-set-file-timespecs fname/port atime mtime chase?)
-  (if (not (%utimensat utimens/at_fdcwd fname/port atime mtime (if chase?
-                                                                   0
-                                                                   utimens/at_symlink_nofollow)))
-      (errno-error (errno) set-file-timespecs fname/port atime mtime chase?)))
+(define (do-set-file-timespecs fname/port atime mtime)
+  (if (not (%utimensat utimens/at_fdcwd fname/port atime mtime 0))
+           (errno-error (errno) set-file-timespecs fname/port atime mtime)))
 
 (define set-file-timespecs
   (case-lambda
-   ((fname/port) (do-set-file-timespecs fname/port timespect/now timespect/now #t))
-   ((fname/port chase?) (do-set-file-timespecs fname/port timespect/now timespect/now chase?))
-   ((fname/port atime mtime) (do-set-file-timespecs fname/port atime mtime #t))
-   ((fname/port atime mtime chase?) (do-set-file-timespecs fname/port atime mtime chase?))))
+   ((fname/port) (do-set-file-timespecs fname/port timespect/now timespect/now))
+   ((fname/port atime mtime) (do-set-file-timespecs fname/port atime mtime))))
 
 (define (truncate-file fname/port len)
   (if (not (%truncate fname/port len))
@@ -184,27 +166,24 @@
      (mtime file-info:mtime)
      (ctime file-info:ctime))))
 
-(define (file-info fname/port . o)
-  (let-optionals o ((chase? #t))
-    (let ((file-stat (if chase?
-                     (%stat fname/port)
-                     (%lstat fname/port))))
-      (if (not file-stat)
-          (errno-error (errno) file-info fname/port)) ;; non-local exit
-      (make-file-info
-       (stat:dev file-stat)
-       (stat:ino file-stat)
-       (stat:mode file-stat)
-       (stat:nlinks file-stat)
-       (stat:uid file-stat)
-       (stat:gid file-stat)
-       (stat:rdev file-stat)
-       (stat:size file-stat)
-       (stat:blksize file-stat)
-       (stat:blocks file-stat)
-       (cons (timespec:seconds (stat:atime file-stat)) (timespec:nanoseconds (stat:atime file-stat)))
-       (cons (timespec:seconds (stat:mtime file-stat)) (timespec:nanoseconds (stat:mtime file-stat)))
-       (cons (timespec:seconds (stat:ctime file-stat)) (timespec:nanoseconds (stat:ctime file-stat)))))))
+(define (file-info fname/port)
+  (let ((file-stat (%stat fname/port)))
+    (if (not file-stat)
+        (errno-error (errno) file-info fname/port)) ;; non-local exit
+    (make-file-info
+     (stat:dev file-stat)
+     (stat:ino file-stat)
+     (stat:mode file-stat)
+     (stat:nlinks file-stat)
+     (stat:uid file-stat)
+     (stat:gid file-stat)
+     (stat:rdev file-stat)
+     (stat:size file-stat)
+     (stat:blksize file-stat)
+     (stat:blocks file-stat)
+     (cons (timespec:seconds (stat:atime file-stat)) (timespec:nanoseconds (stat:atime file-stat)))
+     (cons (timespec:seconds (stat:mtime file-stat)) (timespec:nanoseconds (stat:mtime file-stat)))
+     (cons (timespec:seconds (stat:ctime file-stat)) (timespec:nanoseconds (stat:ctime file-stat))))))
 
 
 #| ~~~~~~~~
@@ -255,9 +234,6 @@
 
 (define (file-info-character-special? file-info-record)
   (if (eq? 0 (bitwise-and file-type-mask/ifchr (file-info:mode file-info-record))) #f #t))
-
-(define (file-info-symlink? file-info-record)
-  (if (eq? 0 (bitwise-and file-type-mask/iflnk (file-info:mode file-info-record))) #f #t))
 
 (define-record-type Directory-Object
   (make-directory-object the-DIR is-open? dot-files?)
