@@ -105,7 +105,7 @@
       (errno-error (errno) delete-directory fname)))
 
 (define (set-file-mode fname/port permission-bits)
-  (if (not (%set-file-mode fname/port permission-bits))
+  (if (not (%chmod fname/port permission-bits))
       (errno-error (errno) set-file-mode fname/port permission-bits)))
 
 (define (set-file-owner fname/port uid . o)

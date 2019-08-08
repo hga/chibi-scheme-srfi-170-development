@@ -195,8 +195,8 @@
 
 ;;> Sets the file permissions as in chmod.
 
-(define-c errno (%set-file-mode chmod) (string mode_t))
-(define-c errno (%set-fd-mode fchmod) (int mode_t))
+(define-c errno (%chmod chmod) (string mode_t))
+(define-c errno (%fchmod fchmod) (int mode_t))
 
 ;;> Sets the file owner and group
 
