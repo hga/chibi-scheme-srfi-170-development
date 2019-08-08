@@ -353,40 +353,6 @@
           (test-assert (> (user-uid) -1))
           (test-assert (> (user-gid) -1))
           (test-assert (list? (user-supplementary-gids))) ;; not sure how to make it fail
-
-          ;; ~~~~~~~~ seriously need better testing for all these set functions
-          (if (equal? 0 (user-uid))
-              (begin
-                (test-not-error (set-uid 0))
-                (test-not-error (set-gid 0)))
-              (begin
-                (test-error (set-uid 0))
-                (test-error (set-gid 0))))
-
-          (test-not-error (set-uid (user-uid)))
-          (test-not-error (set-gid (user-gid)))
-
-          (test-assert (> (user-effective-uid) -1))
-          (test-assert (> (user-effective-gid) -1))
-          (if (equal? 0 (user-uid))
-              (begin
-                (test-not-error (set-user-effective-uid 0))
-                (test-not-error (set-user-effective-gid 0)))
-              (begin
-                (test-error (set-user-effective-uid 0))
-                (test-error (set-user-effective-gid 0))))
-          (test-not-error (set-user-effective-uid (user-uid)))
-          (test-not-error (set-user-effective-gid (user-gid)))
-          (test-not-error (set-user-effective-uid (user-effective-uid)))
-          (test-not-error (set-user-effective-gid (user-effective-gid)))
-          (test-not-error (set-user-real-and-effective-uid -1 -1))
-          (test-not-error (set-user-real-and-effective-uid (user-uid) -1))
-          (test-not-error (set-user-real-and-effective-uid -1 (user-uid)))
-          (test-not-error (set-user-real-and-effective-uid (user-uid) (user-uid)))
-          (test-not-error (set-user-real-and-effective-gid -1 -1))
-          (test-not-error (set-user-real-and-effective-gid (user-gid) -1))
-          (test-not-error (set-user-real-and-effective-gid -1 (user-gid)))
-          (test-not-error (set-user-real-and-effective-gid (user-gid) (user-gid)))
           ) ; end process state
 
         ;; 3.6  User and group database access

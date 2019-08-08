@@ -441,30 +441,6 @@
         (errno-error (errno) user-supplementary-gids)) ;; non-local exit
     (take (cadr ret) i))) ;; immutable list
 
-(define (set-uid uid)
-  (if (not (%setuid uid))
-      (errno-error (errno) set-uid uid)))
-
-(define (set-gid gid)
-  (if (not (%setgid gid))
-      (errno-error (errno) set-gid gid)))
-
-(define (set-user-effective-uid uid)
-  (if (not (%seteuid uid))
-      (errno-error (errno) set-user-effective-uid uid)))
-
-(define (set-user-effective-gid gid)
-  (if (not (%setegid gid))
-      (errno-error (errno) set-user-effective-gid gid)))
-
-(define (set-user-real-and-effective-uid ruid euid)
-  (if (not (%setreuid ruid euid))
-      (errno-error (errno) set-user-real-and-effective-uid ruid euid)))
-
-(define (set-user-real-and-effective-gid rgid egid)
-  (if (not (%setregid rgid egid))
-      (errno-error (errno) set-user-real-and-effective-gid rgid egid)))
-
 
 ;;; 3.6  User and group database access
 
