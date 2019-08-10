@@ -175,13 +175,6 @@
   ((not windows)
    (define-c errno (%create-hard-link link) (string string))))
 
-;;> Creates a symbolic link to the first arg from the second.
-;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
-
-(cond-expand
-  ((not windows)
-   (define-c errno (%create-symlink symlink) (string string))))
-
 ;;> Renames the first arg to the second.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
 
@@ -280,25 +273,14 @@
 #| ~~~~~~~
 (define-c boolean S_ISREG (mode_t))
 (define-c boolean S_ISDIR (mode_t))
-(define-c boolean S_ISCHR (mode_t))
-(define-c boolean S_ISBLK (mode_t))
 (define-c boolean S_ISFIFO (mode_t))
-(define-c boolean S_ISLNK (mode_t))
-(define-c boolean S_ISSOCK (mode_t))
 
 (cond-expand
  ((not windows)
   ;;(define-c-const int ("S_IFMT"))
-  (define-c-const int (file/socket "S_IFSOCK"))
-  (define-c-const int (file/link "S_IFLNK"))
   (define-c-const int (file/regular "S_IFREG"))
-  (define-c-const int (file/block "S_IFBLK"))
   (define-c-const int (file/directory "S_IFDIR"))
-  (define-c-const int (file/character "S_IFCHR"))
   (define-c-const int (file/fifo "S_IFIFO"))
-  (define-c-const int (file/suid "S_ISUID"))
-  (define-c-const int (file/sgid "S_ISGID"))
-  (define-c-const int (file/sticky "S_ISVTX"))
   ;;(define-c-const int ("S_IRWXU"))
   (define-c-const int (perm/user-read "S_IRUSR"))
   (define-c-const int (perm/user-write "S_IWUSR"))
@@ -316,10 +298,6 @@
 (define-c-const int (file-type-mask/ifdir "S_IFDIR")) ;; directory
 (define-c-const int (file-type-mask/ififo "S_IFIFO")) ;; FIFO special
 (define-c-const int (file-type-mask/ifreg "S_IFREG")) ;; regular
-(define-c-const int (file-type-mask/ifsock "S_IFSOCK")) ;; socket
-(define-c-const int (file-type-mask/ifblk "S_IFBLK")) ;; block special
-(define-c-const int (file-type-mask/ifchr "S_IFCHR")) ;; character special
-(define-c-const int (file-type-mask/iflnk "S_IFLNK")) ;; symbolic link
 
 (define-c-const int (posix/path-max "PATH_MAX"))
 

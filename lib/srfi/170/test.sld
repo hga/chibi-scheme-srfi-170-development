@@ -233,16 +233,10 @@
             (test-not (file-info-directory? fi))
             (test-not (file-info-fifo? fi))
             (test-assert (file-info-regular? fi))
-;;            (test-not (file-info-socket? fi)) ~~~~ fails on Linux and OpenBSD???
-            (test-not (file-info-block-special? fi))
-            (test-not (file-info-character-special? fi))
             )
 
           (test-assert (file-info-directory? (file-info tmp-containing-dir)))
           (test-assert (file-info-fifo? (file-info tmp-fifo)))
-;;      (define (file-info-block-special? file-info-record) no fixed set of these
-;;          (test-not (file-info-block-special? (file-info "/dev/tty"))) ~~~~ fails on Linux and OpenBSD???
-          (test-assert (file-info-character-special? (file-info "/dev/tty")))
 
           (test-not-error (create-tmp-test-file tmp-dot-file))
 

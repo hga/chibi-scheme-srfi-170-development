@@ -226,15 +226,6 @@
 (define (file-info-regular? file-info-record)
   (if (eq? 0 (bitwise-and file-type-mask/ifreg (file-info:mode file-info-record))) #f #t))
 
-(define (file-info-socket? file-info-record)
-  (if (eq? 0 (bitwise-and file-type-mask/ifsock (file-info:mode file-info-record))) #f #t))
-
-(define (file-info-block-special? file-info-record)
-  (if (eq? 0 (bitwise-and file-type-mask/ifblk (file-info:mode file-info-record))) #f #t))
-
-(define (file-info-character-special? file-info-record)
-  (if (eq? 0 (bitwise-and file-type-mask/ifchr (file-info:mode file-info-record))) #f #t))
-
 (define-record-type Directory-Object
   (make-directory-object the-DIR is-open? dot-files?)
   directory-object?
