@@ -219,8 +219,12 @@
               (test my-starting-gid (file-info:gid fi-ending))))
 
           (test the-text-string-length (file-info:size (file-info tmp-file-1)))
-          (test-not-error (truncate-file tmp-file-1 3))
-          (test 3 (file-info:size (file-info tmp-file-1)))
+          (test-not-error (truncate-file tmp-file-1 30))
+          (test 30 (file-info:size (file-info tmp-file-1)))
+          (let ((the-port (open-output-file tmp-file-1))) ;; note this truncates the file to 0 length
+            (test-not-error (truncate-file the-port 10)) ;; this should make the file 10 bytes of 0s
+            (test 10 (file-info:size (file-info tmp-file-1)))
+            (test-not-error (close-output-port the-port)))
 
           ;; test remaining file-info features
           (let ((fi (file-info tmp-file-1)))

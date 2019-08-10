@@ -125,8 +125,13 @@
    ((fname atime mtime) (do-set-file-timespecs fname atime mtime))))
 
 (define (truncate-file fname/port len)
-  (if (not (%truncate fname/port len))
-      (errno-error (errno) truncate-file fname/port len)))
+  (cond ((string? fname/port)
+         (if (not (%truncate fname/port len))
+             (errno-error (errno) truncate-file fname/port len))) ;; non-local exit
+        ((port? fname/port)
+         (if (not (%ftruncate (port-fdes fname/port) len))
+             (errno-error (errno) truncate-file fname/port len))) ;; non-local exit
+        (else (errno-error errno/inval truncate-file fname/port len))))
 
 (cond-expand
   (windows
