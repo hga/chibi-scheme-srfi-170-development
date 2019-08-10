@@ -50,7 +50,7 @@
       (if the-new-fd
           (let ((ret (%dup2 the-old-fd the-new-fd)))
             (if (equal? -1 ret)
-                (errno-error (errno) dup->fdes the-port the-new-fd) ;; non-local exit
+                (errno-error (errno) dup->fdes the-port the-new-fd) ;; exit the procedure
                 ret))
           (let ((ret (%dup the-old-fd)))
             (if (equal? -1 ret)
@@ -127,10 +127,10 @@
 (define (truncate-file fname/port len)
   (cond ((string? fname/port)
          (if (not (%truncate fname/port len))
-             (errno-error (errno) truncate-file fname/port len))) ;; non-local exit
+             (errno-error (errno) truncate-file fname/port len))) ;; exit the procedure
         ((port? fname/port)
          (if (not (%ftruncate (port-fdes fname/port) len))
-             (errno-error (errno) truncate-file fname/port len))) ;; non-local exit
+             (errno-error (errno) truncate-file fname/port len))) ;; exit the procedure
         (else (errno-error errno/inval truncate-file fname/port len))))
 
 (cond-expand
@@ -177,14 +177,14 @@
                 (let ((the-file-info (%stat fname/port)))
                   (if the-file-info
                       the-file-info
-                      (errno-error (errno) file-info fname/port)))) ;; non-local exit
+                      (errno-error (errno) file-info fname/port)))) ;; exit the procedure
                ((port? fname/port)
                 (let ((the-file-info (%fstat (port-fdes fname/port))))
                   (if the-file-info
                       the-file-info
-                      (errno-error (errno) file-info fname/port))))))) ;; non-local exit
+                      (errno-error (errno) file-info fname/port))))))) ;; exit the procedure
     (if (not file-stat)
-        (errno-error (errno) file-info fname/port)) ;; non-local exit
+        (errno-error (errno) file-info fname/port)) ;; exit the procedure
     (make-file-info
      (stat:dev file-stat)
      (stat:ino file-stat)
@@ -273,9 +273,9 @@
 
 (define (read-directory dirobj)
   (if (not (directory-object? dirobj))
-      (errno-error errno/inval read-directory dirobj)) ;; non-local exit
+      (errno-error errno/inval read-directory dirobj)) ;; exit the procedure
   (if (not (directory-object-is-open? dirobj))
-      (errno-error errno/badf read-directory dirobj)) ;; non-local exit
+      (errno-error errno/badf read-directory dirobj)) ;; exit the procedure
   (let ((dot-files? (directory-object-dot-files? dirobj)))
     (let loop ()
       (let ((de (read-directory-raise-error dirobj)))
@@ -291,16 +291,16 @@
 
 (define (close-directory directory-object)
   (if (not (directory-object? directory-object))
-      (errno-error errno/inval close-directory directory-object)) ;; non-local exit
+      (errno-error errno/inval close-directory directory-object)) ;; exit the procedure
   (if (not (directory-object-is-open? directory-object))
-      (errno-error errno/badf read-directory directory-object) ;; non-local exit
+      (errno-error errno/badf read-directory directory-object) ;; exit the procedure
       (set-directory-object-is-open directory-object #f)
       ;; does not dirobj any error stuff, see 170.stub
       (%closedir (directory-object-get-DIR directory-object))))
 
 (define (real-path the-starting-path)
   (if (not (string? the-starting-path))
-      (errno-error errno/inval real-path the-starting-path)) ;; non-local exit
+      (errno-error errno/inval real-path the-starting-path)) ;; exit the procedure
   (let ((the-real-path (%realpath the-starting-path)))
     (if the-real-path
         the-real-path
@@ -336,7 +336,7 @@
             (let ((the-fileno (open the-filename (bitwise-ior open/write open/create) #o600)))
               (if (not the-fileno)
                   ;; ~~~~ adding the filename is not in the specs, but necessary for sane debugging
-                  (errno-error (errno) create-temp-file prefix the-filename)) ;; non-local exit
+                  (errno-error (errno) create-temp-file prefix the-filename)) ;; exit the procedure
               (%close (%fileno-to-fd the-fileno))
               the-filename))))))
 
@@ -360,7 +360,7 @@
   (let-optionals o ((the-prefix (temp-file-prefix)))
     (let loop ((i 0))
       (if (> i 1000)
-          (errno-error errno/inval temp-file-iterate maker the-prefix) ;; non-local exit
+          (errno-error errno/inval temp-file-iterate maker the-prefix) ;; exit the procedure
           (let ((fname (string-append the-prefix "." (number->string i))))
 ;; rest left as an exercise for someone else ^_^
 |#
@@ -420,7 +420,7 @@
     (if (equal? -1 niceness)
         (let ((e (errno))) ;; using the above errno proxy
           (if (or (equal? e errno/srch) (equal? e errno/inval))
-              (errno-error (errno) priority which who)))) ;; non-local exit
+              (errno-error (errno) priority which who)))) ;; exit the procedure
     niceness))
 
 (define (set-priority which who niceness)
@@ -444,7 +444,7 @@
   (let* ((ret (%getgroups))
          (i (car ret)))
     (if (equal? -1 i)
-        (errno-error (errno) user-supplementary-gids)) ;; non-local exit
+        (errno-error (errno) user-supplementary-gids)) ;; exit the procedure
     (take (cadr ret) i))) ;; immutable list
 
 
@@ -466,7 +466,7 @@
                        (%getpwnam_r user (make-string 1024))
                        (%getpwuid_r user (make-string 1024))))))
       (if (not (passwd:name ui))
-          (errno-error (errno) user-info user) ;; non-local exit
+          (errno-error (errno) user-info user) ;; exit the procedure
           (make-user-info
            (passwd:name ui)
            (passwd:uid ui)
@@ -561,13 +561,13 @@
 
 (define (tty-file-name the-port) ;; ~~~~ add fd??
   (if (not (port? the-port))
-      (errno-error errno/inval tty-file-name the-port)) ;; non-local exit
+      (errno-error errno/inval tty-file-name the-port)) ;; exit the procedure
   (let ((the-fd (port-fdes the-port)))
     (if (not the-fd)
-        (errno-error errno/inval tty-file-name the-port)) ;; non-local exit
+        (errno-error errno/inval tty-file-name the-port)) ;; exit the procedure
     (let ((the-file-name (%ttyname_r the-fd)))
       (if (not the-file-name)
-          (errno-error (errno) tty-file-name the-port)) ;; non-local exit
+          (errno-error (errno) tty-file-name the-port)) ;; exit the procedure
       the-file-name)))
 
 
@@ -575,7 +575,7 @@
 (define (become-session-leader)
   (let ((process-group-id (%setsid)))
     (if (equal? -1 process-group-id)
-        (errno-error (errno) become-session-leader) ;; non-local exit
+        (errno-error (errno) become-session-leader) ;; exit the procedure
         process-group-id)))
 
 
