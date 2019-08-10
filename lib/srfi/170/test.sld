@@ -239,6 +239,20 @@
             (test-assert (file-info-regular? fi))
             )
 
+          (let* ((the-port (open-input-file tmp-file-1))
+                 (fi (file-info the-port)))
+            (test-assert (file-info? fi))
+            (test 2 (file-info:nlinks fi))
+            ;; ~~~~ test uid and gid
+            (test-assert (pair? (file-info:atime fi)))
+            (test-assert (pair? (file-info:mtime fi)))
+            (test-assert (pair? (file-info:ctime fi)))
+            (test-not (file-info-directory? fi))
+            (test-not (file-info-fifo? fi))
+            (test-assert (file-info-regular? fi))
+            (test-not-error (close-input-port the-port))
+            )
+
           (test-assert (file-info-directory? (file-info tmp-containing-dir)))
           (test-assert (file-info-fifo? (file-info tmp-fifo)))
 

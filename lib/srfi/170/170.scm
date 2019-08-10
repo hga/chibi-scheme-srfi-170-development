@@ -172,7 +172,17 @@
      (ctime file-info:ctime))))
 
 (define (file-info fname/port)
-  (let ((file-stat (%stat fname/port)))
+  (let ((file-stat
+         (cond ((string? fname/port)
+                (let ((the-file-info (%stat fname/port)))
+                  (if the-file-info
+                      the-file-info
+                      (errno-error (errno) file-info fname/port)))) ;; non-local exit
+               ((port? fname/port)
+                (let ((the-file-info (%fstat (port-fdes fname/port))))
+                  (if the-file-info
+                      the-file-info
+                      (errno-error (errno) file-info fname/port))))))) ;; non-local exit
     (if (not file-stat)
         (errno-error (errno) file-info fname/port)) ;; non-local exit
     (make-file-info
