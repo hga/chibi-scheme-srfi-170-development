@@ -212,23 +212,6 @@
   ((not windows)
    (define-c errno (%ftruncate ftruncate) (int off_t))))
 
-;;> Code for walking directories
-
-(define-c-struct dirent
- (string d_name dirent-name))
-
-;; the automagic finalizer is fragile and incomplete, handing it the
-;; fixnum 1 segfaults on Bionic Beaver.  It returns SEXP_VIOD instead
-;; of 0 or -1, nor does errno get set when handed an already closed
-;; DIR, which may not be its fault
-
-(define-c-type DIR
- finalizer: (%closedir closedir)
- predicate: DIR?)
-
-(define-c (free DIR) (%opendir opendir) (string))
-(define-c dirent (%readdir readdir) ((link (pointer DIR))))
-
 (cond-expand
   (windows
    (c-include-verbatim "filesystem_win32_shim.c")
@@ -267,6 +250,23 @@
 
 (define-c errno (%stat stat) (string (result stat)))
 (define-c errno (%fstat fstat) (int (result stat)))
+
+;;> Code for walking directories
+
+(define-c-struct dirent
+ (string d_name dirent-name))
+
+;; the automagic finalizer is fragile and incomplete, handing it the
+;; fixnum 1 segfaults on Bionic Beaver.  It returns SEXP_VIOD instead
+;; of 0 or -1, nor does errno get set when handed an already closed
+;; DIR, which may not be its fault
+
+(define-c-type DIR
+ finalizer: (%closedir closedir)
+ predicate: DIR?)
+
+(define-c (free DIR) (%opendir opendir) (string))
+(define-c dirent (%readdir readdir) ((link (pointer DIR))))
 
 #| ~~~~~~~
 (define-c boolean S_ISREG (mode_t))
