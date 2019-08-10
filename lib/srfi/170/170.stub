@@ -189,12 +189,10 @@
 ;;> Sets the file permissions as in chmod.
 
 (define-c errno (%chmod chmod) (string mode_t))
-(define-c errno (%fchmod fchmod) (int mode_t))
 
 ;;> Sets the file owner and group
 
 (define-c errno (%chown chown) (string uid_t gid_t))
-(define-c errno (%fchown chown) (string uid_t gid_t))
 
 ;;> Seting the file times
 

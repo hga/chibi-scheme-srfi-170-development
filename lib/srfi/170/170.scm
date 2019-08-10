@@ -98,31 +98,31 @@
   (if (not (%delete-directory fname))
       (errno-error (errno) delete-directory fname)))
 
-(define (set-file-mode fname/port permission-bits)
-  (if (not (%chmod fname/port permission-bits))
-      (errno-error (errno) set-file-mode fname/port permission-bits)))
+(define (set-file-mode fname permission-bits)
+  (if (not (%chmod fname permission-bits))
+      (errno-error (errno) set-file-mode fname permission-bits)))
 
-(define (set-file-owner fname/port uid)
-  (let ((gid (file-info:gid (file-info fname/port))))
-    (if (not (%chown fname/port uid gid))
-        (errno-error (errno) set-file-owner fname/port uid gid))))
+(define (set-file-owner fname uid)
+  (let ((gid (file-info:gid (file-info fname))))
+    (if (not (%chown fname uid gid))
+        (errno-error (errno) set-file-owner fname uid gid))))
 
-(define (set-file-group fname/port gid . o)
-  (let ((uid (file-info:uid (file-info fname/port))))
-    (if (not (%chown fname/port uid gid))
-        (errno-error (errno) set-file-group fname/port uid gid))))
+(define (set-file-group fname gid)
+  (let ((uid (file-info:uid (file-info fname))))
+    (if (not (%chown fname uid gid))
+        (errno-error (errno) set-file-group fname uid gid))))
 
 (define timespect/now (cons -1 utimens/utime_now))
 (define timespec/omit (cons -1 utimens/utime_omit))
 
-(define (do-set-file-timespecs fname/port atime mtime)
-  (if (not (%utimensat utimens/at_fdcwd fname/port atime mtime 0))
-           (errno-error (errno) set-file-timespecs fname/port atime mtime)))
+(define (do-set-file-timespecs fname atime mtime)
+  (if (not (%utimensat utimens/at_fdcwd fname atime mtime 0))
+           (errno-error (errno) set-file-timespecs fname atime mtime)))
 
 (define set-file-timespecs
   (case-lambda
-   ((fname/port) (do-set-file-timespecs fname/port timespect/now timespect/now))
-   ((fname/port atime mtime) (do-set-file-timespecs fname/port atime mtime))))
+   ((fname) (do-set-file-timespecs fname timespect/now timespect/now))
+   ((fname atime mtime) (do-set-file-timespecs fname atime mtime))))
 
 (define (truncate-file fname/port len)
   (if (not (%truncate fname/port len))
