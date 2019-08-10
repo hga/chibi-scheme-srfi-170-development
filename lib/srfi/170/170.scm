@@ -42,21 +42,6 @@
       (errno-error errno/inval port-fdes the-port))
   (port-fileno the-port))
 
-(define (dup->fdes the-port . o)
-  (if (not (port? the-port))
-      (errno-error errno/inval dup->fdes the-port))
-  (let ((the-old-fd (port-fdes the-port)))
-    (let-optionals o ((the-new-fd #f))
-      (if the-new-fd
-          (let ((ret (%dup2 the-old-fd the-new-fd)))
-            (if (equal? -1 ret)
-                (errno-error (errno) dup->fdes the-port the-new-fd) ;; exit the procedure
-                ret))
-          (let ((ret (%dup the-old-fd)))
-            (if (equal? -1 ret)
-                (errno-error (errno) dup->fdes the-port)
-                ret))))))
-
 (define (close-fdes the-fd)
   (if (or (not (fixnum? the-fd)) (< the-fd 0))
       (errno-error errno/inval close-fdes the-fd))
@@ -366,14 +351,6 @@
 |#
 
 
-;;; 3.4  Processes
-
-;;; 3.4.1  Process objects
-
-;;; 3.4.2  Process waiting
-
-;;; 3.4.3  Analysing process status codes
-
 ;;; 3.5  Process state
 
 (define (umask)
@@ -394,45 +371,15 @@
   (if (not (%chdir fname))
       (errno-error (errno) set-working-directory fname)))
 
-;; pid and parent-pid direct from stub, can't error
-
-(define (process-group . o)
-  (let-optionals o ((process-object/pid 0))
-    (let ((pgid (%getpgid process-object/pid)))
-      (if (equal? -1 pgid)
-          (errno-error (errno) process-group process-object/pid)
-          pgid))))
-
-(define set-process-group
-  (case-lambda
-   ((pgrp)
-    (if (not (%setpgid 0 pgrp))
-        (errno-error (errno) set-process-group pgrp)))
-   ((process-object/pid pgrp)
-    (if (not (%setpgid process-object/pid pgrp))
-        (errno-error (errno) set-process-group process-object/pid pgrp)))))
-
-(define (priority which who)
-  ;; ~~~~~~~~ as a proxy for setting errno to zero, set it to a known
-  ;; value with an operation that will fail reliably
-  (%create-directory "/" #o755)
-  (let ((niceness (%getpriority which who)))
-    (if (equal? -1 niceness)
-        (let ((e (errno))) ;; using the above errno proxy
-          (if (or (equal? e errno/srch) (equal? e errno/inval))
-              (errno-error (errno) priority which who)))) ;; exit the procedure
-    niceness))
-
-(define (set-priority which who niceness)
-  (if (not (%setpriority which who niceness))
-      (errno-error (errno) set-priority which who niceness)))
+;; pid direct from stub, can't error
 
 (define (nice . o)
-  (let-optionals o ((process-object/pid (pid))
-                    (delta 1))
-    (set-priority priority/process
-                  process-object/pid
-                  (+ (priority priority/process process-object/pid) delta))))
+  (let-optionals o ((delta 1))
+    (set-errno 0)
+    (let ((ret (%nice delta)))
+      (if (and (equal? -1 ret) (not (equal? 0 (errno))))
+          (errno-error (errno) nice delta)) ;; exit the procedure
+      ret)))
 
 (define (user-login-name)
   (let ((name (%getlogin_r)))
@@ -505,15 +452,7 @@
   ))
 
 
-;;; 3.7  [Intentionally omitted]
-
 ;;; 3.8  System parameters
-
-(define (system-name)
-  (let ((name (%gethostname)))
-    (if (not name)
-        (errno-error (errno) system-name))
-    name))
 
 (define (uname)
   (let* ((r (%uname))
@@ -522,18 +461,6 @@
     (if (> ret -1)
         un
         (errno-error (errno) uname))))
-
-
-
-;;; 3.9  Signal system
-
-(define (signal-process proc sig)
-  (if (not (%kill proc sig))
-      ((errno-error (errno) signal-process proc sig))))
-
-(define (signal-process-group prgrp sig)
-  (if (not (%killpg prgrp sig))
-      ((errno-error (errno) signal-process-group prgrp sig))))
 
 
 ;;; 3.10  Time
@@ -554,10 +481,23 @@
   (cons (- (car timespec1) (car timespec2)) (- (cdr timespec1) (cdr timespec2))))
 
 
-;;; 3.11  [Intentionally omitted]
-
-
 ;;; 3.12  Terminal device control
+
+(define (tty? the-port)
+  (if (not (port? the-port))
+      (errno-error errno/inval tty? the-port)) ;; exit the procedure
+  (let ((the-fd (port-fdes the-port)))
+    (if (not the-fd)
+        #f)
+    (begin
+      (set-errno 0)
+      (let ((ret (%isatty the-fd)))
+        (if (equal? 1 ret)
+            #t
+            (if (or (not (equal? 0 ret))
+                    (not (equal? errno/notty (errno))))
+                (errno-error (errno) tty? the-port) ;; exit the procedure
+                #f))))))
 
 (define (tty-file-name the-port) ;; ~~~~ add fd??
   (if (not (port? the-port))
@@ -569,16 +509,3 @@
       (if (not the-file-name)
           (errno-error (errno) tty-file-name the-port)) ;; exit the procedure
       the-file-name)))
-
-
-
-(define (become-session-leader)
-  (let ((process-group-id (%setsid)))
-    (if (equal? -1 process-group-id)
-        (errno-error (errno) become-session-leader) ;; exit the procedure
-        process-group-id)))
-
-
-
-(define (control-tty-file-name)
-  (%ctermid #f)) ;; ~~~~~~~~ not thread safe

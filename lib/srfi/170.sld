@@ -29,7 +29,6 @@
 
    passwd:name passwd:uid %getpwuid_r %getpwnam_r
 
-   %gethostname
    %uname
 
    timespec:seconds timespec:nanoseconds
@@ -38,10 +37,6 @@
 
    %tcgetattr
 
-   %setsid
-   %tcgetpgrp %tcsetpgrp
-   term/l-ctermid
-   %ctermid
 
 
    ;; 3.1  Errors COMPLETE
@@ -74,7 +69,6 @@
    fdes->textual-input-port fdes->binary-input-port
    fdes->textual-output-port fdes->binary-output-port
    port-fdes
-   dup->fdes
    close-fdes
 
 
@@ -104,22 +98,11 @@
    ;; call-with-temporary-filename
 
 
-   ;; 3.4  Processes
-
-   ;; 3.4.1  Process objects
-
-   ;; 3.4.2  Process waiting
-
-   ;; 3.4.3  Analysing process status codes
-
    ;; 3.5  Process state COMPLETE
 
    umask set-umask
    working-directory set-working-directory
-   pid parent-pid
-   process-group set-process-group
-   priority set-priority
-   priority/process priority/process-group priority/user
+   pid
    nice
 
    user-login-name
@@ -137,27 +120,12 @@
    ;; group-info:name user-info group-info:gid user-info group-info:members
 
 
-   ;; 3.7  [Intentionally omitted]
-
    ;; 3.8  System parameters
 
-   system-name
    uname uname?
    uname:os-name uname:node-name uname:release-name uname:version uname:machine
    ;; current-timezone
    ;; current-locale
-
-
-   ;; 3.9  Signal system COMPLETE
-
-   signal/abrt signal/abrt signal/alrm signal/bus signal/chld
-   signal/cont signal/fpe signal/hup signal/ill signal/int
-   signal/kill signal/pipe signal/quit signal/segv signal/stop
-   signal/term signal/tstp signal/ttin signal/ttou signal/usr1
-   signal/usr2 signal/prof signal/sys signal/trap signal/urg
-   signal/vtalrm signal/xcpu signal/xfsz
-
-   signal-process signal-process-group
 
 
    ;; 3.10  Time COMPLETE
@@ -165,18 +133,11 @@
    posix-time monotonic-time
 
 
-   ;; 3.11  [Intentionally omitted]
-
    ;; 3.12  Terminal device control
 
    tty?
    tty-file-name
    ;; with-raw-mode without-echo without-interrupt-chars
-   ;; open-control-tty ;; both a low level implementaion and a Stevens level thing
-   become-session-leader
-   ;; tty-process-group set-tty-process-group
-   control-tty-file-name
-
    )
   
   (cond-expand ((not bsd)
@@ -199,9 +160,6 @@
      group-info group-info?
      group-info:name group-info:gid ;; group-info:members
 
-     ;; 3.9  Signal system
-
-     signal/poll
     )))
 
   (cond-expand ((not windows)

@@ -3,7 +3,7 @@
 ;; Harold Ancell, Harold Ancell assigns the rights to his additions to
 ;; Alex Shinn.
 
-;; filesystem.stub -- filesystem bindings
+;; filesystem.stub -- filesystem bindings [and other Chibi Scheme stub files]
 ;; Copyright (c) 2009-2013 Alex Shinn.  All rights reserved.
 ;; BSD-style license: http://synthcode.com/license.txt
 
@@ -130,11 +130,6 @@
   (define-c-const int (errno/time "ETIME"))))
 
 ;;; 3.2  I/O
-
-;;> Duplicates the given file descriptor, returning he new value,
-;; or -1 on failure.
-
-(define-c int (%dup dup) (int))
 
 ;;> Copies the first file descriptor to the second, closing
 ;;> it if needed.
@@ -329,35 +324,10 @@
 
 ;;> Returns the current process id.
 
-(define-c pid_t (pid getpid) ()) ;; pid_t return value OK, cannot fail
+(define-c pid_t (pid getpid) ()) ;; pid_t return value without sign problem, and cannot fail
 
-;;> Returns the parent process id.
-
-(define-c pid_t (parent-pid getppid) ()) ;; pid_t return value OK, cannot fail
-
-;;> Returns a process group id for a process, -1 on failure.
-
-(define-c int (%getpgid getpgid) (pid_t))
-
-;;> Sets a process group id, if first argument is 0, for the calling
-;;> process, if the second argument is 0, "the process ID of the
-;;> indicated process shall be used"
-
-(define-c errno (%setpgid setpgid) (pid_t pid_t))
-
-;;> Get and set process priority; details of use are complicted, refer
-;;> to POSIX definition such as:
-;;> http://pubs.opengroup.org/onlinepubs/9699919799/functions/getpriority.html
-
-(define-c-const int (priority/process "PRIO_PROCESS"))
-(define-c-const int (priority/process-group "PRIO_PGRP"))
-(define-c-const int (priority/user "PRIO_USER"))
-
-(define-c-int-type id_t)
-
-(define-c int (%getpriority getpriority) (int id_t))
-
-(define-c errno (%setpriority setpriority) (int id_t int))
+;; per the nice(3) OpenBSD man page it looks like it uses setpriority
+(define-c int (%nice nice) (int))
 
 (define-c errno (%getlogin_r getlogin_r)
   ((result (array char 128)) (value 128 int)))
@@ -423,16 +393,9 @@
             (result pointer group)))
   ))
 
-;;; 3.7  [Intentionally omitted]
-
 ;;; 3.8  System parameters
 
 ;;> Returns the standard hostname of the current processor.
-
-(define-c-const int (system-name/host-name-max "HOST_NAME_MAX"))
-
-(define-c errno (%gethostname gethostname)
-  ((result (array char (auto-expand arg1))) (value 256 int)))
 
 (define-c-struct utsname
   predicate: uname?
@@ -444,44 +407,6 @@
 
 (define-c int (%uname uname) ((result utsname)))
 
-
-
-;;; 3.9  Signal system
-
-(define-c-const int (signal/abrt "SIGABRT"))
-(define-c-const int (signal/abrt "SIGABRT"))
-(define-c-const int (signal/alrm "SIGALRM"))
-(define-c-const int (signal/bus "SIGBUS"))
-(define-c-const int (signal/chld "SIGCHLD"))
-(define-c-const int (signal/cont "SIGCONT"))
-(define-c-const int (signal/fpe "SIGFPE"))
-(define-c-const int (signal/hup "SIGHUP"))
-(define-c-const int (signal/ill "SIGILL"))
-(define-c-const int (signal/int "SIGINT"))
-(define-c-const int (signal/kill "SIGKILL"))
-(define-c-const int (signal/pipe "SIGPIPE"))
-(define-c-const int (signal/quit "SIGQUIT"))
-(define-c-const int (signal/segv "SIGSEGV"))
-(define-c-const int (signal/stop "SIGSTOP"))
-(define-c-const int (signal/term "SIGTERM"))
-(define-c-const int (signal/tstp "SIGTSTP"))
-(define-c-const int (signal/ttin "SIGTTIN"))
-(define-c-const int (signal/ttou "SIGTTOU"))
-(define-c-const int (signal/usr1 "SIGUSR1"))
-(define-c-const int (signal/usr2 "SIGUSR2"))
-(cond-expand
- ((not bsd)
-  (define-c-const int (signal/poll "SIGPOLL"))))
-(define-c-const int (signal/prof "SIGPROF"))
-(define-c-const int (signal/sys "SIGSYS"))
-(define-c-const int (signal/trap "SIGTRAP"))
-(define-c-const int (signal/urg "SIGURG"))
-(define-c-const int (signal/vtalrm "SIGVTALRM"))
-(define-c-const int (signal/xcpu "SIGXCPU"))
-(define-c-const int (signal/xfsz "SIGXFSZ"))
-
-(define-c errno (%kill kill) (pid_t int))
-(define-c errno (%killpg killpg) (pid_t int))
 
 ;;; 3.10  Time
 
@@ -499,14 +424,12 @@
 (define-c errno (%clock-gettime clock_gettime) (clockid_t (result timespec)))
 
 
-;;; 3.11  [Intentionally omitted]
-
 ;;; 3.12  Terminal device control
 
 ;;> Returns \scheme{#t} if the given port of file descriptor
 ;;> if backed by a TTY object, and \scheme{#f} otherwise.
 
-(define-c boolean (tty? "isatty") (port-or-fileno))
+(define-c int (%isatty isatty) (int))
 
 (define-c-const int (tty/name-max "TTY_NAME_MAX"))
 
@@ -527,15 +450,3 @@
 ;; ICANON
 
 (define-c errno (%tcgetattr tcgetattr) (int (result termios)))
-
-
-
-(define-c int (%setsid setsid) ())
-
-(define-c int (%tcgetpgrp tcgetpgrp) (int))
-
-(define-c errno (%tcsetpgrp tcsetpgrp) (int pid_t))
-
-(define-c-const int (term/l-ctermid "L_ctermid"))
-
-(define-c string (%ctermid ctermid) ((maybe-null string)))

@@ -147,14 +147,6 @@
           (test 2 (port-fdes (current-error-port)))
           (test-not (port-fdes the-string-port))
 
-          (let* ((e-port (current-error-port))
-                 (the-new-fd (dup->fdes e-port)))
-            (test-not-error (close-fdes the-new-fd)))
-          (let* ((e-port (current-error-port))
-                 (the-new-fd (dup->fdes e-port 10)))
-            (test 10 the-new-fd)
-            (test-not-error (close-fdes the-new-fd)))
-
           (let* ((dev-zero-fileno (open "/dev/zero" open/read)) ;; fileno type object
                  (dev-zero-fd (%fileno-to-fd dev-zero-fileno)))
             (test-not-error (close-fdes dev-zero-fd))
@@ -333,31 +325,8 @@
             (test-not-error (set-file-mode tmp-containing-dir #o755))))
 
           (test-assert (pid))
-          (test-assert (parent-pid))
 
-          (test-not-error (process-group))
-          (cond-expand
-           (linux (test 1 (process-group 1))) ;; may not work on non-Ubuntu Linuxes
-           (bsd (test-error (process-group 1)))) ;; fails on OpenBSD AMD64 6.5
-          (test-error (process-group -1))
-          (test-not-error (set-process-group (process-group))) ;; ~~~~ can we do better?
-          (test-not-error (set-process-group 0 (process-group))) ;; ~~~~ can we do better?
-
-          (test-error (priority priority/user 1))
-
-          ;; assume we're starting out with niceness of 0
-          (test 0 (priority priority/process (pid)))
-          (test-not-error (set-priority priority/process (pid) 0))
-
-          (if (equal? 0 (user-uid))
-              (begin
-                (test-not-error (set-priority priority/process (pid) -2))
-                (test-not-error (nice (pid) -1)))
-              (begin
-                (test-error (set-priority priority/process (pid) -2))
-                (test-error (nice (pid) -1))))
-
-          (test-not-error (nice (pid) 0))
+          (test 0 (nice 0))
 
           ;; setting niceness positive in epilogue to not slow down rest of tests
 
@@ -377,8 +346,6 @@
 
         (test-group "3.8  System parameters"
 
-          (test-assert (string? (system-name)))
-
           (test-not-error (uname))
           (let ((un (uname)))
             (test-assert (string? (uname:os-name un)))
@@ -389,21 +356,6 @@
 
 
 
-          )
-
-
-        (test-group "3.9  Signal system"
-
-          ;; ~~~~ add more tests once we can spawn processes
-          (test-not-error (signal-process 0 0))
-          (test-not-error (signal-process -1 0))
-          (if (not (equal? 0 (user-uid)))
-              (test-error (signal-process 1 0)))
-
-          (test-not-error (signal-process-group (process-group) 0))
-          ;; very unlikely process 2 both exists and normal user can touch it
-          (if (not (equal? 0 (user-uid)))
-              (test-error (signal-process-group 2 0)))
           )
 
 
@@ -440,28 +392,18 @@
           (test-assert (string? (tty-file-name (current-error-port))))
 
 
-          (test-error (become-session-leader))
 
-
-          (let ((the-tty-file-name (control-tty-file-name)))
-            (test-assert (string? the-tty-file-name))
-            (test-assert (> (string-length the-tty-file-name) 0)))
           )
 
-        (test-group "Epilogue: set-priority to 2, 3, 4"
+        (test-group "Epilogue: set-priority to 1, 2, 4"
 
           (close-port the-string-port)
 
           ;; in epilogue so most testing is not slowed down
-          (test-assert (set-priority priority/process (pid) 1))
-          (test 1 (priority priority/process (pid)))
 
-          (test-not-error (nice))
-          (test 2 (priority priority/process (pid)))
-          (test-not-error (nice (pid)))
-          (test 3 (priority priority/process (pid)))
-          (test-not-error (nice (pid) 1))
-          (test 4 (priority priority/process (pid)))
+          (test 1 (nice))
+          (test 2 (nice 1))
+          (test 4 (nice 2))
 
           ) ; end epilogue
 
