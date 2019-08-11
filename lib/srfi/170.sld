@@ -29,8 +29,6 @@
 
    passwd:name passwd:uid %getpwuid_r %getpwnam_r
 
-   %uname
-
    timespec:seconds timespec:nanoseconds
    clck-id/realtime clck-id/monotonic
    %clock-gettime
@@ -105,7 +103,6 @@
    pid
    nice
 
-   user-login-name
    user-uid user-gid
    user-supplementary-gids
 
@@ -118,14 +115,6 @@
    ;; ~~~~ partly implemented below in not bsd
    ;; group-info group-info?
    ;; group-info:name user-info group-info:gid user-info group-info:members
-
-
-   ;; 3.8  System parameters
-
-   uname uname?
-   uname:os-name uname:node-name uname:release-name uname:version uname:machine
-   ;; current-timezone
-   ;; current-locale
 
 
    ;; 3.10  Time COMPLETE

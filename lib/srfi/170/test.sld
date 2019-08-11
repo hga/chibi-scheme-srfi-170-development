@@ -298,14 +298,6 @@
           )
 
 
-        ;; 3.4  Processes
-
-        ;; 3.4.1  Process objects
-
-        ;; 3.4.2  Process waiting
-
-        ;; 3.4.3  Analysing process status codes
-
         (test-group "3.5  Process state"
 
           ;; umask and set-umask exercised at the very beginning to
@@ -330,33 +322,14 @@
 
           ;; setting niceness positive in epilogue to not slow down rest of tests
 
-          (test-assert (string? (user-login-name)))
           (test-assert (> (user-uid) -1))
           (test-assert (> (user-gid) -1))
           (test-assert (list? (user-supplementary-gids))) ;; not sure how to make it fail
           ) ; end process state
 
+
         ;; 3.6  User and group database access
 
-;;        (case-expand
-;;         ( linux??
-
-
-        ;; 3.7  [Intentionally omitted]
-
-        (test-group "3.8  System parameters"
-
-          (test-not-error (uname))
-          (let ((un (uname)))
-            (test-assert (string? (uname:os-name un)))
-            (test-assert (string? (uname:node-name un)))
-            (test-assert (string? (uname:release-name un)))
-            (test-assert (string? (uname:version un)))
-            (test-assert (string? (uname:machine un))))
-
-
-
-          )
 
 
         (test-group "3.10  Time"
@@ -370,9 +343,6 @@
                               (> (car t2)  0)
                               (> (cdr t2)  0))))
           )
-
-
-        ;; 3.11  [Intentionally omitted]
 
 
         (test-group "3.12  Terminal device control"

@@ -329,9 +329,6 @@
 ;; per the nice(3) OpenBSD man page it looks like it uses setpriority
 (define-c int (%nice nice) (int))
 
-(define-c errno (%getlogin_r getlogin_r)
-  ((result (array char 128)) (value 128 int)))
-
 (define-c uid_t (user-uid getuid) ())
 (define-c gid_t (user-gid getgid) ())
 
@@ -392,21 +389,6 @@
             (value (string-size arg2) int)
             (result pointer group)))
   ))
-
-;;; 3.8  System parameters
-
-;;> Returns the standard hostname of the current processor.
-
-(define-c-struct utsname
-  predicate: uname?
-  (string sysname uname:os-name)
-  (string nodename uname:node-name)
-  (string release uname:release-name)
-  (string version uname:version)
-  (string machine uname:machine))
-
-(define-c int (%uname uname) ((result utsname)))
-
 
 ;;; 3.10  Time
 

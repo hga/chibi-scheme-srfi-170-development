@@ -381,12 +381,6 @@
           (errno-error (errno) nice delta)) ;; exit the procedure
       ret)))
 
-(define (user-login-name)
-  (let ((name (%getlogin_r)))
-    (if (not name)
-        (errno-error (errno) user-login-name))
-    name))
-
 (define (user-supplementary-gids)
   (let* ((ret (%getgroups))
          (i (car ret)))
@@ -450,17 +444,6 @@
        (group:name gi)
        (group:gid gi))))
   ))
-
-
-;;; 3.8  System parameters
-
-(define (uname)
-  (let* ((r (%uname))
-         (ret (car r))
-         (un (cadr r)))
-    (if (> ret -1)
-        un
-        (errno-error (errno) uname))))
 
 
 ;;; 3.10  Time
