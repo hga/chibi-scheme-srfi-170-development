@@ -1,5 +1,7 @@
 Maybe from system.stub: get and set session id, chroot
 
+Maybe add a version of sleep to not hammer system when you get EINTR etc.
+
 Review and revise for [foo] [bar] vs. [foo [bar]]
 
 file-info doesn't handle ports, need (port-fdes port)
