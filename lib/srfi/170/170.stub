@@ -372,9 +372,9 @@
  ((not bsd)
   (define-c-struct group
     (string  gr_name     group:name)
-    (string  gr_passwd   group:passwd)
+    ;; (string  gr_passwd   group:passwd) not part of spec
     (gid_t   gr_gid      group:gid)
-    ;;((array string)  gr_mem      group-members)
+    ;;((array string)  gr_mem      group-members) not part of spec
     )
 
   (define-c errno (%getgrgid_r getgrgid_r)
