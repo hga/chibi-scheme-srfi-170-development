@@ -1,10 +1,8 @@
-Maybe from system.stub: get and set session id, chroot
+Maybe from system.stub: chroot
 
 Maybe add a version of sleep to not hammer system when you get EINTR etc.
 
 Review and revise for [foo] [bar] vs. [foo [bar]]
-
-file-info doesn't handle ports, need (port-fdes port)
 
 Look for EAGAIN errnos, and create a policy if any calls error with it
 
@@ -12,18 +10,13 @@ Find all EINTR possibilities and retry per policy
 
 Manually test su-ed root on OpenBSD set-file-owner/-group
 
-Do futimens in C? for set-file-timespecs, tests for set-file-timespecs
+Tests for set-file-timespecs
 
 Fix user-information and group-information, no errors reported on
 Bionic Beaver, instead returning the user or group with the higest ID,
 OpenBSD's group-information stub just plain broken.
 
 Tests for user and group database access proceedures
-
-Make note about the best security practices being a moving target
-
-Fix querying of file-info st_mode so block vs. character
-etc. distinctions are not lost.
 
 See (chibi io) for how to write a C function then wrap it in a stub
 
