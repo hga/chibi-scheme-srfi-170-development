@@ -27,3 +27,14 @@ Test what happens when procedures are handed a closed port
 Add name of the system or library call that failed to error-errno
 
 Change file predicates to S_ISREG etc.
+
+EINTR signaling system calls, POSIX, Linux, and OpenBSD:
+
+  chmod, not Linux or OpenBSD
+  chown, not Linux or OpenBSD
+  close,
+  getpwnam,
+  getpwuid,
+  getpwnam,
+  getpwuid,
+  truncate, not OpenBSD
