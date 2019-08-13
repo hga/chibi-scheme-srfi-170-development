@@ -55,20 +55,20 @@
   (let-optionals o ((permission-bits #o775)
                     (override? #f))
     (if override? (delete-filesystem-object fname))
-    (if (not (%create-directory fname permission-bits))
+    (if (not (%mkdir fname permission-bits))
         (errno-error (errno) create-directory fname))))
 
 (define (create-fifo fname . o)
   (let-optionals o ((permission-bits #o664)
                     (override? #f))
     (if override? (delete-filesystem-object fname))
-    (if (not (%create-fifo fname permission-bits))
+    (if (not (%mkfifo fname permission-bits))
         (errno-error (errno) create-fifo fname))))
 
 (define (create-hard-link oldname newname . o)
   (let-optionals o ((override? #f))
     (if override? (delete-filesystem-object newname))
-    (if (not (%create-hard-link oldname newname))
+    (if (not (%link oldname newname))
         (errno-error (errno) create-hard-link oldname newname))))
 
 (define (rename-file oldname newname . o)
@@ -76,11 +76,11 @@
     (if (not override?)
         (if (%stat newname)
             (errno-error errno/exist rename-file oldname newname)))
-    (if (not (%rename-file oldname newname))
+    (if (not (%rename oldname newname))
         (errno-error (errno) rename-file oldname newname))))
 
 (define (delete-directory fname)
-  (if (not (%delete-directory fname))
+  (if (not (%rmdir fname))
       (errno-error (errno) delete-directory fname)))
 
 (define (set-file-mode fname permission-bits)
@@ -449,19 +449,16 @@
 ;;; 3.10  Time
 
 (define (posix-time)
-  (let ((t (%clock-gettime clck-id/realtime)))
+  (let ((t (%clock_gettime clck-id/realtime)))
     (if (not t)
         (errno-error (errno) posix-time)
         (cons (timespec:seconds t) (timespec:nanoseconds t)))))
 
 (define (monotonic-time)
-  (let ((t (%clock-gettime clck-id/monotonic)))
+  (let ((t (%clock_gettime clck-id/monotonic)))
     (if (not t)
         (errno-error (errno) monotonic-time)
         (cons (timespec:seconds t) (timespec:nanoseconds t)))))
-
-(define (timespec-difference timespec1 timespec2)
-  (cons (- (car timespec1) (car timespec2)) (- (cdr timespec1) (cdr timespec2))))
 
 
 ;;; 3.12  Terminal device control

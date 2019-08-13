@@ -152,7 +152,7 @@
 
 (cond-expand
   ((not windows)
-   (define-c errno (%create-directory mkdir) (string mode_t)))
+   (define-c errno (%mkdir mkdir) (string mode_t)))
   (else
    (define-c errno (%create-directory "mkdir_shim") (string int))))
 
@@ -161,25 +161,25 @@
 
 (cond-expand
   ((not windows)
-   (define-c errno (%create-fifo mkfifo) (string mode_t))))
+   (define-c errno (%mkfifo mkfifo) (string mode_t))))
 
 ;;> Creates a hard link to the first arg from the second.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
 
 (cond-expand
   ((not windows)
-   (define-c errno (%create-hard-link link) (string string))))
+   (define-c errno (%link link) (string string))))
 
 ;;> Renames the first arg to the second.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
 
-(define-c errno (%rename-file rename) (string string))
+(define-c errno (%rename rename) (string string))
 
 ;;> Deletes the directory named \var{string} from the filesystem.
 ;;> Does not attempt to delete recursively.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
 
-(define-c errno (%delete-directory rmdir) (string))
+(define-c errno (%rmdir rmdir) (string))
 
 ;;> Sets the file permissions as in chmod.
 
@@ -264,8 +264,8 @@
 (define-c dirent (%readdir readdir) ((link (pointer DIR))))
 
 #| ~~~~~~~
-(define-c boolean S_ISREG (mode_t))
 (define-c boolean S_ISDIR (mode_t))
+(define-c boolean S_ISREG (mode_t))
 (define-c boolean S_ISFIFO (mode_t))
 
 (cond-expand
@@ -403,7 +403,7 @@
 
 (define-c-int-type clockid_t)
 
-(define-c errno (%clock-gettime clock_gettime) (clockid_t (result timespec)))
+(define-c errno (%clock_gettime clock_gettime) (clockid_t (result timespec)))
 
 
 ;;; 3.12  Terminal device control

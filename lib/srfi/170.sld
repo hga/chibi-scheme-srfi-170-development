@@ -10,7 +10,7 @@
    %file_descriptor_to_port
    %close
 
-   %delete-directory %delete-file
+   %rmdir %delete-file
 
    %stat stat:atime stat:mtime stat:ctime
 
@@ -31,7 +31,7 @@
 
    timespec:seconds timespec:nanoseconds
    clck-id/realtime clck-id/monotonic
-   %clock-gettime
+   %clock_gettime
 
    %tcgetattr
 
