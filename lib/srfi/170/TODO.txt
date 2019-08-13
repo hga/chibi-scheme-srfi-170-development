@@ -25,3 +25,5 @@ Improve temp-file-prefix specification and perhaps implementation
 Test what happens when procedures are handed a closed port
 
 Add name of the system or library call that failed to error-errno
+
+Change file predicates to S_ISREG etc.
