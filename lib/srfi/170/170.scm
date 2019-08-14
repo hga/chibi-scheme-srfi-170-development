@@ -20,6 +20,15 @@
 (define (errno-error errno procedure . data)
     (raise (make-syscall-error errno (integer->error-string errno) procedure data)))
 
+(define (retry-EINTR the-lambda)
+  (let loop ((ret (the-lambda)))
+    (if ret
+        ret
+        (if (equal? errno/intr (errno))
+            (loop (the-lambda))
+            ret))))
+
+
 ;;; 3.2  I/O
 
 ;; ~~~~ seems Chibi handles bogus fds OK, reading input returns eof,
@@ -45,7 +54,7 @@
 (define (close-fdes the-fd)
   (if (or (not (fixnum? the-fd)) (< the-fd 0))
       (errno-error errno/inval close-fdes the-fd))
-  (if (not (%close the-fd))
+  (if (not (retry-EINTR (lambda () (%close the-fd))))
       (errno-error (errno) close-fdes the-fd)))
 
 
@@ -317,12 +326,12 @@
     (let loop ()
       (let ((the-filename (string-append prefix "." (suffix-string))))
         (if (file-exists? the-filename)
-            (loop) ;; best to blow the stack if worst come to worst
+            (loop)
             (let ((the-fileno (open the-filename (bitwise-ior open/write open/create) #o600)))
               (if (not the-fileno)
                   ;; ~~~~ adding the filename is not in the specs, but necessary for sane debugging
                   (errno-error (errno) create-temp-file prefix the-filename)) ;; exit the procedure
-              (%close (%fileno-to-fd the-fileno))
+              (retry-EINTR (lambda () (%close (%fileno-to-fd the-fileno))))
               the-filename))))))
 
 #|
