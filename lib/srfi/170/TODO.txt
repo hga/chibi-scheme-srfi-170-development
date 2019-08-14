@@ -30,16 +30,3 @@ Change file predicates to S_ISREG etc.
 
 Look for and add any calls made by with-raw-mode etc. that can EINTR
 to SRFI document.
-
-EINTR signaling system calls, POSIX, Linux, and OpenBSD:
-
-  chmod, not Linux or OpenBSD
-  chown, not Linux or OpenBSD
-  close,
-  getpwnam,
-  getpwuid,
-  getpwnam,
-  getpwuid,
-  truncate, not OpenBSD
-
-

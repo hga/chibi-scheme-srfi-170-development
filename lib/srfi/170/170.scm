@@ -20,7 +20,7 @@
 (define (errno-error errno procedure . data)
     (raise (make-syscall-error errno (integer->error-string errno) procedure data)))
 
-(define (retry-EINTR the-lambda)
+(define (retry-if-EINTR the-lambda)
   (let loop ((ret (the-lambda)))
     (if ret
         ret
@@ -54,7 +54,7 @@
 (define (close-fdes the-fd)
   (if (or (not (fixnum? the-fd)) (< the-fd 0))
       (errno-error errno/inval close-fdes the-fd))
-  (if (not (retry-EINTR (lambda () (%close the-fd))))
+  (if (not (retry-if-EINTR (lambda () (%close the-fd))))
       (errno-error (errno) close-fdes the-fd)))
 
 
@@ -93,17 +93,17 @@
       (errno-error (errno) delete-directory fname)))
 
 (define (set-file-mode fname permission-bits)
-  (if (not (%chmod fname permission-bits))
+  (if (not (retry-if-EINTR (lambda () (%chmod fname permission-bits))))
       (errno-error (errno) set-file-mode fname permission-bits)))
 
 (define (set-file-owner fname uid)
   (let ((gid (file-info:gid (file-info fname))))
-    (if (not (%chown fname uid gid))
+    (if (not (retry-if-EINTR (lambda () (%chown fname uid gid))))
         (errno-error (errno) set-file-owner fname uid gid))))
 
 (define (set-file-group fname gid)
   (let ((uid (file-info:uid (file-info fname))))
-    (if (not (%chown fname uid gid))
+    (if (not (retry-if-EINTR (lambda () (%chown fname uid gid))))
         (errno-error (errno) set-file-group fname uid gid))))
 
 (define timespect/now (cons -1 utimens/utime_now))
@@ -120,10 +120,10 @@
 
 (define (truncate-file fname/port len)
   (cond ((string? fname/port)
-         (if (not (%truncate fname/port len))
+         (if (not (retry-if-EINTR (lambda () (%truncate fname/port len))))
              (errno-error (errno) truncate-file fname/port len))) ;; exit the procedure
         ((port? fname/port)
-         (if (not (%ftruncate (port-fdes fname/port) len))
+         (if (not (retry-if-EINTR (lambda () (%ftruncate (port-fdes fname/port) len))))
              (errno-error (errno) truncate-file fname/port len))) ;; exit the procedure
         (else (errno-error errno/inval truncate-file fname/port len))))
 
@@ -331,7 +331,7 @@
               (if (not the-fileno)
                   ;; ~~~~ adding the filename is not in the specs, but necessary for sane debugging
                   (errno-error (errno) create-temp-file prefix the-filename)) ;; exit the procedure
-              (retry-EINTR (lambda () (%close (%fileno-to-fd the-fileno))))
+              (retry-if-EINTR (lambda () (%close (%fileno-to-fd the-fileno))))
               the-filename))))))
 
 #|
@@ -413,8 +413,8 @@
  (bsd
   (define (user-info user)
     (let ((ui (car (if (string? user)
-                       (%getpwnam_r user (make-string 1024))
-                       (%getpwuid_r user (make-string 1024))))))
+                       (retry-if-EINTR (lambda () (%getpwnam_r user (make-string 1024))))
+                       (retry-if-EINTR (lambda () (%getpwuid_r user (make-string 1024))))))))
       (if (not (passwd:name ui))
           (errno-error (errno) user-info user) ;; exit the procedure
           (make-user-info
@@ -427,8 +427,8 @@
   ;; Bionic Beaver does not report error
   (define (user-info user)
     (let ((ui (car (if (string? user)
-                       (%getpwnam_r user (make-string 1024))
-                       (%getpwuid_r user (make-string 1024))))))
+                       (retry-if-EINTR (lambda () (%getpwnam_r user (make-string 1024))))
+                       (retry-if-EINTR (lambda () (%getpwuid_r user (make-string 1024))))))))
       (make-user-info
        (passwd:name ui)
        (passwd:uid ui)
@@ -447,8 +447,8 @@
   ;; Bionic Beaver does not report error, OpenBSD 6.5 always returns #f
   (define (group-info group)
     (let ((gi (car (if (string? group)
-                       (%getgrnam_r group (make-string 1024))
-                       (%getgrgid_r group (make-string 1024))))))
+                       (retry-if-EINTR (lambda () (%getgrnam_r group (make-string 1024))))
+                       (retry-if-EINTR (lambda () (%getgrgid_r group (make-string 1024))))))))
       (make-group-info
        (group:name gi)
        (group:gid gi))))
