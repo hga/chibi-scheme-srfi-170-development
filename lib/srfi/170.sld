@@ -33,8 +33,8 @@
    clck-id/realtime clck-id/monotonic
    %clock_gettime
 
-   ;; NCCS ;; size of c_cc array in termios
-   ;; %tcgetattr
+   NCCS ;; size of c_cc array in termios
+   %tcgetattr
 
 
 
