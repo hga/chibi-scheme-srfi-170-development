@@ -496,17 +496,18 @@
 (define-c-const unsigned-long VREPRINT)
 ;; (define-c-const unsigned-long VSTATUS)
 
-#|
 ;; Can not use because FFI doesn't handle arrays like (unsigned-char (c_cc 22)
 
+(define-c-const int NCCS) ;; 32 Bionic Beaver,
+
 (define-c-struct termios
-  predicate: term-attrs?
-  constructor: (make-term-attrs)
+;  predicate: term-attrs?
+;  constructor: (make-term-attrs)
   (unsigned-long c_iflag term-attrs-iflag term-attrs-iflag-set!)
-  (unsigned-long c_oflag term-attrs-oflag term-attrs-oflag-set!)
+;  (unsigned-long c_oflag term-attrs-oflag term-attrs-oflag-set!)
   (unsigned-long c_cflag term-attrs-cflag term-attrs-cflag-set!)
   (unsigned-long c_lflag term-attrs-lflag term-attrs-lflag-set!)
-  ;;(unsigned-char (c_cc 22) term-attrs-cc term-attrs-cc-set!)
+;  ((array unsigned-char NCCS) c_cc term-attrs-cc term-attrs-cc-set!)
   ;;(unsigned-long c_ispeed term-attrs-ispeed term-attrs-ispeed-set!)
   ;;(unsigned-long c_ospeed term-attrs-ospeed term-attrs-ospeed-set!)
   )
@@ -516,4 +517,4 @@
 
 (define-c errno (%tcsetattr tcsetattr)
   (port-or-fileno int termios))
-|#
+

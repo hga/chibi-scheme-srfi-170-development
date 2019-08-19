@@ -33,6 +33,7 @@
    clck-id/realtime clck-id/monotonic
    %clock_gettime
 
+   NCCS
    ;; %tcgetattr
 
 
