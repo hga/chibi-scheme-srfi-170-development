@@ -29,6 +29,8 @@
 
    passwd:name passwd:uid
    %getpwuid %getpwnam
+
+   group:name group:gid
    %getgrgid %getgrnam
 
 
@@ -116,9 +118,8 @@
    user-info user-info?
    user-info:name user-info:uid user-info:gid user-info:home-dir user-info:shell
 
-   ;; ~~~~ partly implemented below in not bsd
-   ;; group-info group-info?
-   ;; group-info:name user-info group-info:gid user-info group-info:members
+   group-info group-info?
+   group-info:name group-info:gid
 
 
    ;; 3.10  Time COMPLETE
@@ -135,23 +136,12 @@
   
   (cond-expand ((not bsd)
     (export
-#|
-;;; TMP
-
-     group:name group:gid %getgrgid_r %getgrnam_r
-|#
 
      ;; 3.1  Errors
 
      errno/multihop errno/nolink
      ;; STREAMS:
      errno/nodata errno/nostr errno/nosr errno/time
-
-
-     ;; 3.6  User and group database access
-
-     group-info group-info?
-     group-info:name group-info:gid ;; group-info:members
 
     )))
 
