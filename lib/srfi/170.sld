@@ -27,7 +27,10 @@
 
    groups/max %getgroups
 
-   passwd:name passwd:uid %getpwuid_r %getpwnam_r
+   passwd:name passwd:uid
+   %getpwuid %getpwnam
+   %getgrgid %getgrnam
+
 
    timespec:seconds timespec:nanoseconds
    clck-id/realtime clck-id/monotonic

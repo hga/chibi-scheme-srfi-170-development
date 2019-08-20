@@ -401,58 +401,44 @@
 ;;; 3.6  User and group database access
 
 (define-record-type User-Info
-  (make-user-info name uid gid home-dir shell)
+  (make-user-info name uid gecos gid home-dir shell)
   user-info?
   (name user-info:name)
   (uid user-info:uid)
+  (gecos user-info:gecos)
   (gid user-info:gid)
   (home-dir user-info:home-dir)
   (shell user-info:shell))
 
-(cond-expand
- (bsd
-  (define (user-info user)
-    (let ((ui (car (if (string? user)
-                       (retry-if-EINTR (lambda () (%getpwnam_r user (make-string 1024))))
-                       (retry-if-EINTR (lambda () (%getpwuid_r user (make-string 1024))))))))
-      (if (not (passwd:name ui))
-          (errno-error (errno) user-info user) ;; exit the procedure
-          (make-user-info
-           (passwd:name ui)
-           (passwd:uid ui)
-           (passwd:gid ui)
-           (passwd:dir ui)
-           (passwd:shell ui))))))
- (else
-  ;; Bionic Beaver does not report error
-  (define (user-info user)
-    (let ((ui (car (if (string? user)
-                       (retry-if-EINTR (lambda () (%getpwnam_r user (make-string 1024))))
-                       (retry-if-EINTR (lambda () (%getpwuid_r user (make-string 1024))))))))
-      (make-user-info
-       (passwd:name ui)
-       (passwd:uid ui)
-       (passwd:gid ui)
-       (passwd:dir ui)
-       (passwd:shell ui))))))
+(define (user-info user)
+  (set-errno 0)
+  (let ((ui (if (string? user)
+                (retry-if-EINTR (lambda () (%getpwnam user)))
+                (retry-if-EINTR (lambda () (%getpwuid user))))))
+    (if (not ui)
+        (errno-error (errno) user-info user) ;; exit the procedure
+        (make-user-info (passwd:name ui)
+                        (passwd:uid ui)
+                        (passwd:gecos ui)
+                        (passwd:gid ui)
+                        (passwd:dir ui)
+                        (passwd:shell ui)))))
 
-(cond-expand
- ((not bsd)
-  (define-record-type Group-Info
-    (make-group-info name gid)
-    group-info?
-    (name group-info:name)
-    (gid group-info:gid))
+(define-record-type Group-Info
+  (make-group-info name gid)
+  group-info?
+  (name group-info:name)
+  (gid group-info:gid))
 
-  ;; Bionic Beaver does not report error, OpenBSD 6.5 always returns #f
-  (define (group-info group)
-    (let ((gi (car (if (string? group)
-                       (retry-if-EINTR (lambda () (%getgrnam_r group (make-string 1024))))
-                       (retry-if-EINTR (lambda () (%getgrgid_r group (make-string 1024))))))))
-      (make-group-info
-       (group:name gi)
-       (group:gid gi))))
-  ))
+(define (group-info group)
+  (set-errno 0)
+  (let ((gi (if (string? group)
+                (retry-if-EINTR (lambda () (%getgrnam group)))
+                (retry-if-EINTR (lambda () (%getgrgid group))))))
+    (if (not gi)
+        (errno-error (errno) group-info group) ;; exit the procedure
+        (make-group-info (group:name gi)
+                         (group:gid gi)))))
 
 
 ;;; 3.10  Time

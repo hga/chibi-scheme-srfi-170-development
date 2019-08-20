@@ -328,8 +328,18 @@
           ) ; end process state
 
 
-        ;; 3.6  User and group database access
+        (test-group "3.6  User and group database access"
 
+          (test-assert (user-info? (user-info 0)))
+          (test 0 (user-info:uid (user-info 0)))
+          (test-assert (user-info? (user-info "root")))
+          (test 0 (user-info:uid (user-info "root")))
+
+          (test-assert (group-info? (group-info 0)))
+          (test 0 (group-info:gid (group-info 0)))
+          (test-assert (group-info? (group-info "root")))
+          (test 0 (group-info:gid (group-info "root")))
+          ) ; end user and group database access
 
 
         (test-group "3.10  Time"
