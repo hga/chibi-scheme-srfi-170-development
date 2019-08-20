@@ -337,8 +337,9 @@
 
           (test-assert (group-info? (group-info 0)))
           (test 0 (group-info:gid (group-info 0)))
-          (test-assert (group-info? (group-info "root")))
-          (test 0 (group-info:gid (group-info "root")))
+          ;; group 0 is wheel on OpenBSD, daemon works for it and Bionic Beaver
+          (test-assert (group-info? (group-info "daemon")))
+          (test 1 (group-info:gid (group-info "daemon")))
           ) ; end user and group database access
 
 
