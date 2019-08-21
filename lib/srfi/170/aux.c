@@ -282,7 +282,8 @@ sexp sexp_init_library (sexp ctx, sexp self, sexp_sint_t n, sexp env, const char
   sexp_push(ctx, sexp_type_slots(sexp_termios_type_obj), sexp_intern(ctx, "c_cflag", -1));
   sexp_push(ctx, sexp_type_slots(sexp_termios_type_obj), sexp_intern(ctx, "c_oflag", -1));
   sexp_push(ctx, sexp_type_slots(sexp_termios_type_obj), sexp_intern(ctx, "c_iflag", -1));
-  // ~~~~ it looks like I might want to add  the specialized c_cc getter and setter here
+  // ~~~~ it looks like I might want to add the specialized c_cc getter and setter here,
+  //      but they're not the simple one or two argument variety
   sexp_type_getters(sexp_termios_type_obj) = sexp_make_vector(ctx, SEXP_FOUR, SEXP_FALSE);
   sexp_type_setters(sexp_termios_type_obj) = sexp_make_vector(ctx, SEXP_FOUR, SEXP_FALSE);
 
@@ -290,13 +291,16 @@ sexp sexp_init_library (sexp ctx, sexp self, sexp_sint_t n, sexp env, const char
   name = sexp_intern(ctx, "term-attrs?", 11);
   sexp_env_define(ctx, env, name, tmp);
 
-  op = sexp_define_foreign(ctx, env, "term-attrs-cc-element-set!", 2, sexp_termios_set_cc_element);
+  op = sexp_define_foreign(ctx, env, "term-attrs-cc-element-set!", 3, sexp_termios_set_cc_element);
   if (sexp_opcodep(op)) {
     sexp_opcode_return_type(op) = sexp_make_fixnum(SEXP_FIXNUM);
     sexp_opcode_arg1_type(op) = sexp_make_fixnum(sexp_type_tag(sexp_termios_type_obj));
     sexp_opcode_arg2_type(op) = sexp_make_fixnum(SEXP_FIXNUM);
+    sexp_opcode_arg3_type(op) = sexp_make_fixnum(SEXP_FIXNUM);
   }
-  if (sexp_vectorp(sexp_type_setters(sexp_termios_type_obj))) sexp_vector_set(sexp_type_setters(sexp_termios_type_obj), SEXP_THREE, op);
+// Per the above, this seems to be part of a mechanism that doesn't work for this specialized setter
+// and does not exist for %tcgetattr or %tcsetattr
+//  if (sexp_vectorp(sexp_type_setters(sexp_termios_type_obj))) sexp_vector_set(sexp_type_setters(sexp_termios_type_obj), SEXP_THREE, op);
 
   op = sexp_define_foreign(ctx, env, "term-attrs-cc-element", 2, sexp_termios_get_cc_element);
   if (sexp_opcodep(op)) {
@@ -304,7 +308,9 @@ sexp sexp_init_library (sexp ctx, sexp self, sexp_sint_t n, sexp env, const char
     sexp_opcode_arg1_type(op) = sexp_make_fixnum(sexp_type_tag(sexp_termios_type_obj));
     sexp_opcode_arg2_type(op) = sexp_make_fixnum(SEXP_FIXNUM);
   }
-  if (sexp_vectorp(sexp_type_getters(sexp_termios_type_obj))) sexp_vector_set(sexp_type_getters(sexp_termios_type_obj), SEXP_THREE, op);
+// Per the above, this seems to be part of a mechanism that doesn't work for this specialized getter
+// and does not exist for %tcgetattr or %tcsetattr
+//  if (sexp_vectorp(sexp_type_getters(sexp_termios_type_obj))) sexp_vector_set(sexp_type_getters(sexp_termios_type_obj), SEXP_THREE, op);
 
   op = sexp_define_foreign(ctx, env, "term-attrs-lflag-set!", 2, sexp_termios_set_c_lflag);
   if (sexp_opcodep(op)) {
