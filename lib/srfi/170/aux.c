@@ -247,7 +247,9 @@ sexp sexp_termios_set_cc_element (sexp ctx, sexp self, sexp_sint_t n, sexp x, se
     return sexp_type_exception(ctx, self, sexp_unbox_fixnum(sexp_opcode_arg1_type(self)), x);
   if (! sexp_exact_integerp(v))
     return sexp_type_exception(ctx, self, SEXP_FIXNUM, v);
-  ((struct termios*)sexp_cpointer_value(x))->c_lflag = sexp_uint_value(v);
+  if (! sexp_exact_integerp(i))
+    return sexp_type_exception(ctx, self, SEXP_FIXNUM, i);
+  ((struct termios*)sexp_cpointer_value(x))->c_cc[sexp_unbox_fixnum(i)] = sexp_uint_value(v);
   return SEXP_VOID;
 }
 
