@@ -244,6 +244,25 @@ sexp sexp_termios_set_c_lflag (sexp ctx, sexp self, sexp_sint_t n, sexp x, sexp 
   return SEXP_VOID;
 }
 
+// x is the termios struct pointer, i is the array index for the value for the c_cc array element to return
+
+sexp sexp_termios_get_c_cc_element (sexp ctx, sexp self, sexp_sint_t n, sexp x, sexp i) {
+  if (! (sexp_pointerp(x) && (sexp_pointer_tag(x) == sexp_unbox_fixnum(sexp_opcode_arg1_type(self)))))
+    return sexp_type_exception(ctx, self, sexp_unbox_fixnum(sexp_opcode_arg1_type(self)), x);
+// make sure i is a fixnum
+// printf ("\n\ncc_c element 1 = %u, i = %ld\n\n", ((struct termios*)sexp_cpointer_value(x))->c_cc[1], sexp_unbox_fixnum(i));
+  return sexp_make_unsigned_integer(ctx, ((struct termios*)sexp_cpointer_value(x))->c_cc[sexp_unbox_fixnum(i)]);
+}
+
+sexp sexp_termios_set_c_cc_element (sexp ctx, sexp self, sexp_sint_t n, sexp x, sexp v, sexp i) {
+  if (! (sexp_pointerp(x) && (sexp_pointer_tag(x) == sexp_unbox_fixnum(sexp_opcode_arg1_type(self)))))
+    return sexp_type_exception(ctx, self, sexp_unbox_fixnum(sexp_opcode_arg1_type(self)), x);
+  if (! sexp_exact_integerp(v))
+    return sexp_type_exception(ctx, self, SEXP_FIXNUM, v);
+  ((struct termios*)sexp_cpointer_value(x))->c_lflag = sexp_uint_value(v);
+  return SEXP_VOID;
+}
+
 
 sexp sexp_init_library (sexp ctx, sexp self, sexp_sint_t n, sexp env, const char* version, const sexp_abi_identifier_t abi) {
   sexp sexp_termios_type_obj;
@@ -410,6 +429,22 @@ sexp sexp_init_library (sexp ctx, sexp self, sexp_sint_t n, sexp env, const char
   name = sexp_intern(ctx, "term-attrs?", 11);
   sexp_env_define(ctx, env, name, tmp);
 
+  op = sexp_define_foreign(ctx, env, "term-attrs-c_cc-element-set!", 2, sexp_termios_set_c_cc_element);
+  if (sexp_opcodep(op)) {
+    sexp_opcode_return_type(op) = sexp_make_fixnum(SEXP_FIXNUM);
+    sexp_opcode_arg1_type(op) = sexp_make_fixnum(sexp_type_tag(sexp_termios_type_obj));
+    sexp_opcode_arg2_type(op) = sexp_make_fixnum(SEXP_FIXNUM);
+  }
+  if (sexp_vectorp(sexp_type_setters(sexp_termios_type_obj))) sexp_vector_set(sexp_type_setters(sexp_termios_type_obj), SEXP_THREE, op);
+
+  op = sexp_define_foreign(ctx, env, "term-attrs-c_cc-element", 2, sexp_termios_get_c_cc_element);
+  if (sexp_opcodep(op)) {
+    sexp_opcode_return_type(op) = sexp_make_fixnum(SEXP_FIXNUM);
+    sexp_opcode_arg1_type(op) = sexp_make_fixnum(sexp_type_tag(sexp_termios_type_obj));
+    sexp_opcode_arg2_type(op) = sexp_make_fixnum(SEXP_FIXNUM);
+  }
+  if (sexp_vectorp(sexp_type_getters(sexp_termios_type_obj))) sexp_vector_set(sexp_type_getters(sexp_termios_type_obj), SEXP_THREE, op);
+
   op = sexp_define_foreign(ctx, env, "term-attrs-lflag-set!", 2, sexp_termios_set_c_lflag);
   if (sexp_opcodep(op)) {
     sexp_opcode_return_type(op) = sexp_make_fixnum(SEXP_FIXNUM);
@@ -422,8 +457,8 @@ sexp sexp_init_library (sexp ctx, sexp self, sexp_sint_t n, sexp env, const char
     sexp_opcode_return_type(op) = sexp_make_fixnum(SEXP_FIXNUM);
     sexp_opcode_arg1_type(op) = sexp_make_fixnum(sexp_type_tag(sexp_termios_type_obj));
   }
-
   if (sexp_vectorp(sexp_type_getters(sexp_termios_type_obj))) sexp_vector_set(sexp_type_getters(sexp_termios_type_obj), SEXP_THREE, op);
+
   op = sexp_define_foreign(ctx, env, "term-attrs-cflag-set!", 2, sexp_termios_set_c_cflag);
   if (sexp_opcodep(op)) {
     sexp_opcode_return_type(op) = sexp_make_fixnum(SEXP_FIXNUM);

@@ -40,7 +40,8 @@
 
    NCCS ;; size of c_cc array in termios
    %tcgetattr
-
+   %tcsetattr
+   term-attrs-c_cc-element term-attrs-c_cc-element-set!
 
 
    ;; 3.1  Errors COMPLETE
