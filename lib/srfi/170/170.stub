@@ -423,8 +423,8 @@
 (define-c-const unsigned-long OCRNL)
 (define-c-const unsigned-long ONOCR)
 (define-c-const unsigned-long ONLRET)
-(define-c-const unsigned-long OFDEL)
-(define-c-const unsigned-long OFILL)
+;; (define-c-const unsigned-long OFDEL) ;; not in OpenBSD
+;; (define-c-const unsigned-long OFILL) ;; not in OpenBSD
 
 ;; control modes for hardware control of terminal for c_cflag
 
