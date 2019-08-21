@@ -171,19 +171,6 @@ sexp sexp_25_tcgetattr_stub (sexp ctx, sexp self, sexp_sint_t n, sexp arg0) {
   return res;
 }
 
-sexp sexp_make_term_attrs_stub (sexp ctx, sexp self, sexp_sint_t n) {
-  struct termios* r;
-  sexp_gc_var1(res);
-  sexp_gc_preserve1(ctx, res);
-  res = sexp_alloc_tagged(ctx, sexp_sizeof(cpointer), sexp_unbox_fixnum(sexp_opcode_return_type(self)));
-  sexp_cpointer_value(res) = calloc(1, sizeof(struct termios));
-  r = (struct termios*) sexp_cpointer_value(res);
-  memset(r, 0, sizeof(struct termios));
-  sexp_freep(res) = 1;
-  sexp_gc_release1(ctx);
-  return res;
-}
-
 sexp sexp_termios_get_c_iflag (sexp ctx, sexp self, sexp_sint_t n, sexp x) {
   if (! (sexp_pointerp(x) && (sexp_pointer_tag(x) == sexp_unbox_fixnum(sexp_opcode_arg1_type(self)))))
     return sexp_type_exception(ctx, self, sexp_unbox_fixnum(sexp_opcode_arg1_type(self)), x);
@@ -246,7 +233,7 @@ sexp sexp_termios_set_c_lflag (sexp ctx, sexp self, sexp_sint_t n, sexp x, sexp 
 
 // x is the termios struct pointer, i is the array index for the value for the c_cc array element to return
 
-sexp sexp_termios_get_c_cc_element (sexp ctx, sexp self, sexp_sint_t n, sexp x, sexp i) {
+sexp sexp_termios_get_cc_element (sexp ctx, sexp self, sexp_sint_t n, sexp x, sexp i) {
   if (! (sexp_pointerp(x) && (sexp_pointer_tag(x) == sexp_unbox_fixnum(sexp_opcode_arg1_type(self)))))
     return sexp_type_exception(ctx, self, sexp_unbox_fixnum(sexp_opcode_arg1_type(self)), x);
 // make sure i is a fixnum
@@ -254,7 +241,7 @@ sexp sexp_termios_get_c_cc_element (sexp ctx, sexp self, sexp_sint_t n, sexp x, 
   return sexp_make_unsigned_integer(ctx, ((struct termios*)sexp_cpointer_value(x))->c_cc[sexp_unbox_fixnum(i)]);
 }
 
-sexp sexp_termios_set_c_cc_element (sexp ctx, sexp self, sexp_sint_t n, sexp x, sexp v, sexp i) {
+sexp sexp_termios_set_cc_element (sexp ctx, sexp self, sexp_sint_t n, sexp x, sexp v, sexp i) {
   if (! (sexp_pointerp(x) && (sexp_pointer_tag(x) == sexp_unbox_fixnum(sexp_opcode_arg1_type(self)))))
     return sexp_type_exception(ctx, self, sexp_unbox_fixnum(sexp_opcode_arg1_type(self)), x);
   if (! sexp_exact_integerp(v))
@@ -285,133 +272,6 @@ sexp sexp_init_library (sexp ctx, sexp self, sexp_sint_t n, sexp env, const char
 
   sexp_gc_preserve3(ctx, name, tmp, op);
 
-  name = sexp_intern(ctx, "NCCS", 4);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_integer(ctx, NCCS));
-  name = sexp_intern(ctx, "VREPRINT", 8);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, VREPRINT));
-  name = sexp_intern(ctx, "VLNEXT", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, VLNEXT));
-  name = sexp_intern(ctx, "VSTOP", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, VSTOP));
-  name = sexp_intern(ctx, "VSTART", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, VSTART));
-  name = sexp_intern(ctx, "VSUSP", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, VSUSP));
-  name = sexp_intern(ctx, "VQUIT", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, VQUIT));
-  name = sexp_intern(ctx, "VKILL", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, VKILL));
-  name = sexp_intern(ctx, "VINTR", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, VINTR));
-  name = sexp_intern(ctx, "VWERASE", 7);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, VWERASE));
-  name = sexp_intern(ctx, "VERASE", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, VERASE));
-  name = sexp_intern(ctx, "VEOL2", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, VEOL2));
-  name = sexp_intern(ctx, "VEOL", 4);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, VEOL));
-  name = sexp_intern(ctx, "VEOF", 4);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, VEOF));
-  name = sexp_intern(ctx, "NOFLSH", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, NOFLSH));
-  name = sexp_intern(ctx, "PENDIN", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, PENDIN));
-  name = sexp_intern(ctx, "FLUSHO", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, FLUSHO));
-  name = sexp_intern(ctx, "TOSTOP", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, TOSTOP));
-  name = sexp_intern(ctx, "EXTPROC", 7);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, EXTPROC));
-  name = sexp_intern(ctx, "IEXTEN", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, IEXTEN));
-  name = sexp_intern(ctx, "ICANON", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, ICANON));
-  name = sexp_intern(ctx, "ISIG", 4);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, ISIG));
-  name = sexp_intern(ctx, "ECHOCTL", 7);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, ECHOCTL));
-  name = sexp_intern(ctx, "ECHOPRT", 7);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, ECHOPRT));
-  name = sexp_intern(ctx, "ECHONL", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, ECHONL));
-  name = sexp_intern(ctx, "ECHO", 4);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, ECHO));
-  name = sexp_intern(ctx, "ECHOE", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, ECHOE));
-  name = sexp_intern(ctx, "ECHOKE", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, ECHOKE));
-  name = sexp_intern(ctx, "CRTSCTS", 7);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, CRTSCTS));
-  name = sexp_intern(ctx, "CLOCAL", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, CLOCAL));
-  name = sexp_intern(ctx, "HUPCL", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, HUPCL));
-  name = sexp_intern(ctx, "PARODD", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, PARODD));
-  name = sexp_intern(ctx, "PARENB", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, PARENB));
-  name = sexp_intern(ctx, "CREAD", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, CREAD));
-  name = sexp_intern(ctx, "CSTOPB", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, CSTOPB));
-  name = sexp_intern(ctx, "CS8", 3);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, CS8));
-  name = sexp_intern(ctx, "CS7", 3);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, CS7));
-  name = sexp_intern(ctx, "CS6", 3);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, CS6));
-  name = sexp_intern(ctx, "CS5", 3);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, CS5));
-  name = sexp_intern(ctx, "CSIZE", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, CSIZE));
-  name = sexp_intern(ctx, "ONLRET", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, ONLRET));
-  name = sexp_intern(ctx, "ONOCR", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, ONOCR));
-  name = sexp_intern(ctx, "OLCUC", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, OLCUC));
-  name = sexp_intern(ctx, "OCRNL", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, OCRNL));
-  name = sexp_intern(ctx, "ONLCR", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, ONLCR));
-  name = sexp_intern(ctx, "OPOST", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, OPOST));
-  name = sexp_intern(ctx, "IUCLC", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, IUCLC));
-  name = sexp_intern(ctx, "IMAXBEL", 7);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, IMAXBEL));
-  name = sexp_intern(ctx, "IXANY", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, IXANY));
-  name = sexp_intern(ctx, "IXOFF", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, IXOFF));
-  name = sexp_intern(ctx, "IXON", 4);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, IXON));
-  name = sexp_intern(ctx, "ICRNL", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, ICRNL));
-  name = sexp_intern(ctx, "IGNCR", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, IGNCR));
-  name = sexp_intern(ctx, "INLCR", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, INLCR));
-  name = sexp_intern(ctx, "ISTRIP", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, ISTRIP));
-  name = sexp_intern(ctx, "INPCK", 5);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, INPCK));
-  name = sexp_intern(ctx, "PARMRK", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, PARMRK));
-  name = sexp_intern(ctx, "IGNPAR", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, IGNPAR));
-  name = sexp_intern(ctx, "BRKINT", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, BRKINT));
-  name = sexp_intern(ctx, "IGNBRK", 6);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_unsigned_integer(ctx, IGNBRK));
-  name = sexp_intern(ctx, "TCSAFLUSH", 9);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_integer(ctx, TCSAFLUSH));
-  name = sexp_intern(ctx, "TCSADRAIN", 9);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_integer(ctx, TCSADRAIN));
-  name = sexp_intern(ctx, "TCSANOW", 7);
-  sexp_env_define(ctx, env, name, tmp=sexp_make_integer(ctx, TCSANOW));
-
   name = sexp_c_string(ctx, "termios", -1);
   sexp_termios_type_obj = sexp_register_c_type(ctx, name, sexp_finalize_c_type);
   tmp = sexp_string_to_symbol(ctx, name);
@@ -422,6 +282,7 @@ sexp sexp_init_library (sexp ctx, sexp self, sexp_sint_t n, sexp env, const char
   sexp_push(ctx, sexp_type_slots(sexp_termios_type_obj), sexp_intern(ctx, "c_cflag", -1));
   sexp_push(ctx, sexp_type_slots(sexp_termios_type_obj), sexp_intern(ctx, "c_oflag", -1));
   sexp_push(ctx, sexp_type_slots(sexp_termios_type_obj), sexp_intern(ctx, "c_iflag", -1));
+  // ~~~~ it looks like I might want to add  the specialized c_cc getter and setter here
   sexp_type_getters(sexp_termios_type_obj) = sexp_make_vector(ctx, SEXP_FOUR, SEXP_FALSE);
   sexp_type_setters(sexp_termios_type_obj) = sexp_make_vector(ctx, SEXP_FOUR, SEXP_FALSE);
 
@@ -429,7 +290,7 @@ sexp sexp_init_library (sexp ctx, sexp self, sexp_sint_t n, sexp env, const char
   name = sexp_intern(ctx, "term-attrs?", 11);
   sexp_env_define(ctx, env, name, tmp);
 
-  op = sexp_define_foreign(ctx, env, "term-attrs-c_cc-element-set!", 2, sexp_termios_set_c_cc_element);
+  op = sexp_define_foreign(ctx, env, "term-attrs-cc-element-set!", 2, sexp_termios_set_cc_element);
   if (sexp_opcodep(op)) {
     sexp_opcode_return_type(op) = sexp_make_fixnum(SEXP_FIXNUM);
     sexp_opcode_arg1_type(op) = sexp_make_fixnum(sexp_type_tag(sexp_termios_type_obj));
@@ -437,7 +298,7 @@ sexp sexp_init_library (sexp ctx, sexp self, sexp_sint_t n, sexp env, const char
   }
   if (sexp_vectorp(sexp_type_setters(sexp_termios_type_obj))) sexp_vector_set(sexp_type_setters(sexp_termios_type_obj), SEXP_THREE, op);
 
-  op = sexp_define_foreign(ctx, env, "term-attrs-c_cc-element", 2, sexp_termios_get_c_cc_element);
+  op = sexp_define_foreign(ctx, env, "term-attrs-cc-element", 2, sexp_termios_get_cc_element);
   if (sexp_opcodep(op)) {
     sexp_opcode_return_type(op) = sexp_make_fixnum(SEXP_FIXNUM);
     sexp_opcode_arg1_type(op) = sexp_make_fixnum(sexp_type_tag(sexp_termios_type_obj));
@@ -500,11 +361,6 @@ sexp sexp_init_library (sexp ctx, sexp self, sexp_sint_t n, sexp env, const char
     sexp_opcode_arg1_type(op) = sexp_make_fixnum(sexp_type_tag(sexp_termios_type_obj));
   }
   if (sexp_vectorp(sexp_type_getters(sexp_termios_type_obj))) sexp_vector_set(sexp_type_getters(sexp_termios_type_obj), SEXP_ZERO, op);
-
-  op = sexp_define_foreign(ctx, env, "make-term-attrs", 0, sexp_make_term_attrs_stub);
-  if (sexp_opcodep(op)) {
-    sexp_opcode_return_type(op) = sexp_make_fixnum(sexp_type_tag(sexp_termios_type_obj));
-  }
 
   op = sexp_define_foreign(ctx, env, "%tcsetattr", 3, sexp_25_tcsetattr_stub);
   if (sexp_opcodep(op)) {
