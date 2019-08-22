@@ -16,3 +16,9 @@ Change file predicates to S_ISREG etc.
 
 Look for and add any calls made by with-raw-mode etc. that can EINTR
 to SRFI document.
+
+Add back parent-pid and process-group.
+
+Add user-info:full-name and user-info:parsed-full-name
+
+tty-file-name -> terminal-file-name
