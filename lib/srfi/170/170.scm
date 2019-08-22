@@ -491,3 +491,27 @@
       (if (not the-file-name)
           (errno-error (errno) terminal-file-name the-port)) ;; exit the procedure
       the-file-name)))
+
+;; rare/cbreak mode is -ICANON -ECHO VMIN=1 VTIME=0
+
+;; without-echo is -ECHO
+
+(define (without-echo output-port thunk)
+  (if (not (port? output-port))
+      (errno-error errno/inval without-echo output-port thunk)) ;; exit the procedure
+  (if (not (tty? output-port))
+      (errno-error errno/inval without-echo output-port thunk)) ;; exit the procedure
+  (if (not (output-port? output-port))
+      (errno-error errno/inval without-echo output-port thunk)) ;; exit the procedure
+  (let ((the-fd (port-fdes output-port)))
+    (if (not the-fd)
+        (errno-error errno/inval without-echo output-port thunk)) ;; exit the procedure ~~~~ this needs a better error
+    (dynamic-wind
+        (lambda ()
+          'something-for-body)
+        thunk
+        (lambda ()
+          'something-for-body)
+      )
+    )
+)

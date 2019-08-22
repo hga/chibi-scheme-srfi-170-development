@@ -132,7 +132,8 @@
 
    tty?
    terminal-file-name
-   ;; with-raw-mode with-rare-mode without-echo
+   ;; with-raw-mode with-rare-mode
+   without-echo
    )
   
   (cond-expand ((not bsd)
