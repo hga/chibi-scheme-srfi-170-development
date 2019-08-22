@@ -481,13 +481,13 @@
                 (errno-error (errno) tty? the-port) ;; exit the procedure
                 #f))))))
 
-(define (tty-file-name the-port) ;; ~~~~ add fd??
+(define (terminal-file-name the-port) ;; ~~~~ add fd??
   (if (not (port? the-port))
-      (errno-error errno/inval tty-file-name the-port)) ;; exit the procedure
+      (errno-error errno/inval terminal-file-name the-port)) ;; exit the procedure
   (let ((the-fd (port-fdes the-port)))
     (if (not the-fd)
-        (errno-error errno/inval tty-file-name the-port)) ;; exit the procedure
+        (errno-error errno/inval terminal-file-name the-port)) ;; exit the procedure
     (let ((the-file-name (%ttyname_r the-fd)))
       (if (not the-file-name)
-          (errno-error (errno) tty-file-name the-port)) ;; exit the procedure
+          (errno-error (errno) terminal-file-name the-port)) ;; exit the procedure
       the-file-name)))

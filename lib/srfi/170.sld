@@ -131,8 +131,8 @@
    ;; 3.12  Terminal device control
 
    tty?
-   tty-file-name
-   ;; with-raw-mode without-echo without-interrupt-chars
+   terminal-file-name
+   ;; with-raw-mode with-rare-mode without-echo
    )
   
   (cond-expand ((not bsd)

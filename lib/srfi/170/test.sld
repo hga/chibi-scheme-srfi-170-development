@@ -370,14 +370,14 @@
             (test-not (tty? port-not-tty))
             (close-port port-not-tty))
 
-          (test-error (tty-file-name 1))
-          (test-error (tty-file-name the-string-port))
+          (test-error (terminal-file-name 1))
+          (test-error (terminal-file-name the-string-port))
           (let ((port-not-tty (open-input-file tmp-file-1)))
-            (test-error (tty-file-name port-not-tty))
+            (test-error (terminal-file-name port-not-tty))
             (close-port port-not-tty))
-          (test-assert (string? (tty-file-name (current-input-port))))
-          (test-assert (string? (tty-file-name (current-output-port))))
-          (test-assert (string? (tty-file-name (current-error-port))))
+          (test-assert (string? (terminal-file-name (current-input-port))))
+          (test-assert (string? (terminal-file-name (current-output-port))))
+          (test-assert (string? (terminal-file-name (current-error-port))))
 
 
 
