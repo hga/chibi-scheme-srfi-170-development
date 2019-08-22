@@ -504,15 +504,14 @@
       (errno-error errno/inval without-echo output-port proc)) ;; exit the procedure
   (if (not (output-port? output-port))
       (errno-error errno/inval without-echo output-port proc)) ;; exit the procedure
-  (let ((the-fd (port-fdes output-port)))
-    (if (not the-fd)
-        (errno-error errno/inval without-echo output-port proc)) ;; exit the procedure
+  (let ((initial-output-termios (%tcgetattr output-port)))
+    (if (not initial-output-termios)
+        (errno-error (errno) without-echo output-port proc)) ;; exit the procedure
     (dynamic-wind
         (lambda ()
+          ;; oops, I need a copy termios operation!!
           'something-for-body)
         (lambda () (proc output-port))
         (lambda ()
-          'something-for-body)
-      )
-    )
-)
+          (if (not (%tcsetattr output-port TCSAFLUSH initial-output-termios))
+              (errno-error (errno) without-echo output-port proc)))))) ;; might as well exit the procedure
