@@ -107,7 +107,7 @@
 
    umask set-umask
    working-directory set-working-directory
-   pid
+   pid parent-pid process-group
    nice
 
    user-uid user-gid

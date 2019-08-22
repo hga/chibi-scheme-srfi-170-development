@@ -380,7 +380,14 @@
   (if (not (%chdir fname))
       (errno-error (errno) set-working-directory fname)))
 
-;; pid direct from stub, can't error
+;; pid and parent-pid direct from stub, they can't error
+
+(define (process-group . o)
+  (let-optionals o ((process-object/pid 0))
+    (let ((pgid (%getpgid process-object/pid)))
+      (if (equal? -1 pgid)
+          (errno-error (errno) process-group process-object/pid)
+          pgid))))
 
 (define (nice . o)
   (let-optionals o ((delta 1))

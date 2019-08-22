@@ -326,6 +326,14 @@
 
 (define-c pid_t (pid getpid) ()) ;; pid_t return value without sign problem, and cannot fail
 
+;;> Returns the parent process id.
+
+(define-c pid_t (parent-pid getppid) ()) ;; pid_t return value without sign problem, cannot fail
+
+;;> Returns a process group id for a process, -1 on failure.
+
+(define-c int (%getpgid getpgid) (pid_t))
+
 ;; per the nice(3) OpenBSD man page it looks like it uses setpriority
 (define-c int (%nice nice) (int))
 
