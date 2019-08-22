@@ -499,14 +499,14 @@
 ;; ~~~~ all prefactory errno-errors need a more specific error indicator
 (define (without-echo output-port proc)
   (if (not (port? output-port))
-      (errno-error errno/inval without-echo output-port thunk)) ;; exit the procedure
+      (errno-error errno/inval without-echo output-port proc)) ;; exit the procedure
   (if (not (tty? output-port))
-      (errno-error errno/inval without-echo output-port thunk)) ;; exit the procedure
+      (errno-error errno/inval without-echo output-port proc)) ;; exit the procedure
   (if (not (output-port? output-port))
-      (errno-error errno/inval without-echo output-port thunk)) ;; exit the procedure
+      (errno-error errno/inval without-echo output-port proc)) ;; exit the procedure
   (let ((the-fd (port-fdes output-port)))
     (if (not the-fd)
-        (errno-error errno/inval without-echo output-port thunk)) ;; exit the procedure
+        (errno-error errno/inval without-echo output-port proc)) ;; exit the procedure
     (dynamic-wind
         (lambda ()
           'something-for-body)
