@@ -381,11 +381,11 @@
 
 
 
-          (test-error (without-echo 1 (lambda () 'something-for-body)))
-          (test-error (without-echo the-string-port (lambda () 'something-for-body)))
-          (test-error (without-echo (current-input-port) (lambda () 'something-for-body)))
+          (test-error (without-echo 1 (lambda (x) 'something-for-body)))
+          (test-error (without-echo the-string-port (lambda (x) 'something-for-body)))
+          (test-error (without-echo (current-input-port) (lambda (x) 'something-for-body)))
           ;; ~~~~ test for a file descriptor in port???
-          (test-not-error (without-echo (current-output-port) (lambda () 'something-for-body)))
+          (test 'something-for-body (without-echo (current-output-port) (lambda (x) 'something-for-body)))
           )
 
         (test-group "Epilogue: set-priority to 1, 2, 4"

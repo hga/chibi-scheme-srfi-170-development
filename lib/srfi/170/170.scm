@@ -496,7 +496,8 @@
 
 ;; without-echo is -ECHO
 
-(define (without-echo output-port thunk)
+;; ~~~~ all prefactory errno-errors need a more specific error indicator
+(define (without-echo output-port proc)
   (if (not (port? output-port))
       (errno-error errno/inval without-echo output-port thunk)) ;; exit the procedure
   (if (not (tty? output-port))
@@ -505,11 +506,11 @@
       (errno-error errno/inval without-echo output-port thunk)) ;; exit the procedure
   (let ((the-fd (port-fdes output-port)))
     (if (not the-fd)
-        (errno-error errno/inval without-echo output-port thunk)) ;; exit the procedure ~~~~ this needs a better error
+        (errno-error errno/inval without-echo output-port thunk)) ;; exit the procedure
     (dynamic-wind
         (lambda ()
           'something-for-body)
-        thunk
+        (lambda () (proc output-port))
         (lambda ()
           'something-for-body)
       )
