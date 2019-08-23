@@ -494,8 +494,6 @@
 
 ;; rare/cbreak mode is -ICANON -ECHO VMIN=1 VTIME=0
 
-;; without-echo is -ECHO
-
 ;; ~~~~ all prefactory errno-errors need a more specific error indicator
 (define (without-echo output-port proc)
   (if (not (port? output-port))
@@ -504,14 +502,29 @@
       (errno-error errno/inval without-echo output-port proc)) ;; exit the procedure
   (if (not (output-port? output-port))
       (errno-error errno/inval without-echo output-port proc)) ;; exit the procedure
-  (let ((initial-output-termios (%tcgetattr output-port)))
-    (if (not initial-output-termios)
+  (let* ((initial-output-termios (%tcgetattr output-port))
+         (new-output-termios (%tcgetattr output-port)) ;; ~~~~ because of tagging, how to copy is not obvious
+         (reset-terminal (lambda ()
+                           (if (not (%tcsetattr output-port TCSAFLUSH initial-output-termios))
+                               (errno-error (errno) without-echo output-port proc)))) ;; might as well exit the procedure
+         (the-lflags (bitwise-ior ECHO ECHOE ECHOK ECHONL)))
+    (if (or (not initial-output-termios) (not new-output-termios))
         (errno-error (errno) without-echo output-port proc)) ;; exit the procedure
+    (term-attrs-lflag-set! new-output-termios
+                           (bitwise-and (term-attrs-lflag new-output-termios) (bitwise-not the-lflags)))
     (dynamic-wind
         (lambda ()
-          ;; oops, I need a copy termios operation!!
-          'something-for-body)
+          (if (not (%tcsetattr output-port TCSAFLUSH new-output-termios))
+              (errno-error (errno) without-echo output-port proc) ;; exit the procedure
+              ;; For historical reasons, tcsetattr returns 0 if *any*
+              ;; of the attribute changes took, so we must check to
+              ;; see if all have been set
+              (let ((real-new-output-termios (%tcgetattr output-port)))
+                (if (not real-new-output-termios)
+                    (errno-error (errno) without-echo output-port proc) ;; exit the procedure
+                    (if (not (equal? 0 (bitwise-and (term-attrs-lflag real-new-output-termios) the-lflags)))
+                        (begin (reset-terminal)
+                               (errno-error errno/inval without-echo output-port proc))))))) ;; exit the procedure
         (lambda () (proc output-port))
         (lambda ()
-          (if (not (%tcsetattr output-port TCSAFLUSH initial-output-termios))
-              (errno-error (errno) without-echo output-port proc)))))) ;; might as well exit the procedure
+          (reset-terminal)))))
