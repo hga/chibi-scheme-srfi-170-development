@@ -1,20 +1,19 @@
 Review and revise for [foo] [bar] vs. [foo [bar]]
 
+Add name of the system or library call that failed to error-errno
+
+Change file predicates to S_ISREG etc.
+
 Manually test su-ed root on OpenBSD set-file-owner/-group
 
 Tests for set-file-timespecs
-
-See (chibi io) for how to write a C function then wrap it in a stub
 
 Improve temp-file-prefix specification and perhaps implementation
 
 Test what happens when procedures are handed a closed port
 
-Add name of the system or library call that failed to error-errno
-
-Change file predicates to S_ISREG etc.
-
-Look for and add any calls made by with-raw-mode etc. that can EINTR
-to SRFI document.
+See (chibi io) for how to write a C function then wrap it in a stub
 
 Add user-info:full-name and user-info:parsed-full-name
+
+Clean up post-set testing etc. of with- and without- tty procedures
