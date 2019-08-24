@@ -492,9 +492,62 @@
           (errno-error (errno) terminal-file-name the-port)) ;; exit the procedure
       the-file-name)))
 
+
+;; ~~~~ all prefactory errno-errors need a more specific error
+;;      indicator, that's why they're not combined
+
 ;; rare/cbreak mode is -ICANON -ECHO VMIN=1 VTIME=0
 
-;; ~~~~ all prefactory errno-errors need a more specific error indicator
+(define (with-rare-mode input-port output-port proc)
+  (if (not (and (port? input-port) (port? output-port)))
+      (errno-error errno/inval with-rare-mode input-port output-port proc)) ;; exit the procedure
+  (if (not (and (tty? input-port) (tty? output-port)))
+      (errno-error errno/inval with-rare-mode input-port output-port proc)) ;; exit the procedure
+  (if (not (and (input-port? input-port)(output-port? output-port)))
+      (errno-error errno/inval with-rare-mode input-port output-port proc)) ;; exit the procedure
+
+  (let* ((initial-input-termios (%tcgetattr input-port))
+         (initial-output-termios (%tcgetattr output-port))
+         (new-input-termios (%tcgetattr input-port)) ;; ~~~~ because of tagging, how to copy is not obvious
+         (new-output-termios (%tcgetattr output-port)) ;; ~~~~ because of tagging, how to copy is not obvious
+         (reset-terminal (lambda ()
+                           (let ((input-return (retry-if-EINTR (lambda () (%tcsetattr input-port TCSAFLUSH initial-input-termios))))) ;; still try resetting output
+                             (if (not (and (retry-if-EINTR (lambda () (%tcsetattr output-port TCSAFLUSH initial-output-termios))) input-return))
+                                 (errno-error (errno) with-rare-mode input-port output-port proc))))) ;; might as well exit the procedure
+         (the-lflags (bitwise-ior ICANON ECHO))) ;; ~~~~~~~ set for *both* ports???
+
+    (if (or (not initial-input-termios) (not new-input-termios) (not initial-output-termios) (not new-output-termios))
+        (errno-error (errno) with-rare-mode input-port output-port proc)) ;; exit the procedure
+
+    (term-attrs-lflag-set! new-input-termios
+                           (bitwise-and (term-attrs-lflag new-input-termios) (bitwise-not the-lflags)))
+    (term-attrs-cc-element-set! new-input-termios 1 VMIN) ;; ~~~~ ought to transpose array index and value to put in it
+    (term-attrs-cc-element-set! new-input-termios 0 VTIME) ;; ~~~~ ought to transpose array index and value to put in it
+    (term-attrs-lflag-set! new-output-termios
+                           (bitwise-and (term-attrs-lflag new-output-termios) (bitwise-not the-lflags)))
+    (dynamic-wind
+        (lambda ()      ;; set output port first since input port is the same + VMIN and VTIME, we're probably doing duplicate tcsetattrs at the OS level
+          (if (not (and (retry-if-EINTR (lambda () (%tcsetattr output-port TCSAFLUSH new-output-termios)))
+                        (retry-if-EINTR (lambda () (%tcsetattr input-port TCSAFLUSH new-input-termios)))))
+              (errno-error (errno) with-rare-mode input-port output-port proc) ;; exit the procedure
+              ;; For historical reasons, tcsetattr returns 0 if *any*
+              ;; of the attribute changes took, so we must check to
+              ;; see if all have been set
+              (let ((real-new-input-termios (%tcgetattr input-port))
+                    (real-new-output-termios (%tcgetattr output-port)))
+                (if (not (and real-new-input-termios real-new-output-termios))
+                    (begin (reset-terminal)
+                           (errno-error (errno) with-rare-mode input-port output-port proc)) ;; exit the procedure
+                    (if (not (and (equal? 0 (bitwise-and (term-attrs-lflag real-new-input-termios) the-lflags))
+                                  (equal? 1 (term-attrs-cc-element real-new-input-termios VMIN))
+                                  (equal? 0 (term-attrs-cc-element real-new-input-termios VTIME))
+                                  (equal? 0 (bitwise-and (term-attrs-lflag real-new-output-termios) the-lflags))))
+                        (begin (reset-terminal)
+                               (errno-error errno/inval with-rare-mode input-port output-port proc))))))) ;; exit the procedure
+        (lambda () (proc input-port output-port))
+        (lambda ()
+          (reset-terminal)))))
+
 (define (without-echo output-port proc)
   (if (not (port? output-port))
       (errno-error errno/inval without-echo output-port proc)) ;; exit the procedure
@@ -502,12 +555,14 @@
       (errno-error errno/inval without-echo output-port proc)) ;; exit the procedure
   (if (not (output-port? output-port))
       (errno-error errno/inval without-echo output-port proc)) ;; exit the procedure
+
   (let* ((initial-output-termios (%tcgetattr output-port))
          (new-output-termios (%tcgetattr output-port)) ;; ~~~~ because of tagging, how to copy is not obvious
          (reset-terminal (lambda ()
                            (if (not (retry-if-EINTR (lambda () (%tcsetattr output-port TCSAFLUSH initial-output-termios))))
                                (errno-error (errno) without-echo output-port proc)))) ;; might as well exit the procedure
          (the-lflags (bitwise-ior ECHO ECHOE ECHOK ECHONL)))
+
     (if (or (not initial-output-termios) (not new-output-termios))
         (errno-error (errno) without-echo output-port proc)) ;; exit the procedure
     (term-attrs-lflag-set! new-output-termios
@@ -521,7 +576,8 @@
               ;; see if all have been set
               (let ((real-new-output-termios (%tcgetattr output-port)))
                 (if (not real-new-output-termios)
-                    (errno-error (errno) without-echo output-port proc) ;; exit the procedure
+                    (begin (reset-terminal)
+                           (errno-error (errno) without-echo output-port proc)) ;; exit the procedure
                     (if (not (equal? 0 (bitwise-and (term-attrs-lflag real-new-output-termios) the-lflags)))
                         (begin (reset-terminal)
                                (errno-error errno/inval without-echo output-port proc))))))) ;; exit the procedure
