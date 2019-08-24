@@ -505,7 +505,7 @@
   (let* ((initial-output-termios (%tcgetattr output-port))
          (new-output-termios (%tcgetattr output-port)) ;; ~~~~ because of tagging, how to copy is not obvious
          (reset-terminal (lambda ()
-                           (if (not (%tcsetattr output-port TCSAFLUSH initial-output-termios))
+                           (if (not (retry-if-EINTR (lambda () (%tcsetattr output-port TCSAFLUSH initial-output-termios))))
                                (errno-error (errno) without-echo output-port proc)))) ;; might as well exit the procedure
          (the-lflags (bitwise-ior ECHO ECHOE ECHOK ECHONL)))
     (if (or (not initial-output-termios) (not new-output-termios))
@@ -514,7 +514,7 @@
                            (bitwise-and (term-attrs-lflag new-output-termios) (bitwise-not the-lflags)))
     (dynamic-wind
         (lambda ()
-          (if (not (%tcsetattr output-port TCSAFLUSH new-output-termios))
+          (if (not (retry-if-EINTR (lambda () (%tcsetattr output-port TCSAFLUSH new-output-termios))))
               (errno-error (errno) without-echo output-port proc) ;; exit the procedure
               ;; For historical reasons, tcsetattr returns 0 if *any*
               ;; of the attribute changes took, so we must check to
