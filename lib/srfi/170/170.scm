@@ -501,7 +501,7 @@
       (errno-error errno/inval with-raw-mode input-port output-port min time proc)) ;; exit the procedure
   (if (not (and (tty? input-port) (tty? output-port)))
       (errno-error errno/inval with-raw-mode input-port output-port min time proc)) ;; exit the procedure
-  (if (not (and (input-port? input-port)(output-port? output-port)))
+  (if (not (and (input-port? input-port) (output-port? output-port)))
       (errno-error errno/inval with-raw-mode input-port output-port min time proc)) ;; exit the procedure
   (if (not (exact-integer? min))
       (errno-error errno/inval with-raw-mode input-port output-port min time proc)) ;; exit the procedure
@@ -585,7 +585,7 @@
       (errno-error errno/inval with-rare-mode input-port output-port proc)) ;; exit the procedure
   (if (not (and (tty? input-port) (tty? output-port)))
       (errno-error errno/inval with-rare-mode input-port output-port proc)) ;; exit the procedure
-  (if (not (and (input-port? input-port)(output-port? output-port)))
+  (if (not (and (input-port? input-port) (output-port? output-port)))
       (errno-error errno/inval with-rare-mode input-port output-port proc)) ;; exit the procedure
 
   (let* ((initial-input-termios (%tcgetattr input-port))
@@ -631,13 +631,13 @@
         (lambda ()
           (reset-terminal)))))
 
-(define (without-echo output-port proc)
-  (if (not (port? output-port))
-      (errno-error errno/inval without-echo output-port proc)) ;; exit the procedure
-  (if (not (tty? output-port))
-      (errno-error errno/inval without-echo output-port proc)) ;; exit the procedure
-  (if (not (output-port? output-port))
-      (errno-error errno/inval without-echo output-port proc)) ;; exit the procedure
+(define (without-echo input-port output-port proc)
+  (if (not (and (port? input-port) (port? output-port)))
+      (errno-error errno/inval without-echo input-port output-port proc)) ;; exit the procedure
+  (if (not (and (tty? input-port) (tty? output-port)))
+      (errno-error errno/inval without-echo input-port output-port proc)) ;; exit the procedure
+  (if (not (and (input-port? input-port) (output-port? output-port)))
+      (errno-error errno/inval without-echo input-port output-port proc)) ;; exit the procedure
 
   (let* ((initial-output-termios (%tcgetattr output-port))
          (new-output-termios (%tcgetattr output-port)) ;; ~~~~ because of tagging, how to copy is not obvious
@@ -665,6 +665,6 @@
                     (if (not (equal? 0 (bitwise-and (term-attrs-lflag real-new-output-termios) the-lflags)))
                         (begin (reset-terminal)
                                (errno-error errno/inval without-echo output-port proc))))))) ;; exit the procedure
-        (lambda () (proc output-port))
+        (lambda () (proc input-port output-port))
         (lambda ()
           (reset-terminal)))))
