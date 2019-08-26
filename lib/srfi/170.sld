@@ -130,7 +130,7 @@
 
    ;; 3.12  Terminal device control
 
-   tty?
+   terminal?
    terminal-file-name
    with-raw-mode with-rare-mode without-echo
 

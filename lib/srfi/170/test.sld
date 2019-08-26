@@ -365,16 +365,16 @@
 
         (test-group "3.12  Terminal device control"
 
-          (test-assert (tty? (current-input-port)))
-          (let ((port-not-tty (open-input-file tmp-file-1)))
-            (test-not (tty? port-not-tty))
-            (close-port port-not-tty))
+          (test-assert (terminal? (current-input-port)))
+          (let ((port-not-terminal (open-input-file tmp-file-1)))
+            (test-not (terminal? port-not-terminal))
+            (close-port port-not-terminal))
 
           (test-error (terminal-file-name 1))
           (test-error (terminal-file-name the-string-port))
-          (let ((port-not-tty (open-input-file tmp-file-1)))
-            (test-error (terminal-file-name port-not-tty))
-            (close-port port-not-tty))
+          (let ((port-not-terminal (open-input-file tmp-file-1)))
+            (test-error (terminal-file-name port-not-terminal))
+            (close-port port-not-terminal))
           (test-assert (string? (terminal-file-name (current-input-port))))
           (test-assert (string? (terminal-file-name (current-output-port))))
           (test-assert (string? (terminal-file-name (current-error-port))))

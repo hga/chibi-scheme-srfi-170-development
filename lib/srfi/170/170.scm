@@ -465,9 +465,9 @@
 
 ;;; 3.12  Terminal device control
 
-(define (tty? the-port)
+(define (terminal? the-port)
   (if (not (port? the-port))
-      (errno-error errno/inval tty? the-port)) ;; exit the procedure
+      (errno-error errno/inval terminal? the-port)) ;; exit the procedure
   (let ((the-fd (port-fdes the-port)))
     (if (not the-fd)
         #f)
@@ -478,7 +478,7 @@
             #t
             (if (or (not (equal? 0 ret))
                     (not (equal? errno/notty (errno))))
-                (errno-error (errno) tty? the-port) ;; exit the procedure
+                (errno-error (errno) terminal? the-port) ;; exit the procedure
                 #f))))))
 
 (define (terminal-file-name the-port) ;; ~~~~ add fd??
@@ -499,7 +499,7 @@
 (define (with-raw-mode input-port output-port min time proc)
   (if (not (and (port? input-port) (port? output-port)))
       (errno-error errno/inval with-raw-mode input-port output-port min time proc)) ;; exit the procedure
-  (if (not (and (tty? input-port) (tty? output-port)))
+  (if (not (and (terminal? input-port) (terminal? output-port)))
       (errno-error errno/inval with-raw-mode input-port output-port min time proc)) ;; exit the procedure
   (if (not (and (input-port? input-port) (output-port? output-port)))
       (errno-error errno/inval with-raw-mode input-port output-port min time proc)) ;; exit the procedure
@@ -583,7 +583,7 @@
 (define (with-rare-mode input-port output-port proc)
   (if (not (and (port? input-port) (port? output-port)))
       (errno-error errno/inval with-rare-mode input-port output-port proc)) ;; exit the procedure
-  (if (not (and (tty? input-port) (tty? output-port)))
+  (if (not (and (terminal? input-port) (terminal? output-port)))
       (errno-error errno/inval with-rare-mode input-port output-port proc)) ;; exit the procedure
   (if (not (and (input-port? input-port) (output-port? output-port)))
       (errno-error errno/inval with-rare-mode input-port output-port proc)) ;; exit the procedure
@@ -634,7 +634,7 @@
 (define (without-echo input-port output-port proc)
   (if (not (and (port? input-port) (port? output-port)))
       (errno-error errno/inval without-echo input-port output-port proc)) ;; exit the procedure
-  (if (not (and (tty? input-port) (tty? output-port)))
+  (if (not (and (terminal? input-port) (terminal? output-port)))
       (errno-error errno/inval without-echo input-port output-port proc)) ;; exit the procedure
   (if (not (and (input-port? input-port) (output-port? output-port)))
       (errno-error errno/inval without-echo input-port output-port proc)) ;; exit the procedure
