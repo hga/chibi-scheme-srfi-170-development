@@ -17,3 +17,9 @@ See (chibi io) for how to write a C function then wrap it in a stub
 Add user-info:full-name and user-info:parsed-full-name
 
 Clean up post-set testing etc. of with- and without- tty procedures
+
+Add read-symlink, remove override? optional argument
+
+Add follow? to file-info
+
+Re-add user-effective/-uid/-gid
