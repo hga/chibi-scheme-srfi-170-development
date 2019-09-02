@@ -170,6 +170,13 @@
   ((not windows)
    (define-c errno (%link link) (string string))))
 
+;;> Creates a symbolic link to the first arg from the second.
+;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
+
+(cond-expand
+  ((not windows)
+   (define-c errno (%symlink symlink) (string string))))
+
 ;;> Renames the first arg to the second.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
 

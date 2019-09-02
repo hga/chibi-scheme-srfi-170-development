@@ -79,7 +79,7 @@
 
    ;; 3.3  File system COMPLETE except call-with-temporary-filename
 
-   create-directory create-fifo create-hard-link
+   create-directory create-fifo create-hard-link create-symlink
    rename-file
    delete-directory
    set-file-mode set-file-owner set-file-group

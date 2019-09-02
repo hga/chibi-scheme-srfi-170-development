@@ -1,5 +1,3 @@
-Test follow? file-info argument
-
 Re-add user-effective/-uid/-gid, including SRFI
 
 Add read-symlink, remove override? optional argument

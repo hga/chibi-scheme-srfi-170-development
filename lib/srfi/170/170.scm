@@ -80,6 +80,12 @@
     (if (not (%link oldname newname))
         (errno-error (errno) create-hard-link oldname newname))))
 
+(define (create-symlink oldname newname . o)
+  (let-optionals o ((override? #f))
+    (if override? (delete-filesystem-object newname))
+    (if (not (%symlink oldname newname))
+        (errno-error (errno) create-symlink oldname newname))))
+
 (define (rename-file oldname newname . o)
   (let-optionals o ((override? #f))
     (if (not override?)
