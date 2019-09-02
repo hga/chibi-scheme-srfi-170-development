@@ -202,46 +202,17 @@
      (cons (timespec:seconds (stat:mtime file-stat)) (timespec:nanoseconds (stat:mtime file-stat)))
      (cons (timespec:seconds (stat:ctime file-stat)) (timespec:nanoseconds (stat:ctime file-stat))))))
 
-
-#| ~~~~~~~~
-;;> File status accessors.  \var{x} should be a string indicating
-;;> the file to lookup the status for, or an existing status object.
-;;> Raises an error in the string case for non-existing files.
-;;/
-
-(define-syntax file-test-mode
-  (syntax-rules ()
-    ((file-test-mode op x)
-     (let* ((tmp x)
-            (st (if (stat? tmp) tmp (file-status tmp))))
-       (and st (op (stat-mode st)))))))
-
-(define (file-regular? x) (file-test-mode S_ISREG x))
-(define (file-directory? x) (file-test-mode S_ISDIR x))
-(define (file-character? x) (file-test-mode S_ISCHR x))
-(define (file-block? x) (file-test-mode S_ISBLK x))
-(define (file-fifo? x) (file-test-mode S_ISFIFO x))
-(cond-expand
-  (windows
-    (define (file-link? x) #f))
-  (else
-    (define (file-link? x)
-      (let ((st (if (stat? x) x (file-link-status x))))
-       (and st (S_ISLNK (stat-mode st)))))))
-(define (file-socket? x) (file-test-mode S_ISSOCK x))
-(define (file-exists? x) (and (if (stat? x) #t (file-status x)) #t))
-|#
-
-
-
 (define (file-info-directory? file-info-record)
-  (if (eq? 0 (bitwise-and file-type-mask/ifdir (file-info:mode file-info-record))) #f #t))
+  (S_ISDIR (file-info:mode file-info-record)))
 
 (define (file-info-fifo? file-info-record)
-  (if (eq? 0 (bitwise-and file-type-mask/ififo (file-info:mode file-info-record))) #f #t))
+  (S_ISFIFO (file-info:mode file-info-record)))
+
+(define (file-info-symlink? file-info-record)
+  (S_ISLNK (file-info:mode file-info-record)))
 
 (define (file-info-regular? file-info-record)
-  (if (eq? 0 (bitwise-and file-type-mask/ifreg (file-info:mode file-info-record))) #f #t))
+  (S_ISREG (file-info:mode file-info-record)))
 
 (define-record-type Directory-Object
   (make-directory-object the-DIR is-open? dot-files?)

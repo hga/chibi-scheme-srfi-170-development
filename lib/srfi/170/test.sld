@@ -240,6 +240,7 @@
             (test-assert (pair? (file-info:ctime fi)))
             (test-not (file-info-directory? fi))
             (test-not (file-info-fifo? fi))
+            (test-not (file-info-symlink? fi))
             (test-assert (file-info-regular? fi))
             )
 
@@ -253,12 +254,14 @@
             (test-assert (pair? (file-info:ctime fi)))
             (test-not (file-info-directory? fi))
             (test-not (file-info-fifo? fi))
+            (test-not (file-info-symlink? fi))
             (test-assert (file-info-regular? fi))
             (test-not-error (close-input-port the-port))
             )
 
           (test-assert (file-info-directory? (file-info tmp-containing-dir #t)))
           (test-assert (file-info-fifo? (file-info tmp-fifo #t)))
+          (test-assert (file-info-symlink? (file-info tmp-symlink #f)))
 
           (test-not-error (create-tmp-test-file tmp-dot-file))
 

@@ -273,34 +273,10 @@
 (define-c (free DIR) (%opendir opendir) (string))
 (define-c dirent (%readdir readdir) ((link (pointer DIR))))
 
-#| ~~~~~~~
 (define-c boolean S_ISDIR (mode_t))
 (define-c boolean S_ISREG (mode_t))
 (define-c boolean S_ISFIFO (mode_t))
-
-(cond-expand
- ((not windows)
-  ;;(define-c-const int ("S_IFMT"))
-  (define-c-const int (file/regular "S_IFREG"))
-  (define-c-const int (file/directory "S_IFDIR"))
-  (define-c-const int (file/fifo "S_IFIFO"))
-  ;;(define-c-const int ("S_IRWXU"))
-  (define-c-const int (perm/user-read "S_IRUSR"))
-  (define-c-const int (perm/user-write "S_IWUSR"))
-  (define-c-const int (perm/user-execute "S_IXUSR"))
-  ;;(define-c-const int ("S_IRWXG"))
-  (define-c-const int (perm/group-read "S_IRGRP"))
-  (define-c-const int (perm/group-write "S_IWGRP"))
-  (define-c-const int (perm/group-execute "S_IXGRP"))
-  ;;(define-c-const int ("S_IRWXO"))
- (define-c-const int (perm/others-read "S_IROTH"))
- (define-c-const int (perm/others-write "S_IWOTH"))
- (define-c-const int (perm/others-execute "S_IXOTH"))))
-|#
-
-(define-c-const int (file-type-mask/ifdir "S_IFDIR")) ;; directory
-(define-c-const int (file-type-mask/ififo "S_IFIFO")) ;; FIFO special
-(define-c-const int (file-type-mask/ifreg "S_IFREG")) ;; regular
+(define-c boolean S_ISLNK (mode_t))
 
 (define-c-const int (posix/path-max "PATH_MAX"))
 

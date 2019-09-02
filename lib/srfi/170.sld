@@ -91,7 +91,7 @@
    file-info:uid file-info:gid file-info:rdev file-info:size
    file-info:atime file-info:mtime file-info:ctime
 
-   file-info-directory? file-info-fifo?  file-info-regular?
+   file-info-directory? file-info-fifo? file-info-symlink? file-info-regular?
 
    directory-files
    open-directory read-directory close-directory
