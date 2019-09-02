@@ -408,11 +408,12 @@
 ;;; 3.6  User and group database access
 
 (define-record-type User-Info
-  (make-user-info name uid gecos gid home-dir shell)
+  (make-user-info name uid full-name parsed-full-name gid home-dir shell)
   user-info?
   (name user-info:name)
   (uid user-info:uid)
-  (gecos user-info:gecos)
+  (full-name user-info:full-name)
+  (parsed-full-name user-info:parsed-full-name)
   (gid user-info:gid)
   (home-dir user-info:home-dir)
   (shell user-info:shell))
@@ -427,6 +428,7 @@
         (make-user-info (passwd:name ui)
                         (passwd:uid ui)
                         (passwd:gecos ui)
+                        (parse-gecos (passwd:gecos ui) (passwd:name ui))
                         (passwd:gid ui)
                         (passwd:dir ui)
                         (passwd:shell ui)))))

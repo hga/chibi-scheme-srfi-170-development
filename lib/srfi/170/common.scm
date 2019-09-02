@@ -24,3 +24,13 @@
               (lp (kons file res))
               (begin (close-directory do) res)))))))
 
+(define (replace-ampersands the-string user-name)
+  the-string) ;; ~~~~ get the framework in place
+
+(define (parse-gecos gecos user-name)
+  (let* ((the-list (regexp-split "," gecos))
+         (first-element (car the-list))
+         (maybe-first-element (replace-ampersands first-element user-name)))
+    (if maybe-first-element
+        (set-car! the-list maybe-first-element))
+        the-list))

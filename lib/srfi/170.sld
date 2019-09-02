@@ -118,6 +118,7 @@
 
    user-info user-info?
    user-info:name user-info:uid user-info:gid user-info:home-dir user-info:shell
+   user-info:full-name user-info:parsed-full-name
 
    group-info group-info?
    group-info:name group-info:gid
@@ -165,7 +166,7 @@
             (only (srfi 1) take)
             (only (srfi 27) random-integer)
             (only (srfi 98) get-environment-variables)
-            ;; (only (srfi 115) regexp-split)
+            (only (srfi 115) regexp-split)
             (srfi 151) ;; bitwise operators
             )
     (include-shared "170/170")
