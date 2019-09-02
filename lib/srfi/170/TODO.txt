@@ -1,4 +1,4 @@
-Re-add follow? to file-info, including SRFI
+Test follow? file-info argument
 
 Re-add user-effective/-uid/-gid, including SRFI
 

@@ -105,11 +105,11 @@
 
           ;; create containing directory so we'll have a place for 3.2  I/O
           (test-not-error (create-directory tmp-containing-dir))
-          (test #o775 (bitwise-and (file-info:mode (file-info tmp-containing-dir)) #o777)) ; test umask
+          (test #o775 (bitwise-and (file-info:mode (file-info tmp-containing-dir #t)) #o777)) ; test umask
           (test-assert (file-exists? tmp-containing-dir))
           (test-not-error (create-directory tmp-containing-dir #o755 #t))
           (test-assert (file-exists? tmp-containing-dir))
-          (test #o755 (bitwise-and (file-info:mode (file-info tmp-containing-dir)) #o777))
+          (test #o755 (bitwise-and (file-info:mode (file-info tmp-containing-dir #t)) #o777))
           ) ; end early
 
         (test-group "3.1  Errors"
@@ -169,7 +169,7 @@
           (test-assert (file-exists? tmp-fifo))
           (test-not-error (create-fifo tmp-fifo #o644 #t))
           (test-assert (file-exists? tmp-fifo))
-          (test #o644 (bitwise-and (file-info:mode (file-info tmp-fifo)) #o777))
+          (test #o644 (bitwise-and (file-info:mode (file-info tmp-fifo #t)) #o777))
 
           ;; (test-not-error (create-tmp-test-file tmp-file-1)) ;; created above in I/O
 
@@ -198,29 +198,29 @@
           (test-not-error (delete-directory tmp-dir-1))
 
           (test-not-error (set-file-mode tmp-file-1 #o744))
-          (test #o744 (bitwise-and (file-info:mode (file-info tmp-file-1)) #o777))
+          (test #o744 (bitwise-and (file-info:mode (file-info tmp-file-1 #t)) #o777))
 
-          (let* ((fi-starting (file-info tmp-file-1))
+          (let* ((fi-starting (file-info tmp-file-1 #t))
                  (my-starting-uid (file-info:uid fi-starting))
                  (my-starting-gid (file-info:gid fi-starting)))
-
+#|
             (test-not-error (set-file-owner tmp-file-1 my-starting-uid)) ; best we can do, not assuming we're root!
             (test-not-error (set-file-group tmp-file-1 my-starting-gid)) ; maybe see what supplementary groups we have?
-
-            (let ((fi-ending (file-info tmp-file-1)))
+|#
+            (let ((fi-ending (file-info tmp-file-1 #t)))
               (test my-starting-uid (file-info:uid fi-ending))
               (test my-starting-gid (file-info:gid fi-ending))))
 
-          (test the-text-string-length (file-info:size (file-info tmp-file-1)))
+          (test the-text-string-length (file-info:size (file-info tmp-file-1  #t)))
           (test-not-error (truncate-file tmp-file-1 30))
-          (test 30 (file-info:size (file-info tmp-file-1)))
+          (test 30 (file-info:size (file-info tmp-file-1 #t)))
           (let ((the-port (open-output-file tmp-file-1))) ;; note this truncates the file to 0 length
             (test-not-error (truncate-file the-port 10)) ;; this should make the file 10 bytes of 0s
-            (test 10 (file-info:size (file-info tmp-file-1)))
+            (test 10 (file-info:size (file-info tmp-file-1 #t)))
             (test-not-error (close-output-port the-port)))
 
           ;; test remaining file-info features
-          (let ((fi (file-info tmp-file-1)))
+          (let ((fi (file-info tmp-file-1 #t)))
             (test-assert (file-info? fi))
             (test 2 (file-info:nlinks fi))
             ;; ~~~~ test uid and gid
@@ -233,7 +233,7 @@
             )
 
           (let* ((the-port (open-input-file tmp-file-1))
-                 (fi (file-info the-port)))
+                 (fi (file-info the-port 'follow-is-ignored)))
             (test-assert (file-info? fi))
             (test 2 (file-info:nlinks fi))
             ;; ~~~~ test uid and gid
@@ -246,8 +246,8 @@
             (test-not-error (close-input-port the-port))
             )
 
-          (test-assert (file-info-directory? (file-info tmp-containing-dir)))
-          (test-assert (file-info-fifo? (file-info tmp-fifo)))
+          (test-assert (file-info-directory? (file-info tmp-containing-dir #t)))
+          (test-assert (file-info-fifo? (file-info tmp-fifo #t)))
 
           (test-not-error (create-tmp-test-file tmp-dot-file))
 
@@ -278,7 +278,7 @@
           (test tmp-containing-dir (real-path "."))
           (test tmp-file-1 (real-path tmp-file-1-basename))
           (test tmp-file-1 (real-path (string-append "./" tmp-file-1-basename)))
-          ;; we'll trust it resolves symlinks, can't actually do anything if it doesn't....
+          ;; ~~~~ we'll trust it resolves symlinks, can't actually do anything if it doesn't....
           (test-error (real-path bogus-path))
           (test-not-error (set-working-directory starting-dir))
 
@@ -308,7 +308,7 @@
           (test-error (set-working-directory over-max-path))
           (test-not-error (set-working-directory tmp-containing-dir))
           (test tmp-containing-dir (working-directory))
-          (test-not-error (file-info tmp-file-1-basename)) ; are we there?
+          (test-not-error (file-info tmp-file-1-basename #t)) ; are we there?
 
           (cond-expand (bsd
             (test-not-error (set-file-mode tmp-containing-dir #o000))

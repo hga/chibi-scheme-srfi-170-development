@@ -245,6 +245,9 @@
 
 (define-c errno (%stat stat) (string (result stat)))
 (define-c errno (%fstat fstat) (int (result stat)))
+(cond-expand
+  ((not windows)
+   (define-c errno (%lstat lstat) (string (result stat)))))
 
 ;;> Code for walking directories
 

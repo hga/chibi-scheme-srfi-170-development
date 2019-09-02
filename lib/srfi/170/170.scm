@@ -97,12 +97,12 @@
       (errno-error (errno) set-file-mode fname permission-bits)))
 
 (define (set-file-owner fname uid)
-  (let ((gid (file-info:gid (file-info fname))))
+  (let ((gid (file-info:gid (file-info fname #t))))
     (if (not (retry-if-EINTR (lambda () (%chown fname uid gid))))
         (errno-error (errno) set-file-owner fname uid gid))))
 
 (define (set-file-group fname gid)
-  (let ((uid (file-info:uid (file-info fname))))
+  (let ((uid (file-info:uid (file-info fname #t))))
     (if (not (retry-if-EINTR (lambda () (%chown fname uid gid))))
         (errno-error (errno) set-file-group fname uid gid))))
 
@@ -165,10 +165,12 @@
      (mtime file-info:mtime)
      (ctime file-info:ctime))))
 
-(define (file-info fname/port)
+(define (file-info fname/port follow?)
   (let ((file-stat
          (cond ((string? fname/port)
-                (let ((the-file-info (%stat fname/port)))
+                (let ((the-file-info (if follow?
+                                         (%stat fname/port)
+                                         (%lstat fname/port))))
                   (if the-file-info
                       the-file-info
                       (errno-error (errno) file-info fname/port)))) ;; exit the procedure
