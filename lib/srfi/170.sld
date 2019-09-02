@@ -111,6 +111,7 @@
    nice
 
    user-uid user-gid
+   user-effective-uid user-effective-gid
    user-supplementary-gids
 
 

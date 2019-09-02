@@ -343,6 +343,8 @@
 
           (test-assert (> (user-uid) -1))
           (test-assert (> (user-gid) -1))
+          (test-assert (> (user-effective-uid) -1))
+          (test-assert (> (user-effective-gid) -1))
           (test-assert (list? (user-supplementary-gids))) ;; not sure how to make it fail
           ) ; end process state
 

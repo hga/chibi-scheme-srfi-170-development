@@ -349,6 +349,8 @@
 
 (define-c uid_t (user-uid getuid) ())
 (define-c gid_t (user-gid getgid) ())
+(define-c uid_t (user-effective-uid geteuid) ())
+(define-c gid_t (user-effective-gid getegid) ())
 
 (define-c-const int (groups/max "NGROUPS_MAX"))
 
