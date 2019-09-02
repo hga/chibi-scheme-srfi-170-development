@@ -1,6 +1,8 @@
-Re-add user-effective/-uid/-gid, including SRFI
+Re-add, correctly, file-info-symlink?
 
 Add read-symlink, remove override? optional argument
+
+Re-add user-effective/-uid/-gid, including SRFI
 
 Review and revise for [foo] [bar] vs. [foo [bar]]
 
