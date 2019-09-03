@@ -86,6 +86,17 @@
     (if (not (%symlink oldname newname))
         (errno-error (errno) create-symlink oldname newname))))
 
+(cond-expand
+  (windows
+    (define (read-symlink fname) #f))
+  (else
+    (define (read-symlink fname)
+      (let* ((buf (make-string (+ 1 PATH_MAX)))
+             (res (%readlink fname buf PATH_MAX)))
+        (if (positive? res)
+            (substring buf 0 res)
+            (errno-error (errno) read-symlink fname))))))
+
 (define (rename-file oldname newname . o)
   (let-optionals o ((override? #f))
     (if (not override?)

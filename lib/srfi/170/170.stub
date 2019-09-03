@@ -177,6 +177,12 @@
   ((not windows)
    (define-c errno (%symlink symlink) (string string))))
 
+
+(cond-expand
+  ((not windows)
+   (define-c-const int PATH_MAX) ;; ~~~~ should be SYMLINK_MAX, but that's not defined in Linux, which is allowed if it's not larger than _POSIX_SYMLINK_MAX
+   (define-c int (%readlink readlink) (string string int))))
+
 ;;> Renames the first arg to the second.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
 

@@ -14,6 +14,8 @@
 
    %stat stat:atime stat:mtime stat:ctime
 
+   PATH_MAX
+
    %opendir %readdir %closedir
    DIR? dirent-name make-directory-object directory-object?
    directory-object-get-DIR directory-object-is-open? set-directory-object-is-open directory-object-dot-files?
@@ -80,6 +82,7 @@
    ;; 3.3  File system COMPLETE except call-with-temporary-filename
 
    create-directory create-fifo create-hard-link create-symlink
+   read-symlink
    rename-file
    delete-directory
    set-file-mode set-file-owner set-file-group

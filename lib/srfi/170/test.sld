@@ -206,6 +206,9 @@
           (test-assert (file-exists? tmp-dir-1))
           (test-not (file-exists? tmp-dir-2))
 
+          (test-error (read-symlink tmp-file-1))
+          (test tmp-file-1 (read-symlink tmp-symlink))
+
           (test-not-error (delete-directory tmp-dir-1))
 
           (test-not-error (set-file-mode tmp-file-1 #o744))
