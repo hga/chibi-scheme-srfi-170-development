@@ -1,10 +1,6 @@
-Add read-symlink, remove override? optional argument
-
 Review and revise for [foo] [bar] vs. [foo [bar]]
 
 Add name of the system or library call that failed to error-errno
-
-Change file predicates to S_ISREG etc.
 
 Manually test su-ed root on OpenBSD set-file-owner/-group
 
@@ -17,5 +13,7 @@ Test what happens when procedures are handed a closed port
 See (chibi io) for how to write a C function then wrap it in a stub
 
 Add ampersand substitution to user-info:parsed-full-name
+
+Finish call-with-temporary-filename
 
 Clean up post-set testing etc. of with- and without- tty procedures
