@@ -24,6 +24,8 @@
               (lp (kons file res))
               (begin (close-directory do) res)))))))
 
+;; Needs to be in common for testing since we can't create or modify actual accounts
+
 (define (parse-gecos gecos user-name)
   (let ((the-gecos-list (regexp-split "," gecos)))
     (if (> (string-length user-name) 0)
