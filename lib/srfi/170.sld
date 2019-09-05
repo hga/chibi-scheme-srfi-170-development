@@ -14,6 +14,8 @@
 
    %stat stat:atime stat:mtime stat:ctime
 
+   parse-gecos
+
    PATH_MAX
 
    %opendir %readdir %closedir
@@ -167,10 +169,10 @@
             (chibi)
             (chibi optional) ;; Snow package for optional args
             (only (chibi filesystem) file-exists? delete-file open open/write open/create)
-            (only (srfi 1) take)
+            (only (srfi 1) any take)
             (only (srfi 27) random-integer)
             (only (srfi 98) get-environment-variables)
-            (only (srfi 115) regexp-split)
+            (only (srfi 115) regexp-replace-all regexp-split)
             (srfi 151) ;; bitwise operators
             )
     (include-shared "170/170")

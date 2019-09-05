@@ -24,13 +24,10 @@
               (lp (kons file res))
               (begin (close-directory do) res)))))))
 
-(define (replace-ampersands the-string user-name)
-  the-string) ;; ~~~~ get the framework in place
-
 (define (parse-gecos gecos user-name)
-  (let* ((the-list (regexp-split "," gecos))
-         (first-element (car the-list))
-         (maybe-first-element (replace-ampersands first-element user-name)))
-    (if maybe-first-element
-        (set-car! the-list maybe-first-element))
-        the-list))
+  (let ((the-gecos-list (regexp-split "," gecos)))
+    (if (> (string-length user-name) 0)
+        (let ((capitalized-user-name (string-copy user-name))) ;; we are NOT being functional
+          (string-set! capitalized-user-name 0 (char-upcase (string-ref capitalized-user-name 0)))
+          (set-car! the-gecos-list (regexp-replace-all "@" (car the-gecos-list) capitalized-user-name))))
+    the-gecos-list))

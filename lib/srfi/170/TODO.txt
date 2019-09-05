@@ -1,5 +1,3 @@
-Add ampersand substitution to user-info:parsed-full-name
-
 Finish call-with-temporary-filename
 
 Add name of the system or library call that failed to error-errno

@@ -10,7 +10,7 @@
                   file-exists?  delete-file
                   open open/read open/write open/create open/truncate)
           (only (srfi 1) list-index) ;; list-copy for testing timespecs??
-          (only (srfi 115) regexp-split)
+          (only (srfi 115) regexp-replace-all regexp-split)
           ;; (only (srfi 128) ) ;; comparators (reduced)
           (only (srfi 132) list-sort) ;; sort libraries
           (srfi 151) ;; bitwise operators
@@ -366,8 +366,12 @@
             (test-assert (list? the-parsed-user-name))
             (test-assert (string? (car the-parsed-user-name))))
 
+          (test '("") (parse-gecos "" ""))
+          (test '("Test User") (parse-gecos "Test User" ""))
+          (test '("") (parse-gecos "" "test"))
           (test '("Test User" "" "" "") (parse-gecos "Test User,,," "test"))
-          ;; ~~~~ test ampersand substitution in parse-gecos
+          (test '("Test UserTest" "" "" "") (parse-gecos "Test User@,,," "test"))
+          (test '("Test User" "@" "" "") (parse-gecos "Test User,@,," "test"))
 
           (test-assert (group-info? (group-info 0)))
           (test 0 (group-info:gid (group-info 0)))
