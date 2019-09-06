@@ -247,11 +247,13 @@
 
 (define (make-directory-files-generator* dir dot-files?)
   (let ((dir-obj (open-directory dir dot-files?))
-          (eof (eof-object)))
+        (eof (eof-object)))
     (lambda ()
-      (let ((f (read-directory dir-obj)))
-        (if (eq? f eof) (close-directory dir-obj))
-        f))))
+      (if (not (directory-object-is-open? dir-obj))
+          eof
+          (let ((f (read-directory dir-obj)))
+            (if (eq? f eof) (close-directory dir-obj))
+            f)))))
 
 (define (open-directory dir . o)
   (let-optionals o ((dot-files? #f))
