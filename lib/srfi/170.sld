@@ -99,6 +99,7 @@
    file-info-directory? file-info-fifo? file-info-symlink? file-info-regular?
 
    directory-files
+   make-directory-files-generator
    open-directory read-directory close-directory
 
    real-path

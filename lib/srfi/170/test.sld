@@ -78,6 +78,13 @@
     (define (is-string-in-list? str lst)
       (list-index (lambda (f) (equal? str f)) lst))
 
+    (define (generator->list g)
+      (let ((the-item (g)))
+        (if (eof-object? the-item)
+            '()
+            (cons the-item
+                  (generator->list g)))))
+
 
     (define (run-tests)
       (test-group "srfi-170: POSIX API"
@@ -275,6 +282,12 @@
           (test-not-error (set-working-directory tmp-containing-dir))
           (test-assert (equal? no-dot (list-sort string<? (directory-files))))
           (test-not-error (set-working-directory starting-dir))
+
+          (test-error (make-directory-files-generator tmp-no-filesystem-object))
+          (let ((g (make-directory-files-generator tmp-containing-dir)))
+            (test-assert (equal? no-dot (list-sort string<? (generator->list g)))))
+          (let ((g (make-directory-files-generator tmp-containing-dir #t)))
+            (test-assert (equal? with-dot (list-sort string<? (generator->list g)))))
 
           (test-error (open-directory tmp-no-filesystem-object))
           (let ((dirobj (open-directory tmp-containing-dir)))
