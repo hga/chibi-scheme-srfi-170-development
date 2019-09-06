@@ -245,6 +245,23 @@
     ((dir dot-files?) (make-directory-files-generator* dir dot-files?))
     ((dir) (make-directory-files-generator* dir #f))))
 
+;; Use this commented out version if your dir-obj AKA directory object
+;; abstraction doesn't keep track of when it has been closed:
+
+#|
+(define (make-directory-files-generator* dir dot-files?)
+  (let ((dir-obj (open-directory dir dot-files?))
+        (eof (eof-object))
+        (done #f))
+    (lambda ()
+      (if done eof
+        (let ((f (read-directory dir-obj)))
+          (when (eq? f eof)
+            (close-directory dir-obj)
+            (set! done #t))
+          f)))))
+|#
+
 (define (make-directory-files-generator* dir dot-files?)
   (let ((dir-obj (open-directory dir dot-files?))
         (eof (eof-object)))
