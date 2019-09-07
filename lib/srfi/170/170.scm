@@ -370,15 +370,59 @@
               (if (car retvals) (apply values retvals)
                   (loop (+ i 1)))))))))
 
+;; Following 3 defines copied from scsh 0.7 scheme/scsh-condition.scm
 
-(define (temp-file-iterate maker . o)
-  (temp-file-prefix #t) ;; ~~~~ brute force if prefix supplied
+(define (with-errno-handler* handler thunk)
+  (with-exception-handler
+    (lambda (condition)
+      (if (os-error? condition)
+          (handler (os-error-code condition)
+                   (list (condition-message condition)
+                         (condition-who condition)
+                         (condition-irritants condition)))
+          (raise condition)))
+    thunk))
+
+(define-syntax weh-cond
+  (syntax-rules (else)
+    ((weh-cond () ((cond-condition cond-body) ...) error-number return)
+     (cond (cond-condition cond-body) ...))
+    ((weh-cond (((errno-name ...) clause-body ...) . other-clauses) (cond-clause ...) error-number return)
+     (weh-cond other-clauses
+               (cond-clause ... ((or (errno=? (errno errno-name) (integer->errno error-number)) ...)
+                                 (call-with-values (lambda () clause-body ...) return)))
+               error-number return))
+    ((weh-cond ((else clause-body ...) . other-clauses) (cond-clause ...) error-number return)
+     (weh-cond other-clauses
+               (cond-clause ... (else (call-with-values (lambda () clause-body ...) return)))
+               error-number return))))
+
+(define-syntax with-errno-handler
+  (syntax-rules ()
+    ((with-errno-handler
+      ((err data)
+       (clause-condition clause-body ...) ...)
+      body ...)
+     (call-with-current-continuation
+      (lambda (return)
+        (with-errno-handler*
+         (lambda (err data)
+           (weh-cond ((clause-condition clause-body ...) ...) () err return))
+         (lambda () body ...)))))))
+
+
+(define (call-with-temporary-filename maker . o)
+  (if (equal? '() o) (temp-file-prefix #t)) ;; force new prefix if none supplied
   (let-optionals o ((the-prefix (temp-file-prefix)))
     (let loop ((i 0))
-      (if (> i 1000)
-          (errno-error errno/inval temp-file-iterate maker the-prefix) ;; exit the procedure
+      (if (> i 1000) (errno-error errno/inval call-with-temporary-filename maker the-prefix) ;; exit the procedure ~~~~ maybe a better errno (for now)?
           (let ((fname (string-append the-prefix "." (number->string i))))
-;; rest left as an exercise for someone else ^_^
+            (receive retvals (with-errno-handler
+                               ((errno data)
+                                ((errno/exist errno/acces) #f))
+                               (maker fname))
+              (if (car retvals) (apply values retvals) ;; ~~~~ don't understand the use of values at all
+                  (loop (+ i 1)))))))))
 |#
 
 

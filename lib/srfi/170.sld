@@ -3,7 +3,7 @@
   (export
 
 ;;; TMP for debugging purposes ----------------
-#|
+
    errno set-errno integer->error-string
 
    %fileno-to-fd
@@ -46,7 +46,7 @@
    %tcgetattr
    %tcsetattr
    term-attrs-cc-element term-attrs-cc-element-set!
-|#
+
 
    ;; 3.1  Errors COMPLETE
 
@@ -106,7 +106,7 @@
 
    temp-file-prefix
    create-temp-file
-   ;; call-with-temporary-filename
+   call-with-temporary-filename
 
 
    ;; 3.5  Process state COMPLETE
@@ -171,6 +171,7 @@
             (chibi optional) ;; Snow package for optional args
             (only (chibi filesystem) file-exists? delete-file open open/write open/create)
             (only (srfi 1) take)
+            (only (srfi 8) receive) ;; the only export, but let us maintain form
             (only (srfi 27) random-integer)
             (only (srfi 98) get-environment-variables)
             (only (srfi 115) regexp-replace-all regexp-split)
