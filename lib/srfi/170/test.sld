@@ -12,8 +12,9 @@
           (only (srfi 1) list-index) ;; list-copy for testing timespecs??
           (only (srfi 115) regexp-replace-all regexp-split)
           ;; (only (srfi 128) ) ;; comparators (reduced)
-          (only (srfi 132) list-sort) ;; sort libraries
+          (only (srfi 132) list-sort) ;; sort libraries, truncated ending pair cdr not being ()
           (srfi 151) ;; bitwise operators
+          ;; (only (srfi 158) generator->list) ;; not in Chibi Scheme, SRFI supplied implemention is very complicated
           (srfi 170))
 
   (include "common.scm")
