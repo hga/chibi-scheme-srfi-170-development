@@ -123,16 +123,21 @@
     (if (not (retry-if-EINTR (lambda () (%chown fname uid gid))))
         (errno-error (errno) set-file-group fname uid gid))))
 
-(define timespect/now (cons -1 utimens/utime_now))
+(define timespec/now (cons -1 utimens/utime_now))
 (define timespec/omit (cons -1 utimens/utime_omit))
 
 (define (do-set-file-timespecs fname atime mtime)
-  (if (not (%utimensat utimens/at_fdcwd fname atime mtime 0))
-           (errno-error (errno) set-file-timespecs fname atime mtime)))
+  (if (not (%utimensat utimens/at_fdcwd
+                       fname
+                       ;; don't change underlying representation until timespec SRFI finalized
+                       (cons (timespec-seconds atime) (timespec-nanoseconds atime))
+                       (cons (timespec-seconds mtime) (timespec-nanoseconds mtime))
+                       0))
+      (errno-error (errno) set-file-timespecs fname atime mtime)))
 
 (define set-file-timespecs
   (case-lambda
-   ((fname) (do-set-file-timespecs fname timespect/now timespect/now))
+   ((fname) (do-set-file-timespecs fname timespec/now timespec/now))
    ((fname atime mtime) (do-set-file-timespecs fname atime mtime))))
 
 (define (truncate-file fname/port len)
@@ -209,9 +214,9 @@
      (stat:size file-stat)
      (stat:blksize file-stat)
      (stat:blocks file-stat)
-     (cons (timespec:seconds (stat:atime file-stat)) (timespec:nanoseconds (stat:atime file-stat)))
-     (cons (timespec:seconds (stat:mtime file-stat)) (timespec:nanoseconds (stat:mtime file-stat)))
-     (cons (timespec:seconds (stat:ctime file-stat)) (timespec:nanoseconds (stat:ctime file-stat))))))
+     (make-timespec (posix-timespec:seconds (stat:atime file-stat)) (posix-timespec:nanoseconds (stat:atime file-stat)))
+     (make-timespec (posix-timespec:seconds (stat:mtime file-stat)) (posix-timespec:nanoseconds (stat:mtime file-stat)))
+     (make-timespec (posix-timespec:seconds (stat:ctime file-stat)) (posix-timespec:nanoseconds (stat:ctime file-stat))))))
 
 (define (file-info-directory? file-info-record)
   (S_ISDIR (file-info:mode file-info-record)))
@@ -530,13 +535,13 @@
   (let ((t (%clock_gettime clck-id/realtime)))
     (if (not t)
         (errno-error (errno) posix-time)
-        (cons (timespec:seconds t) (timespec:nanoseconds t)))))
+        (make-timespec (posix-timespec:seconds t) (posix-timespec:nanoseconds t)))))
 
 (define (monotonic-time)
   (let ((t (%clock_gettime clck-id/monotonic)))
     (if (not t)
         (errno-error (errno) monotonic-time)
-        (cons (timespec:seconds t) (timespec:nanoseconds t)))))
+        (make-timespec (posix-timespec:seconds t) (posix-timespec:nanoseconds t)))))
 
 
 ;;; 3.12  Terminal device control

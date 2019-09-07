@@ -37,8 +37,7 @@
    group:name group:gid
    %getgrgid %getgrnam
 
-
-   timespec:seconds timespec:nanoseconds
+   posix-timespec:seconds posix-timespec:nanoseconds
    clck-id/realtime clck-id/monotonic
    %clock_gettime
 
@@ -88,7 +87,7 @@
    rename-file
    delete-directory
    set-file-mode set-file-owner set-file-group
-   set-file-timespecs timespect/now timespec/omit
+   set-file-timespecs timespec/now timespec/omit
    truncate-file
 
    file-info file-info?
@@ -176,6 +175,7 @@
             (only (srfi 98) get-environment-variables)
             (only (srfi 115) regexp-replace-all regexp-split)
             (srfi 151) ;; bitwise operators
+            (only (srfi 174) make-timespec timespec-seconds timespec-nanoseconds)
             )
     (include-shared "170/170")
     (include-shared "170/aux")))

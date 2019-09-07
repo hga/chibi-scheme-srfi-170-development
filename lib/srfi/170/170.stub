@@ -209,9 +209,10 @@
 (define-c-const int (utimens/utime_omit "UTIME_OMIT"))
 
 (define-c-struct timespec
-  ;; constructor: (make-timespec)
-  (time_t  tv_sec   timespec:seconds)
-  (long    tv_nsec  timespec:nanoseconds))
+    constructor: (make-posix-timespec seconds nanoseconds)
+    predicate: posix-timespec?
+  (time_t  tv_sec   posix-timespec:seconds)
+  (long    tv_nsec  posix-timespec:nanoseconds))
 
 ;;> Truncate the file to the given size.
 

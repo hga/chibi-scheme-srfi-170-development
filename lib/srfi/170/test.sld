@@ -9,13 +9,15 @@
           (only (chibi filesystem)
                   file-exists?  delete-file
                   open open/read open/write open/create open/truncate)
-          (only (srfi 1) list-index) ;; list-copy for testing timespecs??
+          (only (srfi 1) list-index)
           (only (srfi 115) regexp-replace-all regexp-split)
           ;; (only (srfi 128) ) ;; comparators (reduced)
           (only (srfi 132) list-sort) ;; sort libraries, truncated ending pair cdr not being ()
           (srfi 151) ;; bitwise operators
           ;; (only (srfi 158) generator->list) ;; not in Chibi Scheme, SRFI supplied implemention is very complicated
-          (srfi 170))
+          (srfi 170)
+          (only (srfi 174) make-timespec timespec? timespec-seconds timespec-nanoseconds)
+          )
 
   (include "common.scm")
   (include "aux.so")
@@ -246,9 +248,9 @@
             (test-assert (file-info? fi))
             (test 2 (file-info:nlinks fi))
             ;; ~~~~ test uid and gid
-            (test-assert (pair? (file-info:atime fi)))
-            (test-assert (pair? (file-info:mtime fi)))
-            (test-assert (pair? (file-info:ctime fi)))
+            (test-assert (timespec? (file-info:atime fi)))
+            (test-assert (timespec? (file-info:mtime fi)))
+            (test-assert (timespec? (file-info:ctime fi)))
             (test-not (file-info-directory? fi))
             (test-not (file-info-fifo? fi))
             (test-not (file-info-symlink? fi))
@@ -260,9 +262,9 @@
             (test-assert (file-info? fi))
             (test 2 (file-info:nlinks fi))
             ;; ~~~~ test uid and gid
-            (test-assert (pair? (file-info:atime fi)))
-            (test-assert (pair? (file-info:mtime fi)))
-            (test-assert (pair? (file-info:ctime fi)))
+            (test-assert (timespec? (file-info:atime fi)))
+            (test-assert (timespec? (file-info:mtime fi)))
+            (test-assert (timespec? (file-info:ctime fi)))
             (test-not (file-info-directory? fi))
             (test-not (file-info-fifo? fi))
             (test-not (file-info-symlink? fi))
@@ -401,10 +403,12 @@
           (test-not-error (monotonic-time))
           (let ((t1 (posix-time))
                 (t2 (monotonic-time)))
-            (test-assert (and (> (car t1)  0)
-                              (> (cdr t1)  0)
-                              (> (car t2)  0)
-                              (> (cdr t2)  0))))
+            (test-assert (and (timespec? t1)
+                              (> (timespec-seconds t1) 0)
+                              (> (timespec-nanoseconds t1) 0)
+                              (timespec? t2)
+                              (> (timespec-seconds t2) 0)
+                              (> (timespec-nanoseconds t2) 0))))
           )
 
 
