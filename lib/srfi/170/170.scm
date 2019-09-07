@@ -18,7 +18,7 @@
   (data syscall-error:data))
 
 (define (errno-error errno procedure . data)
-    (raise (make-syscall-error errno (integer->error-string errno) procedure data)))
+    (raise-continuable (make-syscall-error errno (integer->error-string errno) procedure data)))
 
 (define (retry-if-EINTR the-lambda)
   (let loop ((ret (the-lambda)))
