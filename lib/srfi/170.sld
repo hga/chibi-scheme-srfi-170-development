@@ -106,7 +106,7 @@
 
    temp-file-prefix
    create-temp-file
-   call-with-temporary-filename
+   ;; call-with-temporary-filename left as an exercise for the reader
 
 
    ;; 3.5  Process state COMPLETE

@@ -357,7 +357,8 @@
               the-filename))))))
 
 #|
-;; Original version from scsh 0.7
+;; Following copied from scsh 0.7 scheme/temp-file.scm:
+
 (define (temp-file-iterate maker . maybe-template)
   (let ((template (:optional maybe-template (fluid *temp-file-template*))))
     (let loop ((i 0))
@@ -370,7 +371,9 @@
               (if (car retvals) (apply values retvals)
                   (loop (+ i 1)))))))))
 
+
 ;; Following 3 defines copied from scsh 0.7 scheme/scsh-condition.scm
+;; see e.g. scheme48-1.9.2 for things like os-error?
 
 (define (with-errno-handler* handler thunk)
   (with-exception-handler
@@ -410,6 +413,11 @@
            (weh-cond ((clause-condition clause-body ...) ...) () err return))
          (lambda () body ...)))))))
 
+
+;; Finishing the following is left as an exercise for the reader
+
+;; Seems to be mostly correct, the with-errno-handler part as the only
+;; part definitately not working, and not trivial, see above
 
 (define (call-with-temporary-filename maker . o)
   (if (equal? '() o) (temp-file-prefix #t)) ;; force new prefix if none supplied
