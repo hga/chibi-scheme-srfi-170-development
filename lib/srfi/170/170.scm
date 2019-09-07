@@ -123,22 +123,25 @@
     (if (not (retry-if-EINTR (lambda () (%chown fname uid gid))))
         (errno-error (errno) set-file-group fname uid gid))))
 
-(define timespec/now (cons -1 utimens/utime_now))
-(define timespec/omit (cons -1 utimens/utime_omit))
+(define timespec/now (make-timespec -1 utimens/utime_now))
+(define timespec/omit (make-timespec -1 utimens/utime_omit))
 
-(define (do-set-file-timespecs fname atime mtime)
+(define set-file-timespecs
+  (case-lambda
+   ((fname) (set-file-timespecs* fname timespec/now timespec/now))
+   ((fname atime mtime) (set-file-timespecs* fname atime mtime))))
+
+(define (set-file-timespecs* fname atime mtime)
+  (if (or (not (timespec? atime)) (not (timespec? mtime)))
+      (errno-error errno/inval set-file-timespecs* fname atime mtime)) ;; exit the procedure
   (if (not (%utimensat utimens/at_fdcwd
                        fname
                        ;; don't change underlying representation until timespec SRFI finalized
+                       ;; and maybe not even then, a cons cell is very simple
                        (cons (timespec-seconds atime) (timespec-nanoseconds atime))
                        (cons (timespec-seconds mtime) (timespec-nanoseconds mtime))
                        0))
       (errno-error (errno) set-file-timespecs fname atime mtime)))
-
-(define set-file-timespecs
-  (case-lambda
-   ((fname) (do-set-file-timespecs fname timespec/now timespec/now))
-   ((fname atime mtime) (do-set-file-timespecs fname atime mtime))))
 
 (define (truncate-file fname/port len)
   (cond ((string? fname/port)
