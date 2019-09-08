@@ -129,7 +129,7 @@
          (test-assert errno/2big) ;; make sure the first of the set exists
          (test-error (errno-error 1 umask))
 
-         ;; ~~~~ maybe test record predicate and getters???
+         ;; ~~~~  test record predicate and getters after this is moved to its own SRFI
          ) ; end errors
 
 
@@ -169,36 +169,47 @@
 
         (test-group "3.3  File system"
 
-          ;; ~~~~ test (not override) for the following
-          ;; ~~~~ test when from-fname does not exist
           ;; ~~~~ test across filesystems, assuming /var is not in same as /tmp
           ;; ~~~~ do some time sanity checking, e.g. get time, subtract a few seconds, test....
 
+          (test-error (create-directory))
+          (test-error (create-directory tmp-dir-1 #t))
           (test-not-error (create-directory tmp-dir-1))
           (test-assert (file-exists? tmp-dir-1))
+          (test-error (create-directory tmp-dir-1))
+          (test-not-error (create-directory tmp-dir-1 #o775 #t))
 
+          (test-error (create-fifo))
+          (test-error (create-fifo tmp-fifo #t))
           (test-not-error (create-fifo tmp-fifo))
           (test-assert (file-exists? tmp-fifo))
+          (test-error (create-fifo tmp-fifo))
           (test-not-error (create-fifo tmp-fifo #o644 #t))
           (test-assert (file-exists? tmp-fifo))
           (test #o644 (bitwise-and (file-info:mode (file-info tmp-fifo #t)) #o777))
 
           ;; (test-not-error (create-tmp-test-file tmp-file-1)) ;; created above in I/O
 
+          (test-error (create-hard-link tmp-file-1))
           (test-not-error (create-hard-link tmp-file-1 tmp-hard-link))
           (test-assert (file-exists? tmp-hard-link))
+          (test-error (create-hard-link tmp-file-1 tmp-hard-link))
           (test-not-error (create-hard-link tmp-file-1 tmp-hard-link #t))
           (test-assert (file-exists? tmp-hard-link))
 
+          (test-error (create-symlink tmp-file-1))
           (test-not-error (create-symlink tmp-file-1 tmp-symlink))
           (test-assert (file-exists? tmp-symlink))
+          (test-error (create-symlink tmp-file-1 tmp-symlink))
           (test-not-error (create-symlink tmp-file-1 tmp-symlink #t))
           (test-assert (file-exists? tmp-symlink))
+
           (test-assert (equal? (file-info:inode (file-info tmp-file-1 #t))
                                (file-info:inode (file-info tmp-symlink #t))))
           (test #f (equal? (file-info:inode (file-info tmp-file-1 #t))
                            (file-info:inode (file-info tmp-symlink #f))))
 
+          (test-error (rename-file tmp-file-1))
           (test-not-error (rename-file tmp-file-1 tmp-file-2))
           (test-assert (file-exists? tmp-file-2))
           (test-not (file-exists? tmp-file-1))
@@ -207,7 +218,15 @@
           (test-assert (file-exists? tmp-file-1))
           (test-not (file-exists? tmp-file-2))
 
+          (test-error (read-symlink))
+          (test-error (read-symlink tmp-file-1))
+          (test tmp-file-1 (read-symlink tmp-symlink))
+
+          (test-error (rename-file tmp-dir-1))
           (test-not-error (rename-file tmp-dir-1 tmp-dir-2))
+          (test-not (file-exists? tmp-dir-1))
+          (test-assert (file-exists? tmp-dir-2))
+          (test-error (rename-file tmp-dir-1 tmp-dir-2))
           (test-assert (file-exists? tmp-dir-2))
           (test-not (file-exists? tmp-dir-1))
           (test-not-error (create-directory tmp-dir-1))
@@ -216,9 +235,7 @@
           (test-assert (file-exists? tmp-dir-1))
           (test-not (file-exists? tmp-dir-2))
 
-          (test-error (read-symlink tmp-file-1))
-          (test tmp-file-1 (read-symlink tmp-symlink))
-
+          (test-error (delete-directory))
           (test-not-error (delete-directory tmp-dir-1))
 
           (test-not-error (set-file-mode tmp-file-1 #o744))
@@ -291,7 +308,8 @@
           (let ((fi (file-info tmp-file-1 #t)))
             (test-assert (file-info? fi))
             (test 2 (file-info:nlinks fi))
-            ;; ~~~~ test uid and gid
+            (test (user-uid) (file-info:uid fi))
+            (test (user-gid) (file-info:gid fi))
             (let ((atime (file-info:atime fi))
                   (mtime (file-info:mtime fi))
                   (ctime (file-info:ctime fi)))
@@ -314,7 +332,8 @@
                  (fi (file-info the-port 'follow-is-ignored)))
             (test-assert (file-info? fi))
             (test 2 (file-info:nlinks fi))
-            ;; ~~~~ test uid and gid
+            (test (user-uid) (file-info:uid fi))
+            (test (user-gid) (file-info:gid fi))
             (let ((atime (file-info:atime fi))
                   (mtime (file-info:mtime fi))
                   (ctime (file-info:ctime fi)))
