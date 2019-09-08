@@ -309,7 +309,8 @@
             (test-assert (file-info? fi))
             (test 2 (file-info:nlinks fi))
             (test (user-uid) (file-info:uid fi))
-            (test (user-gid) (file-info:gid fi))
+            (cond-expand
+             (linux (test (user-gid) (file-info:gid fi)))) ;; OpenBSD's default group for main user is wheel
             (let ((atime (file-info:atime fi))
                   (mtime (file-info:mtime fi))
                   (ctime (file-info:ctime fi)))
@@ -333,7 +334,8 @@
             (test-assert (file-info? fi))
             (test 2 (file-info:nlinks fi))
             (test (user-uid) (file-info:uid fi))
-            (test (user-gid) (file-info:gid fi))
+            (cond-expand
+             (linux (test (user-gid) (file-info:gid fi)))) ;; OpenBSD's default group for main user is wheel
             (let ((atime (file-info:atime fi))
                   (mtime (file-info:mtime fi))
                   (ctime (file-info:ctime fi)))
