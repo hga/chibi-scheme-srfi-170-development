@@ -93,6 +93,7 @@
    file-info file-info?
    file-info:device file-info:inode file-info:mode file-info:nlinks
    file-info:uid file-info:gid file-info:rdev file-info:size
+   ;; file-info:blksize file-info:blocks are below, not in Windows
    file-info:atime file-info:mtime file-info:ctime
 
    file-info-directory? file-info-fifo? file-info-symlink? file-info-regular?
