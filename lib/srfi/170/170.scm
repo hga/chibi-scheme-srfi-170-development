@@ -351,7 +351,7 @@
                           (string-append "/tmp/" (number->string (pid)) "." the-suffix-string))))))
 
 (define (create-temp-file . o)
-  (temp-file-prefix #t) ;; ~~~~ brute force if prefix supplied
+  (if (equal? '() o) (temp-file-prefix #t)) ;; force new prefix if none supplied
   (let-optionals o ((prefix (temp-file-prefix)))
     (let loop ()
       (let ((the-filename (string-append prefix "." (suffix-string))))
@@ -565,7 +565,7 @@
                 (errno-error (errno) terminal? the-port) ;; exit the procedure
                 #f))))))
 
-(define (terminal-file-name the-port) ;; ~~~~ add fd??
+(define (terminal-file-name the-port)
   (if (not (port? the-port))
       (errno-error errno/inval terminal-file-name the-port)) ;; exit the procedure
   (let ((the-fd (port-fdes the-port)))
@@ -600,7 +600,7 @@
                            (let ((input-return (retry-if-EINTR (lambda () (%tcsetattr input-port TCSAFLUSH initial-input-termios))))) ;; still try resetting output
                              (if (not (and (retry-if-EINTR (lambda () (%tcsetattr output-port TCSAFLUSH initial-output-termios))) input-return))
                                  (errno-error (errno) with-raw-mode input-port output-port min time proc))))) ;; might as well exit the procedure
-         ;; ~~~~~~~ set all for *both* ports???
+         ;; ~~~~~~~~ set all for *both* ports???
          (the-lflags (bitwise-ior ECHO ICANON IEXTEN ISIG))
          (the-iflags (bitwise-ior BRKINT ICRNL INPCK ISTRIP IXON))
          (the-and-cflags (bitwise-ior CSIZE PARENB))
