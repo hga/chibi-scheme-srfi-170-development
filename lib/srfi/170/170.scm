@@ -422,9 +422,9 @@
          (lambda () body ...)))))))
 
 
-;; Finishing the following is left as an exercise for the reader
+;; Finishing the following is left as an exercise for the reader....
 
-;; Seems to be mostly correct, the with-errno-handler part as the only
+;; Seems to be mostly correct, the with-errno-handler bit as the only
 ;; part definitately not working, and not trivial, see above
 
 (define (call-with-temporary-filename maker . o)
@@ -433,7 +433,7 @@
     (let loop ((i 0))
       (if (> i 1000) (errno-error errno/inval call-with-temporary-filename maker the-prefix) ;; exit the procedure ~~~~ maybe a better errno (for now)?
           (let ((fname (string-append the-prefix "." (number->string i))))
-            (receive retvals (with-errno-handler
+            (receive retvals (with-errno-handler ;; ~~~~ "THEN A MIRACLE OCCURS..."
                                ((errno data)
                                 ((errno/exist errno/acces) #f))
                                (maker fname))
