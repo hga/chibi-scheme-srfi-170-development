@@ -45,6 +45,7 @@
     (define tmp-dot-file-basename ".dot-file")
     (define tmp-hard-link "/tmp/chibi-scheme-srfi-170-test-xyzzy/hard-link")
     (define tmp-symlink "/tmp/chibi-scheme-srfi-170-test-xyzzy/symlink")
+    (define tmp-symlink-basename "symlink")
 
     (define tmp-no-filesystem-object "/tmp/chibi-scheme-srfi-170-test-xyzzy/no-filesystem-object")
     (define bogus-path "/foo/bar/baz/quux")
@@ -130,6 +131,7 @@
          (test-error (errno-error 1 umask))
 
          ;; ~~~~  test record predicate and getters after this is moved to its own SRFI
+
          ) ; end errors
 
 
@@ -209,6 +211,10 @@
           (test #f (equal? (file-info:inode (file-info tmp-file-1 #t))
                            (file-info:inode (file-info tmp-symlink #f))))
 
+          (test-error (read-symlink))
+          (test-error (read-symlink tmp-file-1))
+          (test tmp-file-1 (read-symlink tmp-symlink))
+
           (test-error (rename-file tmp-file-1))
           (test-not-error (rename-file tmp-file-1 tmp-file-2))
           (test-assert (file-exists? tmp-file-2))
@@ -217,10 +223,6 @@
           (test-not-error (rename-file tmp-file-2 tmp-file-1 #t))
           (test-assert (file-exists? tmp-file-1))
           (test-not (file-exists? tmp-file-2))
-
-          (test-error (read-symlink))
-          (test-error (read-symlink tmp-file-1))
-          (test tmp-file-1 (read-symlink tmp-symlink))
 
           (test-error (rename-file tmp-dir-1))
           (test-not-error (rename-file tmp-dir-1 tmp-dir-2))
@@ -244,10 +246,18 @@
           (let* ((fi-starting (file-info tmp-file-1 #t))
                  (my-starting-uid (file-info:uid fi-starting))
                  (my-starting-gid (file-info:gid fi-starting)))
-#|
-            (test-not-error (set-file-owner tmp-file-1 my-starting-uid)) ; best we can do, not assuming we're root!
-            (test-not-error (set-file-group tmp-file-1 my-starting-gid)) ; maybe see what supplementary groups we have?
-|#
+
+            (test-not-error (set-file-owner tmp-file-1 my-starting-uid))
+            (test-not-error (set-file-group tmp-file-1 my-starting-gid))
+            (if (equal? 0 (user-effective-uid))
+                (begin (test-not-error (set-file-owner tmp-file-1 1))
+                       (test-not-error (set-file-group tmp-file-1 1))
+                       (let ((fi-middle (file-info tmp-file-1 #t)))
+                         (test 1 (file-info:uid fi-middle))
+                         (test 1 (file-info:gid fi-middle)))
+                       (test-not-error (set-file-owner tmp-file-1 my-starting-uid))
+                       (test-not-error (set-file-group tmp-file-1 my-starting-gid))))
+
             (let ((fi-ending (file-info tmp-file-1 #t)))
               (test my-starting-uid (file-info:uid fi-ending))
               (test my-starting-gid (file-info:gid fi-ending))))
@@ -307,10 +317,16 @@
           ;; test remaining file-info features
           (let ((fi (file-info tmp-file-1 #t)))
             (test-assert (file-info? fi))
+            (test-assert (file-info:device fi))
             (test 2 (file-info:nlinks fi))
             (test (user-uid) (file-info:uid fi))
             (cond-expand
              (linux (test (user-gid) (file-info:gid fi)))) ;; OpenBSD's default group for main user is wheel
+            (test-assert (file-info:rdev fi))
+            (cond-expand
+             ((not windows)
+              (test-assert (> (file-info:blksize fi) 0))
+              (test-assert (file-info:blocks fi)))) ;; can be 0, inside the inode, for a file this small
             (let ((atime (file-info:atime fi))
                   (mtime (file-info:mtime fi))
                   (ctime (file-info:ctime fi)))
@@ -361,7 +377,6 @@
 
           (test-not-error (create-tmp-test-file tmp-dot-file))
 
-          ;; test normal function of open-/read-/close-directory as well
           (test-assert (equal? no-dot (list-sort string<? (directory-files tmp-containing-dir))))
           (test-assert (equal? with-dot (list-sort string<? (directory-files tmp-containing-dir #t))))
 
@@ -375,26 +390,20 @@
           (let ((g (make-directory-files-generator tmp-containing-dir #t)))
             (test-assert (equal? with-dot (list-sort string<? (generator->list g)))))
 
+          ;; the higher level directory-files and make-directory-files-generator
+          ;; tests above test the normal function of open-/read-/close-directory
+
           (test-error (open-directory tmp-no-filesystem-object))
           (let ((dirobj (open-directory tmp-containing-dir)))
-            (test-not-error (close-directory dirobj)))
-
-          ;; ~~~~ add full set of error cases
-
-#|
-          ;; test open-/read-/close-directory
-          (let ((dl (directory-fold tmp-containing-dir cons '())))
-            (test-assert (is-string-in-list? "." dl))
-            (test-assert (is-string-in-list? ".." dl))
-            (test-assert (is-string-in-list? tmp-file-1-basename dl))
-            (test-assert (is-string-in-list? tmp-dot-file-basename dl)))
-|#
+            (test-not-error (close-directory dirobj))
+            (test-error (close-directory dirobj))
+            (test-error (read-directory dirobj)))
 
           (test-not-error (set-working-directory tmp-containing-dir))
           (test tmp-containing-dir (real-path "."))
           (test tmp-file-1 (real-path tmp-file-1-basename))
           (test tmp-file-1 (real-path (string-append "./" tmp-file-1-basename)))
-          ;; ~~~~ we'll trust it resolves symlinks, can't actually do anything if it doesn't....
+          (test tmp-file-1 (real-path tmp-symlink-basename))
           (test-error (real-path bogus-path))
           (test-not-error (set-working-directory starting-dir))
 
@@ -403,15 +412,17 @@
             (temp-file-prefix #t) ;; parementer object, and argument ignored
             (test-assert (not (equal? tmp-filename (temp-file-prefix)))))
 
-          ;; ~~~~ this doesn't test skipping past an existing temp file....
+          ;; can't test skipping past an existing temp file due to the
+          ;; suffix being completely random....
           (let ((the-filename (create-temp-file)))
             (test-assert (file-exists? the-filename))
-            (test-not-error (delete-file the-filename)) ;; ~~~~ clean up after self, but bad for debugging
+            ;; cleaning up after self, but bad for debugging
+            (test-not-error (delete-file the-filename))
             )
-          (if (not (equal? 0 (user-uid)))
+          (if (not (equal? 0 (user-effective-uid)))
               (test-error (create-temp-file "/xyzzy-plover-plugh.")))
 
-
+          ;; call-with-temporary-filename
 
           )
 
@@ -429,7 +440,7 @@
 
           (cond-expand (bsd
             (test-not-error (set-file-mode tmp-containing-dir #o000))
-            (if (equal? 0 (user-uid))
+            (if (equal? 0 (user-effective-uid))
                 (test-not-error (working-directory))
                 (test-error (working-directory)))
             (test-not-error (set-file-mode tmp-containing-dir #o755))))
@@ -451,7 +462,11 @@
           (test-assert (> (user-gid) -1))
           (test-assert (> (user-effective-uid) -1))
           (test-assert (> (user-effective-gid) -1))
-          (test-assert (list? (user-supplementary-gids))) ;; not sure how to make it fail
+          (let ((the-user-gid-list (user-supplementary-gids)))
+            (test-assert (list? (user-supplementary-gids)))
+            ;; while POSIX optional, in practice Linux and OpenBSD
+            ;; include the user-effective-gid
+            (test-assert (any (lambda (g) (equal? g (user-effective-gid))) the-user-gid-list)))
           ) ; end process state
 
 
@@ -512,9 +527,9 @@
           (test-assert (string? (terminal-file-name (current-output-port))))
           (test-assert (string? (terminal-file-name (current-error-port))))
 
-          ;; These with- and without- tests only test errors and
+          ;; These with- and without- tests only test for errors, and
           ;; getting to and out of the supplied proc, not the actual
-          ;; detailed terminal mode
+          ;; detailed terminal mode which has to be done by hand
 
           (test-error (with-raw-mode 1 (current-output-port) 2 4 (lambda (x y) 'something-for-body)))
           (test-error (with-raw-mode (current-input-port) 1 2 4 (lambda (x y) 'something-for-body)))
