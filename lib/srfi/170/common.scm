@@ -1,5 +1,10 @@
-;; Unlike the scsh version, will raise an exception if there is a
-;; object it can't delete.  If no object, no exception.
+;; please see copyright notice in ./COPYING
+
+;; Common code that's included by both 170.sld and test.sld
+
+;; deletes flles and directories and does not raise an exception if
+;; the fname doesn't exist.  Unlike the scsh version, will raise an
+;; exception if an object can't be deleted.
 
 (define (delete-filesystem-object fname)
   (if (file-exists? fname)

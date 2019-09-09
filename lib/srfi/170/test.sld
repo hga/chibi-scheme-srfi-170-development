@@ -1,3 +1,16 @@
+;; please see copyright notice in ./COPYING
+
+;;;;;;;;;; WARNING: ;;;;;;;;;;
+;;
+;; This SRFI is generally a side effecting one, so tests often depend
+;; on the state left by previous ones if they worked.
+;;
+;; If you're sufficiently daring, this test suite runs fine as root,
+;; and some things can only be tested if run as root.  The only caveat
+;; is that before you try to run it as a normal user again, you must
+;; manually delete the tmp-containing-dir
+;;
+
 (define-library (srfi 170 test)
   (export run-tests)
 
@@ -6,18 +19,14 @@
           (only (chibi process) exit)
           (chibi optional) ;; Snow package for optional args
           (chibi test)
-          (only (chibi filesystem)
-                  file-exists?  delete-file
-                  open open/read open/write open/create open/truncate)
+          (only (chibi filesystem) file-exists?  delete-file open open/read open/write open/create open/truncate)
           (only (srfi 1) list-index)
           (only (srfi 115) regexp-replace-all regexp-split)
-          ;; (only (srfi 128) ) ;; comparators (reduced)
-          (only (srfi 132) list-sort) ;; sort libraries, truncated ending pair cdr not being ()
+          (only (srfi 132) list-sort) ;; note list-sort truncates ending pair cdr not being ()
           (srfi 151) ;; bitwise operators
-          ;; (only (srfi 158) generator->list) ;; not in Chibi Scheme, SRFI supplied implemention is very complicated
+          ;; (only (srfi 158) generator->list) ;; not in Chibi Scheme, SRFI supplied implemention is very complicated....
           (srfi 170)
-          (only (srfi 174) make-timespec timespec? timespec-seconds timespec-nanoseconds)
-          )
+          (only (srfi 174) make-timespec timespec? timespec-seconds timespec-nanoseconds))
 
   (include "common.scm")
   (include "aux.so")
@@ -91,16 +100,13 @@
 
 
     (define (run-tests)
-      (test-group "srfi-170: POSIX API"
 
-        ;; From 3.5 Process state, to set up for following file system
-        ;; tests.
+      (test-group "srfi-170: POSIX API"
 
         (test-group "Prologue: umask, delete-filesystem-object any old temporary files and directories"
 
           ;; ~~~~~~~~ need to test that PATH_MAX is no larger than 4096
           ;; ~~~~~~~~ need to test that term/l-ctermid is no larger than 1024
-
 
           (test 0 (errno))
           (test-not-error (set-errno errno/2big))
@@ -113,17 +119,22 @@
 
           (delete-tmp-test-files)
 
+          ;; From 3.5 Process state, to set up for following file system changes
+
           (test-assert (set-umask #o2))
           (test #o2 (umask))
 
-          ;; create containing directory so we'll have a place for 3.2  I/O
+          ;; Create containing directory so we'll have a place for 3.2  I/O
+
           (test-not-error (create-directory tmp-containing-dir))
           (test #o775 (bitwise-and (file-info:mode (file-info tmp-containing-dir #t)) #o777)) ; test umask
           (test-assert (file-exists? tmp-containing-dir))
           (test-not-error (create-directory tmp-containing-dir #o755 #t))
           (test-assert (file-exists? tmp-containing-dir))
           (test #o755 (bitwise-and (file-info:mode (file-info tmp-containing-dir #t)) #o777))
-          ) ; end early
+
+          ) ;; end prologue
+
 
         (test-group "3.1  Errors"
 
@@ -132,7 +143,7 @@
 
          ;; ~~~~  test record predicate and getters after this is moved to its own SRFI
 
-         ) ; end errors
+         ) ;; end errors
 
 
         (test-group "3.2  I/O"
@@ -166,7 +177,8 @@
                  (dev-zero-fd (%fileno-to-fd dev-zero-fileno)))
             (test-not-error (close-fdes dev-zero-fd))
             (test-error (close-fdes dev-zero-fd)))
-          )
+
+          ) ;; end I/O
 
 
         (test-group "3.3  File system"
@@ -315,6 +327,7 @@
             (test-not-error (close-output-port the-port)))
 
           ;; test remaining file-info features
+
           (let ((fi (file-info tmp-file-1 #t)))
             (test-assert (file-info? fi))
             (test-assert (file-info:device fi))
@@ -414,6 +427,7 @@
 
           ;; can't test skipping past an existing temp file due to the
           ;; suffix being completely random....
+
           (let ((the-filename (create-temp-file)))
             (test-assert (file-exists? the-filename))
             ;; cleaning up after self, but bad for debugging
@@ -424,13 +438,13 @@
 
           ;; call-with-temporary-filename
 
-          )
+          ) ;; end file system
 
 
         (test-group "3.5  Process state"
 
-          ;; umask and set-umask exercised at the very beginning to
-          ;; set up for following file system tests.
+          ;; umask and set-umask exercised in the prologue to set up
+          ;; for following file system tests
 
           (test-assert (string? (working-directory)))
           (test-error (set-working-directory over-max-path))
@@ -466,8 +480,11 @@
             (test-assert (list? (user-supplementary-gids)))
             ;; while POSIX optional, in practice Linux and OpenBSD
             ;; include the user-effective-gid
-            (test-assert (any (lambda (g) (equal? g (user-effective-gid))) the-user-gid-list)))
-          ) ; end process state
+            (test-assert (any (lambda (g)
+                                (equal? g (user-effective-gid)))
+                              the-user-gid-list)))
+
+          ) ;; end process state
 
 
         (test-group "3.6  User and group database access"
@@ -493,7 +510,8 @@
           ;; group 0 is wheel on OpenBSD, daemon works for it and Bionic Beaver
           (test-assert (group-info? (group-info "daemon")))
           (test 1 (group-info:gid (group-info "daemon")))
-          ) ; end user and group database access
+
+          ) ;; end user and group database access
 
 
         (test-group "3.10  Time"
@@ -508,7 +526,7 @@
                               (timespec? t2)
                               (> (timespec-seconds t2) 0)
                               (> (timespec-nanoseconds t2) 0))))
-          )
+          ) ;; end time
 
 
         (test-group "3.12  Terminal device control"
@@ -555,7 +573,8 @@
           ;; ~~~~ test for a file descriptor in port???
           (test 'something-for-body (without-echo (current-input-port) (current-output-port) (lambda (x y) 'something-for-body)))
 
-          )
+          ) ;; end terminal device control
+
 
         (test-group "Epilogue: set-priority to 1, 2, 4"
 
@@ -567,6 +586,6 @@
           (test 2 (nice 1))
           (test 4 (nice 2))
 
-          ) ; end epilogue
+          ) ;; end epilogue
 
         ))))

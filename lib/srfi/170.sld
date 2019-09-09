@@ -1,53 +1,9 @@
+;; please see copyright notice in 170/COPYING
 
 (define-library (srfi 170)
   (export
 
-;;; TMP for debugging purposes ----------------
-
-   errno set-errno integer->error-string
-
-   %fileno-to-fd
-   %file_descriptor_to_port
-   %close
-
-   %rmdir %delete-file
-
-   %stat stat:atime stat:mtime stat:ctime
-
-   parse-gecos
-
-   PATH_MAX
-
-   %opendir %readdir %closedir
-   DIR? dirent-name make-directory-object directory-object?
-   directory-object-get-DIR directory-object-is-open? set-directory-object-is-open directory-object-dot-files?
-
-   utimens/utime_now utimens/utime_omit
-   %utimensat
-
-   posix/path-max
-
-   %realpath
-
-   groups/max %getgroups
-
-   passwd:name passwd:uid
-   %getpwuid %getpwnam
-
-   group:name group:gid
-   %getgrgid %getgrnam
-
-   posix-timespec:seconds posix-timespec:nanoseconds
-   clck-id/realtime clck-id/monotonic
-   %clock_gettime
-
-   NCCS ;; size of c_cc array in termios
-   %tcgetattr
-   %tcsetattr
-   term-attrs-cc-element term-attrs-cc-element-set!
-
-
-   ;; 3.1  Errors COMPLETE
+   ;; 3.1  Errors
 
    errno/2big errno/acces errno/addrinuse errno/addrnotavail
    errno/afnosupport errno/again errno/already errno/badf errno/badmsg
@@ -72,7 +28,7 @@
    syscall-error:procedure syscall-error:data
    
 
-   ;; 3.2  I/O COMPLETE
+   ;; 3.2  I/O
 
    fdes->textual-input-port fdes->binary-input-port
    fdes->textual-output-port fdes->binary-output-port
@@ -80,7 +36,7 @@
    close-fdes
 
 
-   ;; 3.3  File system COMPLETE except call-with-temporary-filename
+   ;; 3.3  File system
 
    create-directory create-fifo create-hard-link create-symlink
    read-symlink
@@ -109,7 +65,7 @@
    ;; call-with-temporary-filename left as an exercise for the reader
 
 
-   ;; 3.5  Process state COMPLETE
+   ;; 3.5  Process state
 
    umask set-umask
    working-directory set-working-directory
@@ -131,7 +87,7 @@
    group-info:name group-info:gid
 
 
-   ;; 3.10  Time COMPLETE
+   ;; 3.10  Time
 
    posix-time monotonic-time
 

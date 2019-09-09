@@ -1,17 +1,10 @@
-;; Parts of this from the following copyright notices, the total has
-;; the same copyright terms, additions and changes Copyright 2019
-;; Harold Ancell, Harold Ancell assigns the rights to his additions to
-;; Alex Shinn.
-
-;; filesystem.stub -- filesystem bindings
-;; Copyright (c) 2009-2013 Alex Shinn.  All rights reserved.
-;; BSD-style license: http://synthcode.com/license.txt
+;; please see copyright notice in ./COPYING
 
 ;;; 3.1  Errors
 
 (define-record-type syscall-error
-  (make-syscall-error errno message procedure data)
-  syscall-error?
+    (make-syscall-error errno message procedure data)
+    syscall-error?
   (errno syscall-error:errno)
   (message syscall-error:message)
   (procedure syscall-error:procedure)
@@ -31,8 +24,8 @@
 
 ;;; 3.2  I/O
 
-;; ~~~~ seems Chibi handles bogus fds OK, reading input returns eof,
-;; output raises errors
+;; seems Chibi handles bogus fds OK, reading input returns eof, output
+;; raises errors
 
 (define (fdes->textual-input-port the-fd)
   (%file_descriptor_to_port the-fd #t #f))
@@ -155,9 +148,8 @@
 (cond-expand
   (windows
    (define-record-type File-Info
-     (make-file-info device inode mode nlinks uid gid rdev
-                     size atime mtime ctime)
-     file-info?
+       (make-file-info device inode mode nlinks uid gid rdev sizeatime mtime ctime)
+       file-info?
      (device file-info:device)
      (inode file-info:inode)
      (mode file-info:mode)
@@ -166,16 +158,13 @@
      (gid file-info:gid)
      (rdev file-info:rdev)
      (size file-info:size)
-;;   (blksize file-info:blksize)
-;;   (blocks file-info:blocks)
      (atime file-info:atime)
      (mtime file-info:mtime)
      (ctime file-info:ctime)))
   (else
    (define-record-type File-Info
-     (make-file-info device inode mode nlinks uid gid rdev
-                     size blksize blocks atime mtime ctime)
-     file-info?
+       (make-file-info device inode mode nlinks uid gid rdev size blksize blocks atime mtime ctime)
+       file-info?
      (device file-info:device)
      (inode file-info:inode)
      (mode file-info:mode)
@@ -234,8 +223,8 @@
   (S_ISREG (file-info:mode file-info-record)))
 
 (define-record-type Directory-Object
-  (make-directory-object the-DIR is-open? dot-files?)
-  directory-object?
+    (make-directory-object the-DIR is-open? dot-files?)
+    directory-object?
   (the-DIR directory-object-get-DIR)
   (is-open? directory-object-is-open? set-directory-object-is-open)
   (dot-files? directory-object-dot-files?))
@@ -490,8 +479,8 @@
 ;;; 3.6  User and group database access
 
 (define-record-type User-Info
-  (make-user-info name uid full-name parsed-full-name gid home-dir shell)
-  user-info?
+    (make-user-info name uid full-name parsed-full-name gid home-dir shell)
+    user-info?
   (name user-info:name)
   (uid user-info:uid)
   (full-name user-info:full-name)
@@ -516,8 +505,8 @@
                         (passwd:shell ui)))))
 
 (define-record-type Group-Info
-  (make-group-info name gid)
-  group-info?
+    (make-group-info name gid)
+    group-info?
   (name group-info:name)
   (gid group-info:gid))
 

@@ -1,11 +1,4 @@
-/* Parts of this from the following copyright notices, the total has */
-/* the same copyright terms, additions and changes Copyright 2019 */
-/* Harold Ancell, Harold Ancell assigns the rights to his additions to */
-/* Alex Shinn. */
-
-/*  ast.c -- interface to the Abstract Syntax Tree            */
-/*  Copyright (c) 2009-2015 Alex Shinn.  All rights reserved. */
-/*  BSD-style license: http://synthcode.com/license.txt       */
+// please see copyright notice in ./COPYING
 
 #include <chibi/eval.h>
 
@@ -56,6 +49,7 @@ sexp sexp_error_string (sexp ctx, sexp self, sexp_sint_t n, sexp x) {
   return sexp_c_string(ctx, strerror(err), -1);
 #endif
 }
+
 
 // 3.2  I/O
 

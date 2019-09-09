@@ -1,11 +1,4 @@
-;; Parts of this from the following copyright notices, the total has
-;; the same copyright terms, additions and changes Copyright 2019
-;; Harold Ancell, Harold Ancell assigns the rights to his additions to
-;; Alex Shinn.
-
-;; filesystem.stub -- filesystem bindings [and other Chibi Scheme stub files]
-;; Copyright (c) 2009-2013 Alex Shinn.  All rights reserved.
-;; BSD-style license: http://synthcode.com/license.txt
+;; please see copyright notice in ./COPYING
 
 (cond-expand
  (plan9)
@@ -18,7 +11,7 @@
 
   (c-system-include "fcntl.h")
 
-;;;  (c-system-include "sys/file.h") ; Only needed for BSD low level file operations?
+;;  (c-system-include "sys/file.h") ; Only needed for BSD low level file operations?
   (c-system-include "unistd.h")
   (c-system-include "dirent.h")
 
@@ -225,7 +218,7 @@
   (windows
    (c-include-verbatim "filesystem_win32_shim.c")
    (define-c-struct stat
-    predicate: stat?
+      predicate: stat?
     (dev_t      st_dev      stat:dev)
     (ino_t      st_ino      stat:ino)
     (mode_t     st_mode     stat:mode)
@@ -234,14 +227,12 @@
     (gid_t      st_gid      stat:gid)
     (dev_t      st_rdev     stat:rdev)
     (off_t      st_size     stat:size)
-    ;(blksize_t  st_blksize  stat:blksize)
-    ;(blkcnt_t   st_blocks   stat:blocks)
     (time_t     st_atime    stat:atime)
     (time_t     st_mtime    stat:mtime)
     (time_t     st_ctime    stat:ctime)))
   (else
    (define-c-struct stat
-    predicate: stat?
+      predicate: stat?
     (dev_t      st_dev      stat:dev)
     (ino_t      st_ino      stat:ino)
     (mode_t     st_mode     stat:mode)
@@ -266,16 +257,16 @@
 ;;> Code for walking directories
 
 (define-c-struct dirent
- (string d_name dirent-name))
+  (string d_name dirent-name))
 
 ;; the automagic finalizer is fragile and incomplete, handing it the
 ;; fixnum 1 segfaults on Bionic Beaver.  It returns SEXP_VIOD instead
-;; of 0 or -1, nor does errno get set when handed an already closed
-;; DIR, which may not be its fault
+;; of 0 or -1, and errno does not get set when handed an already
+;; closed DIR, which may not be its fault
 
 (define-c-type DIR
- finalizer: (%closedir closedir)
- predicate: DIR?)
+  finalizer: (%closedir closedir)
+  predicate: DIR?)
 
 (define-c (free DIR) (%opendir opendir) (string))
 (define-c dirent (%readdir readdir) ((link (pointer DIR))))
@@ -350,7 +341,7 @@
 ;;> for the user id.
 
 (define-c-struct passwd
-  predicate: passwd?
+    predicate: passwd?
   (string  pw_name     passwd:name)
   (string  pw_passwd   passwd:passwd)
   (uid_t   pw_uid      passwd:uid)
@@ -364,9 +355,7 @@
 
 (define-c-struct group
   (string  gr_name     group:name)
-  ;; (string  gr_passwd   group:passwd) not part of spec
   (gid_t   gr_gid      group:gid)
-  ;;((array string)  gr_mem      group-members) not part of spec
   )
 
 (define-c (maybe-null group) (%getgrgid getgrgid) (gid_t))
@@ -480,16 +469,16 @@
 (define-c-const int TCSAFLUSH) ;; Change attributes when output has drained and flush pending input
 
 #|
-;; Can not use because FFI doesn't handle arrays like (unsigned-char (c_cc 22)
+;; Can not use because FFI doesn't handle arrays like (unsigned-char (c_cc 22)....
 
-;; The following as input into the FFI, moved to aux.c, then
+;; The following were input into the FFI, moved to aux.c, then
 ;; term-attrs-cc-element and term-attrs-cc-element-set! were added.
 ;; They take an array index as an additional argument following the
 ;; termios struct pointer.
 
 (define-c-struct termios
-  predicate: term-attrs?
-  constructor: (make-term-attrs)
+    predicate: term-attrs?
+    constructor: (make-term-attrs)
   (unsigned-long c_iflag term-attrs-iflag term-attrs-iflag-set!)
   (unsigned-long c_oflag term-attrs-oflag term-attrs-oflag-set!)
   (unsigned-long c_cflag term-attrs-cflag term-attrs-cflag-set!)
