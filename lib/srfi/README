@@ -1,5 +1,5 @@
 There are several ways you might use this example Chibi Scheme
-implementation of SRIF 170.
+implementation of SRFI 170.
 
 You can just read 170.stub and aux.c for a guide to translate to your
 own FFI, the code above it should then work with little modification
@@ -20,5 +20,5 @@ The test suite is pretty generic and should be adaptable to your
 implementation, note aux.c for some unexported magic like (errno) and
 (set-errno), and common.scm for Scheme code also shared by both.
 
-As of inital release, a very minimal implementation of the pre-release
+As of initial release, a very minimal implementation of the pre-release
 timespec SRFI as a disjoint type is included as 174.sld.
