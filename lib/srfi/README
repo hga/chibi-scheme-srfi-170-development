@@ -1,0 +1,7 @@
+Original full in
+
+Can just read 170.stub for a guide to translate to your own FFI
+
+If starting from this and adding to a copy of Chibi Scheme, merge
+Makefile with top level one
+
