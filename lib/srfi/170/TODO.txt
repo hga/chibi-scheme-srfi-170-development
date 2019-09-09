@@ -2,11 +2,6 @@ Add name of the system or library call that failed to error-errno
 
 Improve temp-file-prefix specification and perhaps implementation
 
-Manually test as root on OpenBSD set-file-owner/-group
-
-Maybe automate as root testing of set-file-owner/-group, look up a
-valid user and group first
-
 See (chibi io) for how to write a C function then wrap it in a stub
 
 Clean up post-set testing etc. of with- and without- tty procedures
