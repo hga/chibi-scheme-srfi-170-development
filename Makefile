@@ -41,7 +41,8 @@ CHIBI_COMPILED_LIBS = lib/chibi/filesystem$(SO) lib/chibi/weak$(SO) \
 	lib/chibi/heap-stats$(SO) lib/chibi/disasm$(SO) lib/chibi/ast$(SO) \
 	lib/chibi/emscripten$(SO)
 CHIBI_POSIX_COMPILED_LIBS = lib/chibi/process$(SO) lib/chibi/time$(SO) \
-	lib/chibi/system$(SO) lib/chibi/stty$(SO) lib/chibi/net$(SO) 
+	lib/chibi/system$(SO) lib/chibi/stty$(SO) lib/chibi/net$(SO) \
+	lib/srfi/170/aux$(SO) # ~~~~ not exactly proper location, but this *is* a POSIX library ^_^
 CHIBI_WIN32_COMPILED_LIBS = lib/chibi/win32/process-win32$(SO)
 CHIBI_CRYPTO_COMPILED_LIBS = lib/chibi/crypto/crypto$(SO)
 CHIBI_IO_COMPILED_LIBS = lib/chibi/io/io$(SO)
@@ -61,7 +62,7 @@ COMPILED_LIBS = $(CHIBI_COMPILED_LIBS) $(CHIBI_IO_COMPILED_LIBS) \
 	lib/srfi/27/rand$(SO) lib/srfi/151/bit$(SO) \
 	lib/srfi/39/param$(SO) lib/srfi/69/hash$(SO) lib/srfi/95/qsort$(SO) \
 	lib/srfi/98/env$(SO) lib/srfi/144/math$(SO) lib/srfi/160/uvprims$(SO) \
-	lib/srfi/170/time$(SO) \
+	lib/srfi/170/170$(SO) lib/srfi/170/aux$(SO) \
 	lib/scheme/time$(SO)
 
 ifndef EXCLUDE_POSIX_LIBS
@@ -374,7 +375,7 @@ install-base: all
 	$(INSTALL) -m0644 lib/srfi/151/*.scm $(DESTDIR)$(MODDIR)/srfi/151/
 	$(INSTALL) -m0644 lib/srfi/159/*.sld $(DESTDIR)$(MODDIR)/srfi/159/
 	$(INSTALL) -m0644 lib/srfi/160/*.sld $(DESTDIR)$(MODDIR)/srfi/160/
-	$(INSTALL) -m0644 lib/srfi/170/*.sld $(DESTDIR)$(MODDIR)/srfi/160/
+	$(INSTALL) -m0644 lib/srfi/170/*.sld $(DESTDIR)$(MODDIR)/srfi/170/
 	$(MKDIR) $(DESTDIR)$(BINMODDIR)/chibi/crypto/
 	$(MKDIR) $(DESTDIR)$(BINMODDIR)/chibi/io/
 	$(MKDIR) $(DESTDIR)$(BINMODDIR)/chibi/optimize/
@@ -394,7 +395,8 @@ install-base: all
 	$(INSTALL_EXE) -m0755 lib/srfi/144/math$(SO) $(DESTDIR)$(BINMODDIR)/srfi/144
 	$(INSTALL_EXE) -m0755 lib/srfi/151/bit$(SO) $(DESTDIR)$(BINMODDIR)/srfi/151
 	$(INSTALL_EXE) -m0755 lib/srfi/160/uvprims$(SO) $(DESTDIR)$(BINMODDIR)/srfi/160
-	$(INSTALL_EXE) -m0755 lib/srfi/170/time(SO) $(DESTDIR)$(BINMODDIR)/srfi/170
+	$(INSTALL_EXE) -m0755 lib/srfi/170/170(SO) $(DESTDIR)$(BINMODDIR)/srfi/170
+	$(INSTALL_EXE) -m0755 lib/srfi/170/aux(SO) $(DESTDIR)$(BINMODDIR)/srfi/170
 	$(MKDIR) $(DESTDIR)$(INCDIR)
 	$(INSTALL) -m0644 $(INCLUDES) $(DESTDIR)$(INCDIR)/
 	$(MKDIR) $(DESTDIR)$(LIBDIR)
@@ -471,7 +473,7 @@ uninstall:
 	-$(RMDIR) $(DESTDIR)$(MODDIR)/srfi/151 $(DESTDIR)$(BINMODDIR)/srfi/151
 	-$(RMDIR) $(DESTDIR)$(MODDIR)/srfi/144 $(DESTDIR)$(BINMODDIR)/srfi/144
 	-$(RMDIR) $(DESTDIR)$(MODDIR)/srfi/160 $(DESTDIR)$(BINMODDIR)/srfi/160
-	-$(RMDIR) $(DESTDIR)$(MODDIR)/srfi/160 $(DESTDIR)$(BINMODDIR)/srfi/170
+	-$(RMDIR) $(DESTDIR)$(MODDIR)/srfi/170 $(DESTDIR)$(BINMODDIR)/srfi/170
 	-$(RMDIR) $(DESTDIR)$(MODDIR)/srfi $(DESTDIR)$(BINMODDIR)/srfi
 	-$(RMDIR) $(DESTDIR)$(MODDIR) $(DESTDIR)$(BINMODDIR)
 	-$(RM) $(DESTDIR)$(MANDIR)/chibi-scheme.1 $(DESTDIR)$(MANDIR)/chibi-ffi.1 $(DESTDIR)$(MANDIR)/chibi-doc.1
