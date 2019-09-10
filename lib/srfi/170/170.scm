@@ -306,10 +306,10 @@
   (if (not (directory-object? directory-object))
       (errno-error errno/inval close-directory directory-object)) ;; exit the procedure
   (if (not (directory-object-is-open? directory-object))
-      (errno-error errno/badf read-directory directory-object) ;; exit the procedure
+      (errno-error errno/badf read-directory directory-object)) ;; exit the procedure
       (set-directory-object-is-open directory-object #f)
       ;; does not dirobj any error stuff, see 170.stub
-      (%closedir (directory-object-get-DIR directory-object))))
+      (%closedir (directory-object-get-DIR directory-object)))
 
 (define (real-path the-starting-path)
   (if (not (string? the-starting-path))
