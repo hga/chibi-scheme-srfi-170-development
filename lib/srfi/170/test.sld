@@ -139,6 +139,11 @@
 
         (test-group "3.2  I/O"
 
+          (test-error (open-file 1 1 1))
+          (test-error (open-file "foo" "bar" 1))
+          (test-error (open-file "foo" 1 "baz"))
+          (test-error (open-file bogus-path open/read))
+
           (let ((the-port (fdes->binary-output-port
                            (open-file tmp-file-1 open-write-create-truncate))))
             (test-not-error (write-bytevector the-binary-bytevector the-port))
