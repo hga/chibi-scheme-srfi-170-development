@@ -19,7 +19,7 @@
           (only (chibi process) exit)
           (chibi optional) ;; Snow package for optional args
           (chibi test)
-          (only (chibi filesystem) file-exists?  delete-file open open/read open/write open/create open/truncate)
+          (only (chibi filesystem) file-exists? delete-file open) ;; ~~~~ remove open! open/read open/write open/create open/truncate)
           (only (srfi 1) list-index)
           (only (srfi 115) regexp-replace-all regexp-split)
           (only (srfi 132) list-sort) ;; note list-sort truncates ending pair cdr not being ()
@@ -135,16 +135,6 @@
           (test #o755 (bitwise-and (file-info:mode (file-info tmp-containing-dir #t)) #o777))
 
           ) ;; end prologue
-
-
-        (test-group "3.1  Errors"
-
-         (test-assert errno/2big) ;; make sure the first of the set exists
-         (test-error (errno-error 1 umask))
-
-         ;; ~~~~  test record predicate and getters after this is moved to its own SRFI
-
-         ) ;; end errors
 
 
         (test-group "3.2  I/O"

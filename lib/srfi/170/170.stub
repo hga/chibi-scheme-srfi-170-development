@@ -34,7 +34,7 @@
   ))
 
 
-;;; 3.1  Errors
+;;; 3.1  Errors (note, no longer part of API)
 
 (define-c-const int (errno/2big "E2BIG"))
 (define-c-const int (errno/acces "EACCES"))
@@ -123,6 +123,16 @@
   (define-c-const int (errno/time "ETIME"))))
 
 ;;; 3.2  I/O
+
+(define-c-const int (open/read "O_RDONLY"))
+(define-c-const int (open/write "O_WRONLY"))
+(define-c-const int (open/read+write "O_RDWR"))
+(define-c-const int (open/append "O_APPEND"))
+(define-c-const int (open/create "O_CREAT"))
+(define-c-const int (open/exclusive "O_EXCL"))
+(define-c-const int (open/truncate "O_TRUNC"))
+
+
 
 ;;> Copies the first file descriptor to the second, closing
 ;;> it if needed.

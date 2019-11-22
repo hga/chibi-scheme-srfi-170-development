@@ -4,7 +4,7 @@
   (export
 
 #|
-   // No longer part of API
+   ;; No longer part of API
 
    ;; 3.1  Errors
 
@@ -33,6 +33,8 @@
 
    ;; 3.2  I/O
 
+   open-file
+   open/read open/write open/read+write open/append open/create open/exclusive open/truncate
    fdes->textual-input-port fdes->binary-input-port
    fdes->textual-output-port fdes->binary-output-port
    port-fdes

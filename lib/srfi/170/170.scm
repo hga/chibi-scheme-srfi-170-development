@@ -1,26 +1,5 @@
 ;; please see copyright notice in ./COPYING
 
-;;; 3.1  Errors
-
-(define-record-type syscall-error
-    (make-syscall-error errno message procedure data)
-    syscall-error?
-  (errno syscall-error:errno)
-  (message syscall-error:message)
-  (procedure syscall-error:procedure)
-  (data syscall-error:data))
-
-(define (errno-error errno procedure . data)
-    (raise (make-syscall-error errno (integer->error-string errno) procedure data)))
-
-(define (retry-if-EINTR the-lambda)
-  (let loop ((ret (the-lambda)))
-    (if ret
-        ret
-        (if (equal? errno/intr (errno))
-            (loop (the-lambda))
-            ret))))
-
 
 ;;; 3.2  I/O
 
