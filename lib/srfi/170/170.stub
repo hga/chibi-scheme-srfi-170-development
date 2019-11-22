@@ -132,13 +132,9 @@
 (define-c-const int (open/exclusive "O_EXCL"))
 (define-c-const int (open/truncate "O_TRUNC"))
 
+;;> Opens the given file and returns a file descriptor.
 
-
-;;> Copies the first file descriptor to the second, closing
-;;> it if needed.
-;;> Returns \scheme{#t} on success and \scheme{#f} on failure.
-
-(define-c int (%dup2 dup2) (int int))
+(define-c int (%open open) (string int int))
 
 ;;> Closes the given file descriptor.
 ;;> Returns \scheme{#t} on success and \scheme{#f} on failure.

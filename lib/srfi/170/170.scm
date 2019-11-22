@@ -3,6 +3,19 @@
 
 ;;; 3.2  I/O
 
+(define (open-file fname flags . o)
+  (let-optionals o ((permission-bits #o666))
+    (if (not (string? fname))
+        (errno-error errno/inval open-file fname))
+    (if (not (fixnum? flags))
+        (errno-error errno/inval open-file flags))
+    (if (not (fixnum? permission-bits))
+        (errno-error errno/inval open-file permission-bits))
+    (let ((fd (retry-if-EINTR (lambda () (%open fname flags permission-bits)))))
+      (if (equal? -1 fd)
+          (errno-error (errno) open-file fname flags permission-bits)
+          fd))))
+
 ;; seems Chibi handles bogus fds OK, reading input returns eof, output
 ;; raises errors
 

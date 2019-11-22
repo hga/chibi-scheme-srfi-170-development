@@ -19,7 +19,7 @@
           (only (chibi process) exit)
           (chibi optional) ;; Snow package for optional args
           (chibi test)
-          (only (chibi filesystem) file-exists? delete-file open) ;; ~~~~ remove open! open/read open/write open/create open/truncate)
+          (only (chibi filesystem) file-exists? delete-file)
           (only (srfi 1) list-index)
           (only (srfi 115) regexp-replace-all regexp-split)
           (only (srfi 132) list-sort) ;; note list-sort truncates ending pair cdr not being ()
@@ -140,21 +140,21 @@
         (test-group "3.2  I/O"
 
           (let ((the-port (fdes->binary-output-port
-                           (%fileno-to-fd (open tmp-file-1 open-write-create-truncate)))))
+                           (open-file tmp-file-1 open-write-create-truncate))))
             (test-not-error (write-bytevector the-binary-bytevector the-port))
             (test-not-error (close-port the-port)))
           (let ((the-port (fdes->binary-input-port
-                           (%fileno-to-fd (open tmp-file-1 open/read)))))
+                           (open-file tmp-file-1 open/read))))
             (test-assert (equal? the-binary-bytevector (read-bytevector the-binary-bytevector-length the-port)))
             (test-assert (eof-object? (read-char the-port)))
             (test-not-error (close-port the-port)))
 
           (let ((the-port (fdes->textual-output-port
-                           (%fileno-to-fd (open tmp-file-1 open-write-create-truncate)))))
+                           (open-file tmp-file-1 open-write-create-truncate))))
             (test-not-error (write-string the-text-string the-port))
             (test-not-error (close-port the-port)))
           (let ((the-port (fdes->textual-input-port
-                           (%fileno-to-fd (open tmp-file-1 open/read)))))
+                           (open-file tmp-file-1 open/read))))
             (test-assert (equal? the-text-string (read-string the-text-string-length the-port)))
             (test-assert (eof-object? (read-char the-port)))
             (test-not-error (close-port the-port)))
@@ -164,8 +164,7 @@
           (test 2 (port-fdes (current-error-port)))
           (test-not (port-fdes the-string-port))
 
-          (let* ((dev-zero-fileno (open "/dev/zero" open/read)) ;; fileno type object
-                 (dev-zero-fd (%fileno-to-fd dev-zero-fileno)))
+          (let* ((dev-zero-fd (open-file "/dev/zero" open/read)))
             (test-not-error (close-fdes dev-zero-fd))
             (test-error (close-fdes dev-zero-fd)))
 
