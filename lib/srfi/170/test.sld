@@ -30,6 +30,7 @@
 
   (include "common.scm")
   (include "aux.so")
+  (include "170.so") ;; to get errno/*, no longer part of API
 
   (begin
 

@@ -3,6 +3,9 @@
 (define-library (srfi 170)
   (export
 
+#|
+   // No longer part of API
+
    ;; 3.1  Errors
 
    errno/2big errno/acces errno/addrinuse errno/addrnotavail
@@ -26,7 +29,7 @@
    errno-error syscall-error?
    syscall-error:errno syscall-error:message
    syscall-error:procedure syscall-error:data
-   
+|#
 
    ;; 3.2  I/O
 
