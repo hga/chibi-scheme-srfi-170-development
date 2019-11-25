@@ -34,7 +34,8 @@
    ;; 3.2  I/O
 
    open-file
-   open/read open/write open/read+write open/append open/create open/exclusive open/truncate
+   open/read open/write open/read+write
+   open/append open/create open/exclusive open/nofollow open/truncate
    fdes->textual-input-port fdes->binary-input-port
    fdes->textual-output-port fdes->binary-output-port
    port-fdes

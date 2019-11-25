@@ -130,6 +130,7 @@
 (define-c-const int (open/append "O_APPEND"))
 (define-c-const int (open/create "O_CREAT"))
 (define-c-const int (open/exclusive "O_EXCL"))
+(define-c-const int (open/nofollow "O_NOFOLLOW"))
 (define-c-const int (open/truncate "O_TRUNC"))
 
 ;;> Opens the given file and returns a file descriptor.
