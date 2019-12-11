@@ -1,3 +1,5 @@
+HTML: Add POSIX call for real-path
+
 Move directory-fold from common.scm to 170.scm
 
 Add name of the system or library call that failed to error-errno
