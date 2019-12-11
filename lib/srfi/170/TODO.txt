@@ -1,3 +1,6 @@
+HTML: Add note that generator created by make-directory-files-generator
+needs to be run to exhaustion to close the underlying directory fd
+
 HTML: Add POSIX call for real-path
 
 Move directory-fold from common.scm to 170.scm
