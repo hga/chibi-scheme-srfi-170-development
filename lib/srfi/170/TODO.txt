@@ -1,8 +1,6 @@
 HTML: Add note that generator created by make-directory-files-generator
 needs to be run to exhaustion to close the underlying directory fd
 
-HTML: Add POSIX call for real-path
-
 Move directory-fold from common.scm to 170.scm
 
 Add name of the system or library call that failed to error-errno
@@ -13,3 +11,7 @@ See (chibi io) for how to write a C function then wrap it in a stub
 
 Clean up post-set testing etc. of with- and without- tty procedures
 to match with-raw-mode
+
+fdes->[textual|binary]-[input|output]-port have a new optional
+buffer-mode argument.  Not planning on adding it.
+
