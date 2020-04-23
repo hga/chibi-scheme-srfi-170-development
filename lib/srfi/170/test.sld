@@ -241,7 +241,6 @@
           (test-not (file-exists? tmp-dir-1))
           (test-not-error (create-directory tmp-dir-1))
           (test-error (rename-file tmp-dir-2 tmp-file-1))
-          (test-not-error (delete-directory tmp-dir-1))
           (test-not-error (rename-file tmp-dir-2 tmp-dir-1))
           (test-assert (file-exists? tmp-dir-1))
           (test-not (file-exists? tmp-dir-2))
