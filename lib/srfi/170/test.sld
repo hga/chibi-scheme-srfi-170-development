@@ -130,7 +130,8 @@
           (test-not-error (create-directory tmp-containing-dir))
           (test #o775 (bitwise-and (file-info:mode (file-info tmp-containing-dir #t)) #o777)) ; test umask
           (test-assert (file-exists? tmp-containing-dir))
-          (test-not-error (create-directory tmp-containing-dir #o755 #t))
+          (test-not-error (delete-directory tmp-containing-dir))
+          (test-not-error (create-directory tmp-containing-dir #o755))
           (test-assert (file-exists? tmp-containing-dir))
           (test #o755 (bitwise-and (file-info:mode (file-info tmp-containing-dir #t)) #o777))
 
@@ -186,14 +187,16 @@
           (test-not-error (create-directory tmp-dir-1))
           (test-assert (file-exists? tmp-dir-1))
           (test-error (create-directory tmp-dir-1))
-          (test-not-error (create-directory tmp-dir-1 #o775 #t))
+          (test-not-error (delete-directory tmp-dir-1))
+          (test-not-error (create-directory tmp-dir-1 #o775))
 
           (test-error (create-fifo))
           (test-error (create-fifo tmp-fifo #t))
           (test-not-error (create-fifo tmp-fifo))
           (test-assert (file-exists? tmp-fifo))
           (test-error (create-fifo tmp-fifo))
-          (test-not-error (create-fifo tmp-fifo #o644 #t))
+          (test-not-error (delete-file tmp-fifo))
+          (test-not-error (create-fifo tmp-fifo #o644))
           (test-assert (file-exists? tmp-fifo))
           (test #o644 (bitwise-and (file-info:mode (file-info tmp-fifo #t)) #o777))
 
@@ -203,14 +206,12 @@
           (test-not-error (create-hard-link tmp-file-1 tmp-hard-link))
           (test-assert (file-exists? tmp-hard-link))
           (test-error (create-hard-link tmp-file-1 tmp-hard-link))
-          (test-not-error (create-hard-link tmp-file-1 tmp-hard-link #t))
           (test-assert (file-exists? tmp-hard-link))
 
           (test-error (create-symlink tmp-file-1))
           (test-not-error (create-symlink tmp-file-1 tmp-symlink))
           (test-assert (file-exists? tmp-symlink))
           (test-error (create-symlink tmp-file-1 tmp-symlink))
-          (test-not-error (create-symlink tmp-file-1 tmp-symlink #t))
           (test-assert (file-exists? tmp-symlink))
 
           (test-assert (equal? (file-info:inode (file-info tmp-file-1 #t))
@@ -227,7 +228,8 @@
           (test-assert (file-exists? tmp-file-2))
           (test-not (file-exists? tmp-file-1))
           (test-not-error (create-tmp-test-file tmp-file-1))
-          (test-not-error (rename-file tmp-file-2 tmp-file-1 #t))
+          (test-not-error (delete-file tmp-file-1))
+          (test-not-error (rename-file tmp-file-2 tmp-file-1))
           (test-assert (file-exists? tmp-file-1))
           (test-not (file-exists? tmp-file-2))
 
@@ -240,7 +242,8 @@
           (test-not (file-exists? tmp-dir-1))
           (test-not-error (create-directory tmp-dir-1))
           (test-error (rename-file tmp-dir-2 tmp-file-1))
-          (test-not-error (rename-file tmp-dir-2 tmp-dir-1 #t))
+          (test-not-error (delete-directory tmp-dir-1))
+          (test-not-error (rename-file tmp-dir-2 tmp-dir-1))
           (test-assert (file-exists? tmp-dir-1))
           (test-not (file-exists? tmp-dir-2))
 

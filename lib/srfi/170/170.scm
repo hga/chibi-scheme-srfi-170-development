@@ -46,30 +46,22 @@
 ;;; 3.3  File system
 
 (define (create-directory fname . o)
-  (let-optionals o ((permission-bits #o775)
-                    (override? #f))
-    (if override? (delete-filesystem-object fname))
+  (let-optionals o ((permission-bits #o775))
     (if (not (%mkdir fname permission-bits))
         (errno-error (errno) create-directory fname))))
 
 (define (create-fifo fname . o)
-  (let-optionals o ((permission-bits #o664)
-                    (override? #f))
-    (if override? (delete-filesystem-object fname))
+  (let-optionals o ((permission-bits #o664))
     (if (not (%mkfifo fname permission-bits))
         (errno-error (errno) create-fifo fname))))
 
-(define (create-hard-link oldname newname . o)
-  (let-optionals o ((override? #f))
-    (if override? (delete-filesystem-object newname))
+(define (create-hard-link oldname newname)
     (if (not (%link oldname newname))
-        (errno-error (errno) create-hard-link oldname newname))))
+        (errno-error (errno) create-hard-link oldname newname)))
 
-(define (create-symlink oldname newname . o)
-  (let-optionals o ((override? #f))
-    (if override? (delete-filesystem-object newname))
+(define (create-symlink oldname newname)
     (if (not (%symlink oldname newname))
-        (errno-error (errno) create-symlink oldname newname))))
+        (errno-error (errno) create-symlink oldname newname)))
 
 (cond-expand
   (windows
@@ -82,13 +74,11 @@
             (substring buf 0 res)
             (errno-error (errno) read-symlink fname))))))
 
-(define (rename-file oldname newname . o)
-  (let-optionals o ((override? #f))
-    (if (not override?)
-        (if (%stat newname)
-            (errno-error errno/exist rename-file oldname newname)))
-    (if (not (%rename oldname newname))
-        (errno-error (errno) rename-file oldname newname))))
+(define (rename-file oldname newname)
+  (if (%stat newname)
+      (errno-error errno/exist rename-file oldname newname)) ;; exit the procedure
+  (if (not (%rename oldname newname))
+      (errno-error (errno) rename-file oldname newname)))
 
 (define (delete-directory fname)
   (if (not (%rmdir fname))
