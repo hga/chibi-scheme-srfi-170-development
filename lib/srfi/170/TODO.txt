@@ -1,3 +1,5 @@
+HTML: Continue reviewing at delete-directory.
+
 HTML: Add note that generator created by make-directory-files-generator
 needs to be run to exhaustion to close the underlying directory fd
 
