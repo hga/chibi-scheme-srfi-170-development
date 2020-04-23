@@ -75,8 +75,6 @@
             (errno-error (errno) read-symlink fname))))))
 
 (define (rename-file oldname newname)
-  (if (%stat newname)
-      (errno-error errno/exist rename-file oldname newname)) ;; exit the procedure
   (if (not (%rename oldname newname))
       (errno-error (errno) rename-file oldname newname)))
 

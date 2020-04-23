@@ -228,7 +228,6 @@
           (test-assert (file-exists? tmp-file-2))
           (test-not (file-exists? tmp-file-1))
           (test-not-error (create-tmp-test-file tmp-file-1))
-          (test-not-error (delete-file tmp-file-1))
           (test-not-error (rename-file tmp-file-2 tmp-file-1))
           (test-assert (file-exists? tmp-file-1))
           (test-not (file-exists? tmp-file-2))
