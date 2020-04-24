@@ -1,5 +1,7 @@
 HTML: Continue reviewing at delete-directory.
 
+HTML: Check out S_IFCHR  0020000 and S_IFBLK  0060000 for file-info:mode.
+
 HTML: Add note that generator created by make-directory-files-generator
 needs to be run to exhaustion to close the underlying directory fd
 
