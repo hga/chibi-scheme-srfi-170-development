@@ -389,10 +389,6 @@
           (test-assert (equal? no-dot (list-sort string<? (directory-files tmp-containing-dir))))
           (test-assert (equal? with-dot (list-sort string<? (directory-files tmp-containing-dir #t))))
 
-          (test-not-error (set-working-directory tmp-containing-dir))
-          (test-assert (equal? no-dot (list-sort string<? (directory-files))))
-          (test-not-error (set-working-directory starting-dir))
-
           (test-error (make-directory-files-generator tmp-no-filesystem-object))
           (let ((g (make-directory-files-generator tmp-containing-dir)))
             (test-assert (equal? no-dot (list-sort string<? (generator->list g)))))
