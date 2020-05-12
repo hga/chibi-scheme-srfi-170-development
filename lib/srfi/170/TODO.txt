@@ -1,3 +1,5 @@
+umask and set -> perms
+
 HTML: Continue reviewing at 3.5  Process state
 
 HTML: Check out S_IFCHR  0020000 and S_IFBLK  0060000 for file-info:mode.
