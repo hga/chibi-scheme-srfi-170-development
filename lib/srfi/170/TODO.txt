@@ -20,6 +20,8 @@ See (chibi io) for how to write a C function then wrap it in a stub
 Clean up post-set testing etc. of with- and without- tty procedures
 to match with-raw-mode
 
+Add comment about using [...]at functions to handle long file paths.
+
 fdes->[textual|binary]-[input|output]-port have a new optional
 buffer-mode argument.  Not planning on adding it.
 
