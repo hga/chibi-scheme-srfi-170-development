@@ -74,7 +74,7 @@
    ;; 3.5  Process state
 
    perms
-   working-directory set-working-directory
+   current-directory
    pid parent-pid process-group
    nice
 

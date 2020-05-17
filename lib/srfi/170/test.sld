@@ -66,7 +66,7 @@
     (define the-binary-bytevector-length (bytevector-length the-binary-bytevector))
     (define open-write-create-truncate (bitwise-ior open/write open/create open/truncate))
 
-    (define starting-dir (working-directory))
+    (define starting-dir (current-directory))
 
     (define no-dot (list-sort string<? '("fifo" "file-1" "hard-link" "symlink")))
     (define with-dot (list-sort string<? '(".dot-file" "fifo" "file-1" "hard-link" "symlink")))
@@ -404,13 +404,13 @@
             (test-error (close-directory dirobj))
             (test-error (read-directory dirobj)))
 
-          (test-not-error (set-working-directory tmp-containing-dir))
+          (test-not-error (current-directory tmp-containing-dir))
           (test tmp-containing-dir (real-path "."))
           (test tmp-file-1 (real-path tmp-file-1-basename))
           (test tmp-file-1 (real-path (string-append "./" tmp-file-1-basename)))
           (test tmp-file-1 (real-path tmp-symlink-basename))
           (test-error (real-path bogus-path))
-          (test-not-error (set-working-directory starting-dir))
+          (test-not-error (current-directory starting-dir))
 
           (let ((tmp-filename (temp-file-prefix)))
             (test-assert (string? tmp-filename))
@@ -438,17 +438,17 @@
           ;; umask and set-umask exercised in the prologue to set up
           ;; for following file system tests
 
-          (test-assert (string? (working-directory)))
-          (test-error (set-working-directory over-max-path))
-          (test-not-error (set-working-directory tmp-containing-dir))
-          (test tmp-containing-dir (working-directory))
+          (test-assert (string? (current-directory)))
+          (test-error (current-directory over-max-path))
+          (test-not-error (current-directory tmp-containing-dir))
+          (test tmp-containing-dir (current-directory))
           (test-not-error (file-info tmp-file-1-basename #t)) ; are we there?
 
           (cond-expand (bsd
             (test-not-error (set-file-mode tmp-containing-dir #o000))
             (if (equal? 0 (user-effective-uid))
-                (test-not-error (working-directory))
-                (test-error (working-directory)))
+                (test-not-error (current-directory))
+                (test-error (current-directory)))
             (test-not-error (set-file-mode tmp-containing-dir #o755))))
 
           (test-assert (pid))
