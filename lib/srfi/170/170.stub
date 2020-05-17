@@ -385,6 +385,11 @@
 (define-c errno (%clock_gettime clock_gettime) (clockid_t (result timespec)))
 
 
+;;; 3.11  Environment variables
+
+(define-c errno (%setenv setenv) (string string int))
+
+
 ;;; 3.12  Terminal device control
 
 ;;> Returns \scheme{#t} if the given port of file descriptor

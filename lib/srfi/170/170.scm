@@ -515,6 +515,16 @@
         (make-timespec (posix-timespec:seconds t) (posix-timespec:nanoseconds t)))))
 
 
+;;; 3.11  Environment variables
+
+(define (set-environment-variable! name value)
+  (let ((ret (%setenv name value 1)))
+    (if (not ret)
+        (errno-error (errno) set-environment-variable! name value))))
+
+;;; (define (delete-environment-variable! name)
+;;;   )
+
 ;;; 3.12  Terminal device control
 
 (define (terminal? the-port)

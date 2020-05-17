@@ -98,6 +98,12 @@
    posix-time monotonic-time
 
 
+   ;; 3.11  Environment variables
+
+   set-environment-variable!
+   ; delete-environment-variable!
+
+
    ;; 3.12  Terminal device control
 
    terminal?

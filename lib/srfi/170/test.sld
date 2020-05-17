@@ -21,6 +21,7 @@
           (chibi test)
           (only (chibi filesystem) file-exists? delete-file)
           (only (srfi 1) list-index)
+          (only (srfi 98) get-environment-variable)
           (only (srfi 115) regexp-replace-all regexp-split)
           (only (srfi 132) list-sort) ;; note list-sort truncates ending pair cdr not being ()
           (srfi 151) ;; bitwise operators
@@ -519,6 +520,18 @@
                               (> (timespec-seconds t2) 0)
                               (> (timespec-nanoseconds t2) 0))))
           ) ;; end time
+
+
+        (test-group "3.11  Environment variables"
+
+          (test #f (get-environment-variable "xyzzy"))
+          (test-not-error (set-environment-variable! "xyzzy" "one"))
+          (test "one" (get-environment-variable "xyzzy"))
+          (test-not-error (set-environment-variable! "xyzzy" "two"))
+          (test "two" (get-environment-variable "xyzzy"))
+          (test-error (set-environment-variable! "xyzzy=plover" "three"))
+
+          ) ;; end environment variables
 
 
         (test-group "3.12  Terminal device control"
