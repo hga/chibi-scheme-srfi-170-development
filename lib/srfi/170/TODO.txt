@@ -4,7 +4,7 @@ parameterize current-directory
 
 add absolute-path
 
-HTML: Continue reviewing at 3.5  Process state at absolute-path
+HTML: Continue reviewing at 3.12  Terminal device control
 
 HTML: Check out S_IFCHR  0020000 and S_IFBLK  0060000 for file-info:mode.
 
