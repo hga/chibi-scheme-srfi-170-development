@@ -1,4 +1,6 @@
-umask and set -> perms
+umask and set-umask -> perms
+
+working-directory and set-working-directory -> current-directory
 
 HTML: Continue reviewing at 3.5  Process state
 
