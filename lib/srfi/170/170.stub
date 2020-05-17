@@ -389,6 +389,8 @@
 
 (define-c errno (%setenv setenv) (string string int))
 
+(define-c errno (%unsetenv unsetenv) (string))
+
 
 ;;; 3.12  Terminal device control
 

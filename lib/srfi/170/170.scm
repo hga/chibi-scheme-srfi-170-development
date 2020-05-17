@@ -522,8 +522,11 @@
     (if (not ret)
         (errno-error (errno) set-environment-variable! name value))))
 
-;;; (define (delete-environment-variable! name)
-;;;   )
+(define (delete-environment-variable! name)
+  (let ((ret (%unsetenv name)))
+    (if (not ret)
+        (errno-error (errno) delete-environment-variable! name))))
+
 
 ;;; 3.12  Terminal device control
 

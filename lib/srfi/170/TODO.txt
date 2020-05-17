@@ -4,15 +4,11 @@ parameterize current-directory
 
 add absolute-path
 
-add set-environment-variable! and delete-environment-variable!
-
 HTML: Continue reviewing at 3.5  Process state at absolute-path
 
 HTML: Check out S_IFCHR  0020000 and S_IFBLK  0060000 for file-info:mode.
 
 HTML: Reexamine adding some file types to file-info-directory? etc.
-
-HTML: Maybe update directory-files langauge if working directory def changes.
 
 HTML: Add note that generator created by make-directory-files-generator
 needs to be run to exhaustion to close the underlying directory fd
@@ -32,4 +28,3 @@ Add comment about using [...]at functions to handle long file paths.
 
 fdes->[textual|binary]-[input|output]-port have a new optional
 buffer-mode argument.  Not planning on adding it.
-
