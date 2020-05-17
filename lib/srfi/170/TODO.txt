@@ -1,4 +1,4 @@
-umask and set-umask -> perms
+parameterize perms
 
 working-directory and set-working-directory -> current-directory
 
