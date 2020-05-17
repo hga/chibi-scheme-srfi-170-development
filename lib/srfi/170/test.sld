@@ -531,6 +531,7 @@
           (test "two" (get-environment-variable "xyzzy"))
           (test-error (set-environment-variable! "xyzzy=plover" "three"))
           (test-not-error (delete-environment-variable! "xyzzy"))
+          (test #f (get-environment-variable "xyzzy"))
           (test-error (delete-environment-variable! "xyzzy=plover"))
 
           ) ;; end environment variables
