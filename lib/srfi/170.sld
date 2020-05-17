@@ -73,7 +73,7 @@
 
    ;; 3.5  Process state
 
-   umask set-umask
+   perms
    working-directory set-working-directory
    pid parent-pid process-group
    nice

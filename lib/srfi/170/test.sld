@@ -122,8 +122,8 @@
 
           ;; From 3.5 Process state, to set up for following file system changes
 
-          (test-assert (set-umask #o2))
-          (test #o2 (umask))
+          (test-assert (perms #o2))
+          (test #o2 (perms))
 
           ;; Create containing directory so we'll have a place for 3.2  I/O
 

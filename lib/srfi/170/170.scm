@@ -420,6 +420,14 @@
 (define (set-umask perms)
   (%umask perms))
 
+(define (perms . o)
+  (let-optionals o ((umask #f))
+    (if umask
+        (%umask umask)
+        (let ((current-umask (%umask #o777)))
+          (%umask current-umask)
+          current-umask))))
+
 (define (working-directory)
   (let ((dir (%getcwd)))
     (if (not dir)
