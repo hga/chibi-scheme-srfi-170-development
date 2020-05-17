@@ -4,7 +4,9 @@ working-directory and set-working-directory -> current-directory
 
 add absolute-path
 
-HTML: Continue reviewing at 3.5  Process state
+add set-environment-variable! and delete-environment-variable!
+
+HTML: Continue reviewing at 3.5  Process state at absolute-path
 
 HTML: Check out S_IFCHR  0020000 and S_IFBLK  0060000 for file-info:mode.
 
