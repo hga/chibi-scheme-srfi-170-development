@@ -1,6 +1,6 @@
 parameterize perms
 
-working-directory and set-working-directory -> current-directory
+parameterize current-directory
 
 add absolute-path
 
