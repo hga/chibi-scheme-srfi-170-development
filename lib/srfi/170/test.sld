@@ -533,6 +533,10 @@
           (test-not-error (delete-environment-variable! "xyzzy"))
           (test #f (get-environment-variable "xyzzy"))
           (test-error (delete-environment-variable! "xyzzy=plover"))
+          (test-not-error (set-environment-variable! "xyzzy" ""))
+          (test "" (get-environment-variable "xyzzy"))
+          (test-not-error (delete-environment-variable! "xyzzy"))
+
 
           ) ;; end environment variables
 
