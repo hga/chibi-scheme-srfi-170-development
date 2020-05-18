@@ -4,7 +4,9 @@ parameterize current-directory
 
 add absolute-path
 
-HTML: Continue reviewing at 3.12  Terminal device control
+HTML: Continue reviewing at 3.3  File system in Implementation section.
+
+HTML: if real-path gets removed, remove "Scsh does not support the real-path procedure." in implimentation.
 
 HTML: Check out S_IFCHR  0020000 and S_IFBLK  0060000 for file-info:mode.
 
