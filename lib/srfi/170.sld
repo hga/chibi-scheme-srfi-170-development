@@ -68,7 +68,7 @@
 
    temp-file-prefix
    create-temp-file
-   ;; call-with-temporary-filename left as an exercise for the reader
+   ;; call-with-temporary-filename is left as an exercise for the reader
 
 
    ;; 3.5  Process state
@@ -76,6 +76,7 @@
    perms
    current-directory
    pid parent-pid process-group
+   ;; absolute-path is left as an exercise for the reader
    nice
 
    user-uid user-gid
