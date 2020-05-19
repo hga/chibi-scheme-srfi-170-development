@@ -209,6 +209,21 @@
   (is-open? directory-object-is-open? set-directory-object-is-open)
   (dot-files? directory-object-dot-files?))
 
+;;> The fundamental directory iterator.  Applies \var{kons} to
+;;> each filename in directory \var{dir} and the result of the
+;;> previous application, beginning with \var{knil}.  With
+;;> \var{kons} as \scheme{cons} and \var{knil} as \scheme{'()},
+;;> equivalent to \scheme{directory-files}.
+
+(define (directory-fold dir kons knil . o)
+  (let-optionals o ((dot-files? #f))
+    (let ((do (open-directory dir dot-files?)))
+      (let lp ((res knil))
+        (let ((file (read-directory do)))
+          (if (not (eof-object? file))
+              (lp (kons file res))
+              (begin (close-directory do) res)))))))
+
 ;;> Returns a list of the files in \var{dir} in an unspecified
 ;;> order.
 
